@@ -1,0 +1,232 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+    provider             = "mysql"
+    url                  = env("DATABASE_URL")
+    referentialIntegrity = "prisma"
+}
+
+// Necessary for Next auth
+model Account {
+    id                String  @id @default(cuid())
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String?
+    access_token      String?
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String?
+    session_state     String?
+    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String?   @unique
+    emailVerified DateTime?
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
+// The lexical category
+model Entry {
+    word      String
+    language  Language
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    pronunciations Pronunciation[]
+    definitions    Definition[]
+
+    @@id([word, language])
+}
+
+// The semantic category
+model Definition {
+    id           String       @id @default(cuid())
+    word         String
+    language     Language
+    partOfSpeech PartOfSpeech
+    rank         BigInt // Within the particular combination of word + language + partOfSpeech
+    createdAt    DateTime     @default(now())
+    updatedAt    DateTime     @updatedAt
+
+    entry Entry? @relation(fields: [word, language], references: [word, language])
+
+    pronunciation Pronunciation[]
+    sentences     SentenceTriple[]
+    subjectOf     EntryTriple[]    @relation("subject")
+    objectOf      EntryTriple[]    @relation("object")
+
+    @@unique([word, language, partOfSpeech, rank])
+    @@index([word, language])
+    @@index([word, language, partOfSpeech])
+}
+
+// The phonetic category
+model Pronunciation {
+    id           String   @id @default(cuid())
+    definitionId String
+    sentenceId   String?
+    word         String
+    language     Language
+    broad        String?
+    narrow       String?
+    coordinates  String?
+    hyphenation  String?
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    entry      Entry      @relation(fields: [word, language], references: [word, language])
+    definition Definition @relation(fields: [definitionId], references: [id], onDelete: NoAction)
+    Sentence   Sentence?  @relation(fields: [sentenceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+    @@index([word, language])
+    @@index([definitionId])
+    @@index([sentenceId])
+}
+
+// The instance
+model Sentence {
+    id              String   @id @default(cuid())
+    translationOfId String
+    sentence        String   @unique
+    language        Language
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+
+    translationOf  Sentence         @relation("translations", fields: [translationOfId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    translations   Sentence[]       @relation("translations")
+    pronunciations Pronunciation[]
+    entries        SentenceTriple[]
+}
+
+model Predicate {
+    id        String   @id @default(cuid())
+    name      String   @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    EntryTriple    EntryTriple[]
+    SentenceTriple SentenceTriple[]
+}
+
+model EntryTriple {
+    subjectId   String
+    objectId    String
+    predicateId String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    subject   Definition @relation("subject", fields: [subjectId], references: [id], onDelete: NoAction)
+    object    Definition @relation("object", fields: [objectId], references: [id], onDelete: NoAction)
+    predicate Predicate  @relation(fields: [predicateId], references: [id], onDelete: NoAction)
+
+    @@id([subjectId, predicateId, objectId])
+}
+
+model SentenceTriple {
+    defId       String
+    sentenceId  String
+    predicateId String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    word      Definition @relation(fields: [defId], references: [id], onDelete: NoAction)
+    sentence  Sentence   @relation(fields: [sentenceId], references: [id], onDelete: NoAction)
+    predicate Predicate  @relation(fields: [predicateId], references: [id], onDelete: NoAction)
+
+    @@id([defId, predicateId, sentenceId])
+}
+
+enum PartOfSpeech {
+    ADJECTIVE
+    ADVERB
+    AMBIPOSITION
+    ARTICLE
+    CIRCUMPOSITION
+    CLASSIFIER
+    CONJUNCTION
+    CONTRACTION
+    COUNTER
+    DETERMINER
+    IDEOPHONE
+    INTERJECTION
+    NOUN
+    NUMERAL
+    PARTICIPLE
+    PARTICLE
+    POSTPOSITION
+    PREPOSITION
+    PRONOUN
+    PROPER_NOUN
+    VERB
+}
+
+enum Morpheme {
+    CIRCUMFIX
+    COMBINING_FORM
+    INFIX
+    INTERFIX
+    PREFIX
+    ROOT
+    SUFFIX
+}
+
+enum SymbolOrCharacter {
+    DIACRITICAL_MARK
+    LETTER
+    LIGATURE
+    NUMBER
+    PUNCTUATION_MARK
+    SYLLABLE
+    SYMBOL
+}
+
+enum Phrase {
+    PHRASE
+    PROVERB
+    PREPOSITIONAL_PHRASE
+}
+
+enum Language {
+    en
+    de
+    es
+    fr
+    it
+    ja
+    ko
+    pt
+    ru
+    zh
+}
