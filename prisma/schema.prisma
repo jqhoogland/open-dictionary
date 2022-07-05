@@ -107,6 +107,7 @@ model Pronunciation {
     hyphenation  String?
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt
+    description  String?
 
     entry      Entry      @relation(fields: [word, language], references: [word, language])
     definition Definition @relation(fields: [definitionId], references: [id], onDelete: NoAction)

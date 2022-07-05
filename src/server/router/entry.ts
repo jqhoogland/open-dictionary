@@ -5,28 +5,21 @@ import {
   defSchema,
   predicateSchema,
   pronunciationSchema,
+  entrySchema,
+  paginateSchema,
 } from "./validators";
-
-const entrySchema = z.object({
-  word: z.string().min(1),
-  language: languageSchema,
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  rank: z.number(),
-  definitions: z.array(defSchema),
-  pronunciations: z.array(pronunciationSchema),
-});
-
-const paginateSchema = <T extends z.ZodType>(item: T, cursor: z.ZodType) =>
-  z.object({
-    data: z.array(item),
-    cursor,
-  });
 
 export const entryRouter = createRouter()
   .query("get", {
     meta: {
-      openapi: { enabled: true, method: "GET", path: "/{language}/{word}" },
+      openapi: {
+        enabled: true,
+        method: "GET",
+        path: "/{language}/{word}",
+        summary: "Read entry",
+        description:
+          "Retrieve definitions and pronunciations for `word` in `language`",
+      },
     },
     input: z.object({
       language: languageSchema,
@@ -49,7 +42,14 @@ export const entryRouter = createRouter()
   })
   .query("paginate", {
     meta: {
-      openapi: { enabled: true, method: "GET", path: "/{language}" },
+      openapi: {
+        enabled: true,
+        method: "GET",
+        path: "/{language}",
+        summary: "Paginate entries",
+        description:
+          "Paginate definitions and pronunciations for entries in `language`, ordered by word frequency.",
+      },
     },
     input: z.object({
       limit: z
@@ -66,7 +66,7 @@ export const entryRouter = createRouter()
     }),
     output: paginateSchema(entrySchema, z.number()),
     async resolve({ input: { limit, cursor, language } }) {
-      const data = await prisma.entry.findMany({
+      const items = await prisma.entry.findMany({
         where: { language },
         take: limit,
         skip: cursor,
@@ -82,14 +82,20 @@ export const entryRouter = createRouter()
         },
       });
       return {
-        data,
-        cursor: data.length === limit ? cursor + data.length : null,
+        items,
+        cursor: items.length === limit ? cursor + items.length : null,
       };
     },
   })
   .mutation("create", {
     meta: {
-      openapi: { enabled: true, method: "POST", path: "/{language}" },
+      openapi: {
+        enabled: true,
+        method: "POST",
+        path: "/{language}",
+        summary: "Create entry",
+        description: "Create a new entry for `word` in `language`",
+      },
     },
     input: z.object({
       language: languageSchema,
@@ -109,7 +115,7 @@ export const entryRouter = createRouter()
           rank,
           definitions: {
             create: definitions.map(
-              ({ partOfSpeech, definition, defLanguage, examples }, i) => ({
+              ({ partOfSpeech, definition, examples }, i) => ({
                 partOfSpeech,
                 rank: i,
                 sentences: {
@@ -118,8 +124,8 @@ export const entryRouter = createRouter()
                       predicateId: predicateSchema.enum.DEFINITION,
                       sentence: {
                         create: {
-                          sentence: definition,
-                          language: defLanguage,
+                          sentence: definition.value,
+                          language: definition?.language ?? language,
                         },
                       },
                     },
