@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "./../db/client";
 import { createRouter } from "./context";
 import {
+  BareEntrySchema,
   EntrySchema,
   EntryWithoutIncludesSchema,
   LanguageSchema,
@@ -24,7 +25,7 @@ export const entryRouter = createRouter()
     },
     input: z.object({
       language: LanguageSchema,
-       word: z.string().min(1),
+      word: z.string().min(1),
     }),
     output: EntryWithoutIncludesSchema,
     async resolve({ input }) {
@@ -57,26 +58,40 @@ export const entryRouter = createRouter()
         .describe("A number"),
       language: LanguageSchema,
     }),
-    output: paginateSchema(EntrySchema, z.number()),
+    output: paginateSchema(BareEntrySchema, z.number()),
     async resolve({ input: { limit, cursor, language } }) {
       const items = await prisma.entry.findMany({
         where: { language },
         take: limit,
         skip: cursor,
-        orderBy: { rank: "desc" },
-        include: {
+        orderBy: { rank: "asc" },
+        select: {
+          word: true,
+          rank: true,
           definitions: {
             select: {
               id: true,
-              sentences: true,
+              sentences: {
+                select: {
+                  predicateId: true,
+                  detail: true,
+                  sentence: {
+                    select: {
+                      id: true,
+                      sentence: true,
+                    },
+                  },
+                },
+              },
             },
           },
           // pronunciations: true,
         },
       });
+
       return {
         items,
-        cursor: items.length === limit ? cursor + items.length : null,
+        nextCursor: items.length === limit ? cursor + items.length : null,
       };
     },
   })

@@ -5,7 +5,10 @@ import { LANGUAGES, PARTS_OF_SPEECH, PREDICATES } from "./constants";
 
 // Numbers
 export const WholeNumberSchema = z.number().int().nonnegative();
-export const BigIntSchema = z.bigint().transform((int) => Number(int));
+export const BigIntSchema = z
+  .bigint()
+  .transform((int) => Number(int))
+  .or(z.number());
 export const StringifiedInt = z.string().transform((int) => parseInt(int));
 
 // Enums
@@ -29,6 +32,31 @@ export const WordAndLanguageSchema = z.object({
 });
 
 // Definitions
+
+export const BareSentenceSchema = z.object({
+  id: z.string(),
+  sentence: z.string(),
+});
+
+export const SentenceSchema = BareSentenceSchema.merge(TimesSchema).extend({
+  language: LanguageSchema,
+});
+
+export const BareSentenceTripleSchema = z.object({
+  predicateId: z.string(),
+  detail: z.string().nullable().optional(),
+  sentence: BareSentenceSchema,
+});
+
+export const SentenceTripleSchema = BareSentenceTripleSchema.extend({
+  defId: z.string(),
+  sentenceId: z.string(),
+}).merge(TimesSchema);
+
+export const BareDefinitionSchema = z.object({
+  id: z.string(),
+  sentences: z.array(BareSentenceTripleSchema),
+});
 
 export const DefinitionBaseSchema = z.object({
   partOfSpeech: PartOfSpeechSchema,
@@ -78,20 +106,22 @@ export const PronunciationSchema = PronunciationBaseSchema.merge(TimesSchema);
 
 export const EntryWithoutIncludesSchema = z
   .object({
-    rank: BigIntSchema.or(z.number()),
+    rank: BigIntSchema,
   })
   .merge(TimesSchema)
   .merge(WordAndLanguageSchema);
 
-export const EntrySchema = z.object({
+export const BareEntrySchema = z.object({
   word: z.string().min(1),
-  language: LanguageSchema,
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  rank: z.bigint().transform((int) => Number(int)),
-  definitions: z.array(CreateDefinitionSchema),
-  // pronunciations: z.array(CreatePronunciationSchema),
+  rank: BigIntSchema,
+  definitions: z.array(BareDefinitionSchema),
 });
+
+export const EntrySchema = BareEntrySchema.extend({
+  language: LanguageSchema,
+
+  // pronunciations: z.array(CreatePronunciationSchema),
+}).merge(TimesSchema);
 
 // Utils
 
@@ -101,5 +131,5 @@ export const paginateSchema = <T extends z.ZodType>(
 ) =>
   z.object({
     items: z.array(item),
-    cursor: cursor.nullable(),
+    nextCursor: cursor.nullable(),
   });

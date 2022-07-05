@@ -12,6 +12,7 @@ import { appRouter } from "../../server/router";
 import { trpc } from "../../utils/trpc";
 import superjson from "superjson"
 import groupBy from "lodash/groupBy";
+import NavBar from '../../components/NavBar';
 
 const getIPA = ({ broad, narrow }: { broad: string, narrow: string }) => broad ? `/${broad}/` : `[${narrow}]`
 
@@ -30,15 +31,7 @@ const EntryPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 
     return (
         <BasicLayout title={word ? `${word} | OpenDictionary` : "OpenDictionary"}>
-            <nav className="navbar bg-base-100 border-b-2 gap-2">
-                <Link href="/">
-                    <a className="btn btn-ghost normal-case text-xl" ><Logo /></a>
-                </Link>
-                {language ? <SearchBar onSelectLanguage={(newLang) => router.push(`/${newLang}/${word}`)} className="w-full" defaultValue={language} /> : <div className='flex flex-1'></div>}
-                <Link href={`/${language}`}>
-                    <a className="btn btn-ghost normal-case">Explore</a>
-                </Link>
-            </nav>
+            <NavBar />
             <main className="px-8 mx-auto max-w-screen-md py-16 min-h-[80vh]">
                 <h1 className="text-6xl font-bold">{word ?? <div className="h-10 w-[200px] animate-pulse bg-base-300 rounded-xl"></div>}</h1>
 
@@ -68,7 +61,7 @@ const EntryPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
                             <div className="bg-base-200 rounded-xl p-4 gap-2 w-full max-w-[65ch]">
                                 {
                                     (pronunciationQuery.data ?? []).map(({ broad, narrow, description }, i) => (
-                                        <span className="badge badge-outline mx-2" key={i}>{getIPA({ broad, narrow })}</span>
+                                        (broad || narrow) && <span className="badge badge-outline mx-2" key={i}>{getIPA({ broad, narrow })}</span>
                                     ))
                                 }
                             </div>
