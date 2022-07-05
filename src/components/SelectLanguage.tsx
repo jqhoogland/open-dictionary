@@ -1,12 +1,14 @@
+import { Language } from "@prisma/client";
 import { LANGUAGES, LANGUAGE_NAMES } from "../server/router/constants";
 
 interface SelectLanguageProps {
     className?: string;
     onSelect: (language: string) => void;
+    defaultValue: Language
 }
 
-const SelectLanguage: React.FC<SelectLanguageProps> = ({ onSelect, className }) => (
-    <select className={"select select-ghost " + (className ?? "")} onChange={(e) => onSelect(e.target.value)}>
+const SelectLanguage: React.FC<SelectLanguageProps> = ({ onSelect, className, ...props }) => (
+    <select className={"select select-ghost " + (className ?? "")} onChange={(e) => onSelect(e.target.value)} {...props}>
         {LANGUAGES.map((language) => (
             <option
                 key={language}

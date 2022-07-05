@@ -23,8 +23,8 @@ const EntryPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 
     const router = useRouter();
 
-    console.log([entryQuery.data, pronunciationQuery.data, definitionQuery.data])
-    const doesNotExist = entryQuery.status !== "loading" && entryQuery.data === null;
+    console.log([entryQuery, pronunciationQuery, definitionQuery])
+    const doesNotExist = entryQuery.isFetched && !entryQuery.data;
 
     const pronunciation = groupBy(entryQuery.data ?? [], 'partOfSpeech');
 
@@ -34,13 +34,13 @@ const EntryPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
                 <Link href="/">
                     <a className="btn btn-ghost normal-case text-xl" ><Logo /></a>
                 </Link>
-                <SearchBar onSelectLanguage={(newLang) => router.push(`/${newLang}/${word}`)} className="w-full" />
+                {language ? <SearchBar onSelectLanguage={(newLang) => router.push(`/${newLang}/${word}`)} className="w-full" defaultValue={language} /> : <div className='flex flex-1'></div>}
                 <Link href={`/${language}`}>
                     <a className="btn btn-ghost normal-case">Explore</a>
                 </Link>
             </nav>
             <main className="px-8 mx-auto max-w-screen-md py-16 min-h-[80vh]">
-                <h1 className="text-4xl font-bold">{word ?? <div className="h-10 w-[200px] animate-pulse bg-base-300 rounded-xl"></div>}</h1>
+                <h1 className="text-6xl font-bold">{word ?? <div className="h-10 w-[200px] animate-pulse bg-base-300 rounded-xl"></div>}</h1>
 
                 {doesNotExist ?
                     <section className="py-4">
@@ -49,9 +49,9 @@ const EntryPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
                             <a className="btn-link text-blue-500" href="mailto:jesse@jessehoogland.com">Reach out.</a></p>
                     </section>
                     : <>
-                        <section className='py-4'>
+                        <section className='py-4 w-full'>
                             <h2 className="text-xl pb-2 font-bold">Definition</h2>
-                            <div className="bg-base-200 rounded-xl p-4 gap-2 prose">
+                            <div className="bg-base-200 rounded-xl p-4 prose w-full !mr-0">
                                 <ul>
                                     {
                                         (definitionQuery.data ?? []).map(({ definitions }, i) => (
@@ -65,7 +65,7 @@ const EntryPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
                         <section className='py-4'>
                             <h2 className="text-xl pb-2 font-bold">Pronunciation</h2>
 
-                            <div className="bg-base-200 rounded-xl p-4 gap-2">
+                            <div className="bg-base-200 rounded-xl p-4 gap-2 w-full max-w-[65ch]">
                                 {
                                     (pronunciationQuery.data ?? []).map(({ broad, narrow, description }, i) => (
                                         <span className="badge badge-outline mx-2" key={i}>{getIPA({ broad, narrow })}</span>
