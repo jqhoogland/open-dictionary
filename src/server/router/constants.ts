@@ -85,6 +85,16 @@ export const LANGUAGE_NAMES = {
   // "el": "ελληνικά",
 } as const;
 
-export const LANGUAGES = Object.keys(
-  LANGUAGE_NAMES
-) as (keyof typeof LANGUAGE_NAMES)[];
+// Can't use keyof magic bc of zod enum
+export const LANGUAGES = [
+  "en",
+  "de",
+  "fr",
+  "es",
+  "it",
+  "pt",
+  "ja",
+  "zh",
+  "ko",
+  "ru",
+] as const;

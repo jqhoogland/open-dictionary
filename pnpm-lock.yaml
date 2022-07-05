@@ -13,6 +13,7 @@ specifiers:
   '@types/react': 18.0.14
   '@types/react-dom': 18.0.5
   autoprefixer: ^10.4.7
+  cuid: ^2.1.8
   daisyui: ^2.18.0
   eslint: 8.18.0
   eslint-config-next: 12.1.6
@@ -26,6 +27,7 @@ specifiers:
   superjson: ^1.9.1
   tailwindcss: ^3.1.4
   trpc-openapi: ^0.1.1
+  type-fest: ^2.16.0
   typescript: 4.7.4
   zod: ^3.17.3
 
@@ -38,6 +40,7 @@ dependencies:
   '@trpc/next': 9.25.3_gjz2vgkn3qadfgugkh65jdpnzq
   '@trpc/react': 9.25.3_ms3at4dqhndwrpx5xroirjehyy
   '@trpc/server': 9.25.3
+  cuid: 2.1.8
   daisyui: 2.18.0_ugi4xkrfysqkt4c4y6hkyfj344
   next: 12.2.0_biqbaboplfbrettd7655fr4n2y
   next-auth: 4.8.0_biqbaboplfbrettd7655fr4n2y
@@ -58,6 +61,7 @@ devDependencies:
   postcss: 8.4.14
   prisma: 4.0.0
   tailwindcss: 3.1.4
+  type-fest: 2.16.0
   typescript: 4.7.4
 
 packages:
@@ -1055,6 +1059,10 @@ packages:
 
   /csstype/3.1.0:
     resolution: {integrity: sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==}
+
+  /cuid/2.1.8:
+    resolution: {integrity: sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==}
+    dev: false
 
   /daisyui/2.18.0_ugi4xkrfysqkt4c4y6hkyfj344:
     resolution: {integrity: sha512-PIS+byC2r90VZV/9RUD2E3BsyzE0cj4PmFTDQqGd+4+hnVP5OB3DnjPBhjhfJwySErzpz0ZVOGRi/X9rWRhP5A==}
@@ -2837,6 +2845,11 @@ packages:
   /type-fest/0.20.2:
     resolution: {integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==}
     engines: {node: '>=10'}
+    dev: true
+
+  /type-fest/2.16.0:
+    resolution: {integrity: sha512-qpaThT2HQkFb83gMOrdKVsfCN7LKxP26Yq+smPzY1FqoHRjqmjqHXA7n5Gkxi8efirtbeEUxzfEdePthQWCuHw==}
+    engines: {node: '>=12.20'}
     dev: true
 
   /type-is/1.6.18:

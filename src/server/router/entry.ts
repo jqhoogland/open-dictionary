@@ -1,12 +1,13 @@
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+import { prisma } from "./../db/client";
 import { createRouter } from "./context";
-import { optional, z } from "zod";
 import {
-  languageSchema,
-  defSchema,
-  predicateSchema,
-  pronunciationSchema,
-  entrySchema,
+  EntrySchema,
+  EntryWithoutIncludesSchema,
+  LanguageSchema,
   paginateSchema,
+  WholeNumberSchema,
 } from "./validators";
 
 export const entryRouter = createRouter()
@@ -22,21 +23,13 @@ export const entryRouter = createRouter()
       },
     },
     input: z.object({
-      language: languageSchema,
+      language: LanguageSchema,
       word: z.string().min(1),
     }),
-    output: entrySchema,
+    output: EntryWithoutIncludesSchema,
     async resolve({ input }) {
       return prisma.entry.findUniqueOrThrow({
-        where: input,
-        include: {
-          definitions: {
-            include: {
-              sentences: true,
-            },
-          },
-          pronunciations: true,
-        },
+        where: { word_language: input },
       });
     },
   })
@@ -62,23 +55,23 @@ export const entryRouter = createRouter()
         .transform((s) => parseInt(s))
         .default("0")
         .describe("A number"),
-      language: languageSchema,
+      language: LanguageSchema,
     }),
-    output: paginateSchema(entrySchema, z.number()),
+    output: paginateSchema(EntrySchema, z.number()),
     async resolve({ input: { limit, cursor, language } }) {
       const items = await prisma.entry.findMany({
         where: { language },
         take: limit,
         skip: cursor,
         orderBy: { rank: "desc" },
-        cursor: { rank: cursor },
         include: {
           definitions: {
-            include: {
+            select: {
+              id: true,
               sentences: true,
             },
           },
-          pronunciations: true,
+          // pronunciations: true,
         },
       });
       return {
@@ -98,70 +91,34 @@ export const entryRouter = createRouter()
       },
     },
     input: z.object({
-      language: languageSchema,
-      word: z.string(),
-      rank: z.number(),
-      definitions: z.array(defSchema),
-      pronunciations: z.array(pronunciationSchema),
+      language: LanguageSchema,
+      word: z.string().min(1),
+      rank: WholeNumberSchema.optional(),
     }),
-    output: entrySchema,
-    async resolve({
-      input: { language, word, rank, definitions, pronunciations },
-    }) {
-      console.log({ language, word, rank, definitions, pronunciations });
+    output: EntryWithoutIncludesSchema,
+    async resolve({ input: { language, word, rank: _rank } }) {
+      let rank = _rank;
 
-      const entry = await prisma.entry
-        .create({
-          data: {
-            language,
-            word,
-            rank,
-            definitions: {
-              createMany: {
-                data: definitions.map(
-                  ({ partOfSpeech, definition, examples }, i) => ({
-                    partOfSpeech,
-                    rank: i,
-                    sentences: {
-                      createMany: [
-                        {
-                          predicateId: predicateSchema.enum.DEFINITION,
-                          sentence: {
-                            create: {
-                              data: {
-                                sentence: definition.value,
-                                language: definition?.language ?? language,
-                              },
-                            },
-                          },
-                        },
-                        ...examples.map((example) => ({
-                          predicateId: predicateSchema.enum.EXAMPLE,
-                          sentence: {
-                            create: {
-                              data: {
-                                sentence: example,
-                                language,
-                              },
-                            },
-                          },
-                        })),
-                      ],
-                    },
-                  })
-                ),
-              },
-            },
-            pronunciations: {
-              createMany: {
-                data: pronunciations,
-              },
-            },
-          },
-        })
-        .catch(console.error);
+      if (
+        rank &&
+        (await prisma.entry.findUnique({
+          where: { rank_language: { language, rank } },
+        }))
+      ) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Given rank already exists for language",
+        });
+      } else if (!rank) {
+        rank = (await prisma.entry.count({ where: { language } })) + 1;
+      }
 
-      console.log("[Entry:created]", entry);
-      return entry;
+      return prisma.entry.create({
+        data: {
+          language,
+          word,
+          rank,
+        },
+      });
     },
   });

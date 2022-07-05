@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import BasicLayout from "../../components/BasicLayout";
 import Logo from "../../components/Logo";
+import SearchBar from "../../components/SearchBar";
 import SelectLanguage from "../../components/SelectLanguage";
 
 const EntryPage = () => {
@@ -15,11 +16,10 @@ const EntryPage = () => {
                 <Link href="/">
                     <a className="btn btn-ghost normal-case text-xl" ><Logo /></a>
                 </Link>
-                <div className="flex-1" />
+                <SearchBar onSelectLanguage={(newLang) => router.push(`/${newLang}/${word}`)} className="w-full" />
                 <Link href={`/${lang}`}>
                     <a className="btn btn-ghost normal-case">Explore</a>
                 </Link>
-                <SelectLanguage className="" onSelect={(newLang) => router.push(`/${newLang}/${word}`)} />
             </nav>
             <main className="px-8 mx-auto max-w-screen-md py-16 min-h-[80vh]">
                 <h1 className="text-4xl font-bold">{word}</h1>

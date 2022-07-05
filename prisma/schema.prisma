@@ -63,13 +63,13 @@ model Entry {
     language  Language
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    rank      BigInt // By word frequency
+    rank      Int // By word frequency
 
     pronunciations Pronunciation[]
     definitions    Definition[]
 
-    // @@unique([rank, language])
     @@id([word, language])
+    @@unique([rank, language])
 }
 
 // The semantic category
@@ -78,7 +78,7 @@ model Definition {
     word         String
     language     Language
     partOfSpeech PartOfSpeech
-    rank         BigInt // Within the particular combination of word + language + partOfSpeech
+    rank         Int // Within the particular combination of word + language + partOfSpeech
     createdAt    DateTime     @default(now())
     updatedAt    DateTime     @updatedAt
 
@@ -89,48 +89,45 @@ model Definition {
     subjectOf     DefinitionTriple[] @relation("subject")
     objectOf      DefinitionTriple[] @relation("object")
 
-    // @@unique([word, language, partOfSpeech, rank])
+    @@unique([word, language, partOfSpeech, rank])
     @@index([word, language])
     @@index([word, language, partOfSpeech])
 }
 
 // The phonetic category
 model Pronunciation {
-    id           String   @id @default(cuid())
-    definitionId String?
-    sentenceId   String?
-    word         String
-    language     Language
-    broad        String?
-    narrow       String?
-    coordinates  String?
-    hyphenation  String?
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
-    description  String?
+    id          String   @id @default(cuid())
+    defId       String?
+    sentenceId  String?
+    word        String
+    language    Language
+    broad       String?
+    narrow      String?
+    coordinates String?
+    hyphenation String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    description String?
 
     entry      Entry       @relation(fields: [word, language], references: [word, language])
-    definition Definition? @relation(fields: [definitionId], references: [id], onDelete: NoAction)
+    definition Definition? @relation(fields: [defId], references: [id], onDelete: NoAction)
     Sentence   Sentence?   @relation(fields: [sentenceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
     @@index([word, language])
-    @@index([definitionId])
+    @@index([defId])
     @@index([sentenceId])
 }
 
 // The instance
 model Sentence {
-    id              String   @id @default(cuid())
-    translationOfId String
-    sentence        String   @db.Text
-    language        Language
-    createdAt       DateTime @default(now())
-    updatedAt       DateTime @updatedAt
+    id        String   @id @default(cuid())
+    sentence  String   @db.Text
+    language  Language
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-    translationOf  Sentence         @relation("translations", fields: [translationOfId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-    translations   Sentence[]       @relation("translations")
     pronunciations Pronunciation[]
-    entries        SentenceTriple[]
+    definitions    SentenceTriple[]
 }
 
 model Predicate {

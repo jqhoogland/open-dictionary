@@ -6,6 +6,7 @@ import { unstable_getServerSession as getServerSession } from "next-auth";
 import { authOptions as nextAuthOptions } from "../../pages/api/auth/[...nextauth]";
 import { prisma } from "../db/client";
 import { OpenApiMeta } from "trpc-openapi";
+import next from "next";
 
 export const createContext = async (
   opts?: trpcNext.CreateNextContextOptions
@@ -26,4 +27,8 @@ export const createContext = async (
 
 type Context = trpc.inferAsyncReturnType<typeof createContext>;
 
-export const createRouter = () => trpc.router<Context, OpenApiMeta>();
+export const createRouter = () =>
+  trpc.router<Context, OpenApiMeta>().middleware((opts) => {
+    console.log(opts?.meta?.openapi?.method, opts?.meta?.openapi?.path);
+    return opts.next();
+  });
