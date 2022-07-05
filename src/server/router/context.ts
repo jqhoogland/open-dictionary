@@ -5,9 +5,10 @@ import { unstable_getServerSession as getServerSession } from "next-auth";
 
 import { authOptions as nextAuthOptions } from "../../pages/api/auth/[...nextauth]";
 import { prisma } from "../db/client";
+import { OpenApiMeta } from "trpc-openapi";
 
 export const createContext = async (
-  opts?: trpcNext.CreateNextContextOptions,
+  opts?: trpcNext.CreateNextContextOptions
 ) => {
   const req = opts?.req;
   const res = opts?.res;
@@ -25,4 +26,4 @@ export const createContext = async (
 
 type Context = trpc.inferAsyncReturnType<typeof createContext>;
 
-export const createRouter = () => trpc.router<Context>();
+export const createRouter = () => trpc.router<Context, OpenApiMeta>();

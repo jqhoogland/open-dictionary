@@ -63,11 +63,13 @@ model Entry {
     language  Language
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    rank      BigInt // By word frequency
 
     pronunciations Pronunciation[]
     definitions    Definition[]
 
     @@id([word, language])
+    @@unique([rank, language])
 }
 
 // The semantic category
@@ -190,9 +192,8 @@ enum PartOfSpeech {
     PRONOUN
     PROPER_NOUN
     VERB
-}
 
-enum Morpheme {
+    // Morpheme
     CIRCUMFIX
     COMBINING_FORM
     INFIX
@@ -200,9 +201,8 @@ enum Morpheme {
     PREFIX
     ROOT
     SUFFIX
-}
 
-enum SymbolOrCharacter {
+    // Symbol or Character
     DIACRITICAL_MARK
     LETTER
     LIGATURE
@@ -210,9 +210,8 @@ enum SymbolOrCharacter {
     PUNCTUATION_MARK
     SYLLABLE
     SYMBOL
-}
 
-enum Phrase {
+    // Phrase
     PHRASE
     PROVERB
     PREPOSITIONAL_PHRASE
