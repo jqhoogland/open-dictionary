@@ -108,6 +108,8 @@ export const entryRouter = createRouter()
     async resolve({
       input: { language, word, rank, definitions, pronunciations },
     }) {
+      console.log({ language, word, rank, definitions, pronunciations });
+
       const entry = await prisma.entry
         .create({
           data: {
@@ -115,34 +117,40 @@ export const entryRouter = createRouter()
             word,
             rank,
             definitions: {
-              create: definitions.map(
-                ({ partOfSpeech, definition, examples }, i) => ({
-                  partOfSpeech,
-                  rank: i,
-                  sentences: {
-                    create: [
-                      {
-                        predicateId: predicateSchema.enum.DEFINITION,
-                        sentence: {
-                          create: {
-                            sentence: definition.value,
-                            language: definition?.language ?? language,
+              createMany: {
+                data: definitions.map(
+                  ({ partOfSpeech, definition, examples }, i) => ({
+                    partOfSpeech,
+                    rank: i,
+                    sentences: {
+                      createMany: [
+                        {
+                          predicateId: predicateSchema.enum.DEFINITION,
+                          sentence: {
+                            create: {
+                              data: {
+                                sentence: definition.value,
+                                language: definition?.language ?? language,
+                              },
+                            },
                           },
                         },
-                      },
-                      ...examples.map((example) => ({
-                        predicateId: predicateSchema.enum.EXAMPLE,
-                        sentence: {
-                          create: {
-                            sentence: example,
-                            language,
+                        ...examples.map((example) => ({
+                          predicateId: predicateSchema.enum.EXAMPLE,
+                          sentence: {
+                            create: {
+                              data: {
+                                sentence: example,
+                                language,
+                              },
+                            },
                           },
-                        },
-                      })),
-                    ],
-                  },
-                })
-              ),
+                        })),
+                      ],
+                    },
+                  })
+                ),
+              },
             },
             pronunciations: {
               createMany: {

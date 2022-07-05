@@ -86,8 +86,8 @@ model Definition {
 
     pronunciation Pronunciation[]
     sentences     SentenceTriple[]
-    subjectOf     EntryTriple[]    @relation("subject")
-    objectOf      EntryTriple[]    @relation("object")
+    subjectOf     DefinitionTriple[] @relation("subject")
+    objectOf      DefinitionTriple[] @relation("object")
 
     // @@unique([word, language, partOfSpeech, rank])
     @@index([word, language])
@@ -139,11 +139,11 @@ model Predicate {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    EntryTriple    EntryTriple[]
-    SentenceTriple SentenceTriple[]
+    definitionTriples DefinitionTriple[]
+    sentenceTriples   SentenceTriple[]
 }
 
-model EntryTriple {
+model DefinitionTriple {
     subjectId   String
     objectId    String
     predicateId String

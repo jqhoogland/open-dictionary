@@ -30,13 +30,13 @@ const capitalize = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
-const seedPredicates = () => {
+const seedPredicates = async() => {
   return prisma.predicate.createMany({
     data: PREDICATES.map((id) => ({
       id,
       name: capitalize(id.toLowerCase().replace("_", " ")),
     })),
-  });
+  }).then(console.log);
 };
 
 seedPredicates();
