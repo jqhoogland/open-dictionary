@@ -70,14 +70,21 @@ export const PARTS_OF_SPEECH = [
   "PREPOSITIONAL_PHRASE",
 ] as const;
 
-export const LANGUAGES = [
-  "en",
-  "de",
-  "fr",
-  "it",
-  "ja",
-  "ko",
-  "pt",
-  "ru",
-  "zh",
-] as const;
+export const LANGUAGE_NAMES = {
+  en: "English",
+  de: "Deutsch",
+  fr: "Français",
+  es: "Español",
+  it: "Italiano",
+  pt: "Português",
+  ja: "日本語",
+  zh: "中文",
+  ko: "한국어",
+  ru: "русский",
+  // "ar": "العربية",
+  // "el": "ελληνικά",
+} as const;
+
+export const LANGUAGES = Object.keys(
+  LANGUAGE_NAMES
+) as (keyof typeof LANGUAGE_NAMES)[];

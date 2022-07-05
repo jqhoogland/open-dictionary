@@ -108,49 +108,52 @@ export const entryRouter = createRouter()
     async resolve({
       input: { language, word, rank, definitions, pronunciations },
     }) {
-      return prisma.entry.create({
-        data: {
-          language,
-          word,
-          rank,
-          definitions: {
-            create: definitions.map(
-              ({ partOfSpeech, definition, examples }, i) => ({
-                partOfSpeech,
-                rank: i,
-                sentences: {
-                  create: [
-                    {
-                      predicateId: predicateSchema.enum.DEFINITION,
-                      sentence: {
-                        create: {
-                          sentence: definition.value,
-                          language: definition?.language ?? language,
+      const entry = await prisma.entry
+        .create({
+          data: {
+            language,
+            word,
+            rank,
+            definitions: {
+              create: definitions.map(
+                ({ partOfSpeech, definition, examples }, i) => ({
+                  partOfSpeech,
+                  rank: i,
+                  sentences: {
+                    create: [
+                      {
+                        predicateId: predicateSchema.enum.DEFINITION,
+                        sentence: {
+                          create: {
+                            sentence: definition.value,
+                            language: definition?.language ?? language,
+                          },
                         },
                       },
-                    },
-                    ...examples.map((example) => ({
-                      predicateId: predicateSchema.enum.EXAMPLE,
-                      sentence: {
-                        create: {
-                          sentence: example,
-                          language,
+                      ...examples.map((example) => ({
+                        predicateId: predicateSchema.enum.EXAMPLE,
+                        sentence: {
+                          create: {
+                            sentence: example,
+                            language,
+                          },
                         },
-                      },
-                    })),
-                  ],
-                },
-              })
-            ),
+                      })),
+                    ],
+                  },
+                })
+              ),
+            },
+            pronunciations: {
+              createMany: {
+                data: pronunciations,
+              },
+            },
           },
-          pronunciations: {
-            create: pronunciations.map((pronunciation) => ({
-              ...pronunciation,
-              word,
-              language,
-            })),
-          },
-        },
-      });
+        })
+        .catch(console.error);
+
+      console.log("[Entry:created]", entry);
+      return entry;
     },
   });

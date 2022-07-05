@@ -68,8 +68,8 @@ model Entry {
     pronunciations Pronunciation[]
     definitions    Definition[]
 
+    // @@unique([rank, language])
     @@id([word, language])
-    @@unique([rank, language])
 }
 
 // The semantic category
@@ -89,7 +89,7 @@ model Definition {
     subjectOf     EntryTriple[]    @relation("subject")
     objectOf      EntryTriple[]    @relation("object")
 
-    @@unique([word, language, partOfSpeech, rank])
+    // @@unique([word, language, partOfSpeech, rank])
     @@index([word, language])
     @@index([word, language, partOfSpeech])
 }
@@ -97,7 +97,7 @@ model Definition {
 // The phonetic category
 model Pronunciation {
     id           String   @id @default(cuid())
-    definitionId String
+    definitionId String?
     sentenceId   String?
     word         String
     language     Language
@@ -109,9 +109,9 @@ model Pronunciation {
     updatedAt    DateTime @updatedAt
     description  String?
 
-    entry      Entry      @relation(fields: [word, language], references: [word, language])
-    definition Definition @relation(fields: [definitionId], references: [id], onDelete: NoAction)
-    Sentence   Sentence?  @relation(fields: [sentenceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    entry      Entry       @relation(fields: [word, language], references: [word, language])
+    definition Definition? @relation(fields: [definitionId], references: [id], onDelete: NoAction)
+    Sentence   Sentence?   @relation(fields: [sentenceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
     @@index([word, language])
     @@index([definitionId])
@@ -122,7 +122,7 @@ model Pronunciation {
 model Sentence {
     id              String   @id @default(cuid())
     translationOfId String
-    sentence        String   @unique
+    sentence        String   @db.Text
     language        Language
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
@@ -147,6 +147,7 @@ model EntryTriple {
     subjectId   String
     objectId    String
     predicateId String
+    detail      String?
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
 
@@ -161,6 +162,7 @@ model SentenceTriple {
     defId       String
     sentenceId  String
     predicateId String
+    detail      String?
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
 
