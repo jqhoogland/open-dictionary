@@ -24,7 +24,7 @@ export const entryRouter = createRouter()
     },
     input: z.object({
       language: LanguageSchema,
-      word: z.string().min(1),
+       word: z.string().min(1),
     }),
     output: EntryWithoutIncludesSchema,
     async resolve({ input }) {

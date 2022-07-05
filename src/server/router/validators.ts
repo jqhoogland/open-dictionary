@@ -78,7 +78,7 @@ export const PronunciationSchema = PronunciationBaseSchema.merge(TimesSchema);
 
 export const EntryWithoutIncludesSchema = z
   .object({
-    rank: BigIntSchema,
+    rank: BigIntSchema.or(z.number()),
   })
   .merge(TimesSchema)
   .merge(WordAndLanguageSchema);
