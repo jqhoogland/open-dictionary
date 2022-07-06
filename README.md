@@ -1,6 +1,6 @@
 # Open Dictionary
 
-📖 [Open Dictionary](https://open-dictionary.vercel.app/) is structured, machine-readible [Wiktionary](https://www.wiktionary.org/). 
+📖 [Open Dictionary](https://open-dictionary.vercel.app/) is structured, machine-readable [Wiktionary](https://www.wiktionary.org/). 
 
 # 🚀 Start here
 
