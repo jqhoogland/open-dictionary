@@ -1,13 +1,12 @@
 import { Language } from "@prisma/client";
 import Link from "next/link";
 import router, { useRouter } from "next/router";
+import { SetOptional } from "type-fest";
+import { WordAndLanguage } from "../utils/validators";
 import Logo from "./Logo";
 import SearchBar from "./SearchBar";
 
-const NavBar: React.FC = ({ }) => {
-    const { query } = useRouter();
-    const { word, language } = query;
-
+const NavBar: React.FC<SetOptional<WordAndLanguage, 'word'>> = ({ word, language }) => {
     return (
         <nav className="navbar bg-base-100 border-b-2 gap-2">
             <Link href="/">

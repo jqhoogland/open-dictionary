@@ -9,7 +9,7 @@ import {
   LanguageSchema,
   paginateSchema,
   WholeNumberSchema,
-} from "./validators";
+} from "../../utils/validators";
 
 export const entryRouter = createRouter()
   .query("get", {

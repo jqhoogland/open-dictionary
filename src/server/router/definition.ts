@@ -7,10 +7,11 @@ import {
   LanguageSchema,
   CreateDefinitionSchema,
   PartOfSpeechSchema,
-  DefinitionSchema,
+  DefinitionWithGroupedSentencesSchema,
   WholeNumberSchema,
   StringifiedInt,
-} from "./validators";
+  DefinitionSchema,
+} from "../../utils/validators";
 import type { SetOptional } from "type-fest";
 
 const defSentenceSchema = z.object({
@@ -30,11 +31,11 @@ export const definitionRouter = createRouter()
       },
     },
     input: z.object({
-      id: z.string().min(1),
+      id: z.string(),
     }),
-    output: CreateDefinitionSchema,
+    output: DefinitionSchema,
     async resolve({ input }) {
-      return prisma.definition.findUniqueOrThrow({
+      return await prisma.definition.findUniqueOrThrow({
         where: input,
       });
     },
@@ -57,7 +58,7 @@ export const definitionRouter = createRouter()
     }),
     output: DefinitionSchema,
     async resolve({ input }) {
-      return prisma.definition.findUniqueOrThrow({
+      return await prisma.definition.findUniqueOrThrow({
         where: { word_language_partOfSpeech_rank: input },
       });
     },
@@ -76,7 +77,7 @@ export const definitionRouter = createRouter()
       language: LanguageSchema,
       word: z.string().min(1),
     }),
-    output: z.array(DefinitionSchema),
+    output: z.array(DefinitionWithGroupedSentencesSchema),
     async resolve({ input }) {
       return (
         await prisma.definition.findMany({
@@ -126,7 +127,7 @@ export const definitionRouter = createRouter()
       sentences: z.array(defSentenceSchema),
       examples: z.array(z.string()).default([]),
     }),
-    output: DefinitionSchema,
+    output: DefinitionWithGroupedSentencesSchema,
     async resolve({ input: { sentences, examples, ...input } }) {
       if (
         await prisma.definition.findFirst({
@@ -142,7 +143,7 @@ export const definitionRouter = createRouter()
       const newDefinition = (await prisma.definition.create({
         data: input,
       })) as SetOptional<
-        z.infer<typeof DefinitionSchema>,
+        z.infer<typeof DefinitionWithGroupedSentencesSchema>,
         "definitions" | "examples"
       >;
 
@@ -180,7 +181,8 @@ export const definitionRouter = createRouter()
       );
 
       newDefinition.examples = examples;
-      console.log(newDefinition);
-      return newDefinition;
+      return newDefinition as z.infer<
+        typeof DefinitionWithGroupedSentencesSchema
+      >;
     },
   });

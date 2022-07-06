@@ -4,7 +4,7 @@ import type { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import superjson from "superjson"
 import BasicLayout from "../../components/BasicLayout";
 import NavBar from "../../components/NavBar";
-import { LANGUAGE_NAMES } from "../../server/router/constants";
+import { LANGUAGE_NAMES } from "../../utils/constants";
 import { useRouter } from "next/router";
 import type { Writable } from "type-fest";
 import { Language } from "@prisma/client";
@@ -23,10 +23,11 @@ import {
     flexRender,
 } from '@tanstack/react-table'
 import { z } from "zod";
-import { BareEntrySchema } from "../../server/router/validators"
+import { BareEntrySchema } from "../../utils/validators"
 import Link from "next/link";
 import { TRPCRequestOptions } from "@trpc/react";
 import { InferQueryOutput } from "../../server/trpc";
+import { createContext } from "../../server/router/context";
 
 type Entry = z.infer<typeof BareEntrySchema>;
 
@@ -38,7 +39,10 @@ function Table({
 }: {
     language: Language,
     data: Entry[]
-    columns: ColumnDef<Entry>[],
+    columns: {
+        header: string,
+        columns: { accessorKey: keyof Entry }[],
+    }[],
     onLoadMore: () => void;
 }) {
 
@@ -98,7 +102,7 @@ const LanguageOverview = (props: InferGetStaticPropsType<typeof getStaticProps>)
                 header: 'Rank',
                 columns: [
                     {
-                        accessorKey: 'rank',
+                        accessorKey: 'rank' as const,
                     }
                 ],
             },
@@ -106,7 +110,7 @@ const LanguageOverview = (props: InferGetStaticPropsType<typeof getStaticProps>)
                 header: 'Word',
                 columns: [
                     {
-                        accessorKey: 'word',
+                        accessorKey: 'word' as const,
                     },
                 ],
             },
@@ -115,7 +119,7 @@ const LanguageOverview = (props: InferGetStaticPropsType<typeof getStaticProps>)
     )
 
     return (<BasicLayout>
-        <NavBar />
+        <NavBar language={language} />
         <main className="px-8 mx-auto max-w-screen-md py-16 min-h-[80vh]">
             <h1 className="text-6xl font-bold">{(LANGUAGE_NAMES as Writable<typeof LANGUAGE_NAMES>)[language]}</h1>
             <Table
@@ -137,7 +141,7 @@ export async function getStaticProps({ params, ...ctx }: GetStaticPropsContext<{
 
     const ssg = await createSSGHelpers({
         router: appRouter,
-        ctx: {},
+        ctx: await createContext(),
         transformer: superjson, // optional - adds superjson serialization
     });
 

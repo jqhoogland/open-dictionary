@@ -1,20 +1,19 @@
 
 import { createSSGHelpers } from '@trpc/react/ssg';
-import { Language } from "@prisma/client";
-import { GetStaticProps, GetStaticPropsContext, InferGetStaticPropsType } from "next";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import BasicLayout from "../../components/BasicLayout";
-import Logo from "../../components/Logo";
-import SearchBar from "../../components/SearchBar";
-import SelectLanguage from "../../components/SelectLanguage";
-import { appRouter } from "../../server/router";
-import { trpc } from "../../utils/trpc";
-import superjson from "superjson"
 import groupBy from "lodash/groupBy";
+import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import { useRouter } from "next/router";
+import superjson from "superjson";
+import BasicLayout from "../../components/BasicLayout";
 import NavBar from '../../components/NavBar';
+import { appRouter } from "../../server/router";
+import { createContext } from '../../server/router/context';
+import { WordAndLanguage } from '../../utils/validators';
+import { trpc } from "../../utils/trpc";
 
-const getIPA = ({ broad, narrow }: { broad: string, narrow: string }) => broad ? `/${broad}/` : `[${narrow}]`
+type IPAOpts = { broad?: string | null, narrow?: string | null };
+
+const getIPA = ({ broad, narrow }: IPAOpts) => broad ? `/${broad}/` : narrow ? `[${narrow}]` : ""
 
 const EntryPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
     const { language, word } = props;
@@ -31,7 +30,7 @@ const EntryPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 
     return (
         <BasicLayout title={word ? `${word} | OpenDictionary` : "OpenDictionary"}>
-            <NavBar />
+            <NavBar word={word} language={language} />
             <main className="px-8 mx-auto max-w-screen-md py-16 min-h-[80vh]">
                 <h1 className="text-6xl font-bold">{word ?? <div className="h-10 w-[200px] animate-pulse bg-base-300 rounded-xl"></div>}</h1>
 
@@ -78,13 +77,13 @@ const EntryPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 export default EntryPage
 
 
-export async function getStaticProps({ params, ...ctx }: GetStaticPropsContext<{ word: string, language: Language }>) {
+export async function getStaticProps({ params, ...ctx }: GetStaticPropsContext<WordAndLanguage>) {
     const { language, word: _word } = params!;
     const word = _word.toString();
 
     const ssg = await createSSGHelpers({
         router: appRouter,
-        ctx: {},
+        ctx: await createContext(),
         transformer: superjson, // optional - adds superjson serialization
     });
 

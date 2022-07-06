@@ -1,10 +1,10 @@
 import { Language } from "@prisma/client";
 import { useRouter } from "next/router";
 import React from "react";
-import { LANGUAGES, LANGUAGE_NAMES } from "../server/router/constants";
+import { LANGUAGES, LANGUAGE_NAMES } from "../utils/constants";
 import SelectLanguage from "./SelectLanguage";
 
-interface SelectLanguageProps { onSelectLanguage?: (lang: string) => void; className?: string, defaultValue: Language }
+interface SelectLanguageProps { onSelectLanguage?: (lang: Language) => void; className?: string, defaultValue?: Language }
 
 const SearchBar: React.FC<SelectLanguageProps> = ({ onSelectLanguage, className, defaultValue }) => {
     const router = useRouter();
@@ -13,11 +13,11 @@ const SearchBar: React.FC<SelectLanguageProps> = ({ onSelectLanguage, className,
     const handleKeyDown = React.useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.code === "Enter") {
             e.preventDefault();
-            router.push(`/${activeLanguage}/${e.target!.value}`);
+            router.push(`/${activeLanguage}/${(e.target as HTMLInputElement).value}`);
         }
     }, [])
 
-    const handleSelectLanguage = React.useCallback((lang: str) => {
+    const handleSelectLanguage = React.useCallback((lang: Language) => {
         if (onSelectLanguage) {
             onSelectLanguage(lang);
         }

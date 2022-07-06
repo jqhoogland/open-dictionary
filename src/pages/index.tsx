@@ -11,7 +11,7 @@ const Home: NextPage = () => {
           <Logo />
         </h1>
 
-        <h3 className="items-center m-5 text-3xl">Wiktionary for machines (and precise people).</h3>
+        <h3 className="items-center m-5 text-3xl">Wiktionary for machines (and exacting people).</h3>
 
         <section className="gap-10 p-5 w-full">
           <div className="w-full max-w-screen-md mx-auto">

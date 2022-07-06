@@ -5,7 +5,7 @@ import {
   LanguageSchema,
   CreatePronunciationSchema,
   PronunciationSchema,
-} from "./validators";
+} from "../../utils/validators";
 
 export const pronunciationRouter = createRouter()
   .query("get", {

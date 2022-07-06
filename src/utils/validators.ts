@@ -31,6 +31,8 @@ export const WordAndLanguageSchema = z.object({
   language: LanguageSchema,
 });
 
+export type WordAndLanguage = z.infer<typeof WordAndLanguageSchema>;
+
 // Definitions
 
 export const BareSentenceSchema = z.object({
@@ -60,7 +62,6 @@ export const BareDefinitionSchema = z.object({
 
 export const DefinitionBaseSchema = z.object({
   partOfSpeech: PartOfSpeechSchema,
-  examples: z.array(z.string()),
 });
 
 export const CreateDefinitionSchema = DefinitionBaseSchema.extend({
@@ -72,11 +73,18 @@ export const CreateDefinitionSchema = DefinitionBaseSchema.extend({
       ),
     })
   ),
+  examples: z.array(z.string()),
 });
 
 export const DefinitionSchema = DefinitionBaseSchema.extend({
   id: z.string(),
   partOfSpeech: PartOfSpeechSchema,
+  rank: z.number(),
+})
+  .merge(TimesSchema)
+  .merge(WordAndLanguageSchema);
+
+export const DefinitionWithGroupedSentencesSchema = DefinitionSchema.extend({
   definitions: z.array(
     z.object({
       sentence: z.string(),
@@ -84,11 +92,7 @@ export const DefinitionSchema = DefinitionBaseSchema.extend({
     })
   ),
   examples: z.array(z.string()),
-  rank: z.number(),
-  word: z.string(),
-})
-  .merge(TimesSchema)
-  .merge(WordAndLanguageSchema);
+});
 
 // Pronunciations
 
