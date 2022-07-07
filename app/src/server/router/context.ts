@@ -32,6 +32,3 @@ export const createRouter = () =>
     console.log(opts?.meta?.openapi?.method, opts?.meta?.openapi?.path);
     return opts.next();
   });
-
-
-  

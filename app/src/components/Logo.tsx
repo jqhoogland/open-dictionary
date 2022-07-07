@@ -1,5 +1,7 @@
 const Logo = () => (
-    <>{"📖"} Open<span className="text-blue-500">Dictionary</span></>
-)
+  <>
+    {"📖"} Open<span className="text-blue-500">Dictionary</span>
+  </>
+);
 
-export default Logo
+export default Logo;

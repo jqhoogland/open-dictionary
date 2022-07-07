@@ -11,7 +11,9 @@ const Home: NextPage = () => {
           <Logo />
         </h1>
 
-        <h3 className="items-center m-5 text-3xl">Wiktionary for machines (and exacting people).</h3>
+        <h3 className="items-center m-5 text-3xl">
+          Wiktionary for machines (and exacting people).
+        </h3>
 
         <section className="gap-10 p-5 w-full">
           <div className="w-full max-w-screen-md mx-auto">
@@ -19,8 +21,15 @@ const Home: NextPage = () => {
           </div>
 
           <div className="flex flex-row gap-5 justify-center p-5">
-            <a href="/docs/rest/v1.html" className="text-stone-600 hover:text-stone-800 active:text-black">REST</a>
-            <a className="text-stone-400 cursor-not-allowed">GraphQL (Coming Soon)</a>
+            <a
+              href="/docs/rest/v1.html"
+              className="text-stone-600 hover:text-stone-800 active:text-black"
+            >
+              REST
+            </a>
+            <a className="text-stone-400 cursor-not-allowed">
+              GraphQL (Coming Soon)
+            </a>
           </div>
         </section>
       </main>

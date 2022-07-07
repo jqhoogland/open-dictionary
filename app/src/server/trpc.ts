@@ -1,4 +1,8 @@
-import type { inferProcedureInput, inferProcedureOutput, inferSubscriptionOutput } from "@trpc/server";
+import type {
+  inferProcedureInput,
+  inferProcedureOutput,
+  inferSubscriptionOutput,
+} from "@trpc/server";
 import type { AppRouter } from "./router/index";
 
 /**

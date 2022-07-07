@@ -4,8 +4,8 @@ export const getIconHref = (emoji: string): string => `data:image/svg+xml,
   <text y=%22.9em%22 font-size=%2290%22>${emoji}</text>
 </svg>`;
 
-
-const FaviconEmoji: React.FC<{ children: string }> = ({ children }) =>
-    <link rel="icon" href={getIconHref(children)} />;
+const FaviconEmoji: React.FC<{ children: string }> = ({ children }) => (
+  <link rel="icon" href={getIconHref(children)} />
+);
 
 export default FaviconEmoji;
