@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from inspect import ArgSpec
+from pipes import Template
 from pprint import pp
 import re
 from typing import Callable, Literal, Protocol, TypeVar
@@ -13,6 +14,56 @@ from wtparse.wtypes import LanguageCode
 
 def get_arg(template: wtp.Template, arg_name: str) -> wtp.Argument | None:
     return first_true(template.arguments, pred=lambda a: a.name == arg_name )
+
+_LANG = "lang", "lang"
+_ALT = "alt", "alt"
+_T = "t", "gloss"
+_SC = "sc", "script_code"
+_TR = "tr", "transliteration"
+_TS = "ts", "transcription"
+_POS  = "pos", "part_of_speech"
+_LIT = "lit", "literal_translation"
+_ID = "id", "sense_id"
+
+_G = "g", "gender"
+WITH_GENDER = dict(
+    variadic_name="genders",
+    variadic_rename={"g": _G[1]},
+)
+
+
+COMMON_IGNORE = 'accel', 'nocap', 'notext', 'nocat', 'sort', "accel-form", "accel-translit", "accel-lemma", "accel-lemma-translit", "accel-gender", "accel-nostore" 
+
+COMMON_RENAME = dict((
+    _LANG,
+    _ALT,
+    _T,
+    _SC,
+    _TR,
+    _TS,
+    _POS,
+    _LIT,
+    _ID
+))
+
+COMPOUND_TYPES = {
+    "allit": "alliterative",
+    "ant": "antonymous",
+    "bahu": "bahuvrihi",
+    "bv": "bahuvrihi",
+    "coord": "coordinative",
+    "desc": "descriptive",
+    "det": "determinative",
+    "dva": "dvandva",
+    "endo": "endocentric",
+    "exo": "exocentric",
+    "karma": "karmadharaya",
+    "kd": "karmadharaya",
+    "rhy": "rhyming",
+    "syn": "synonymous",
+    "tat": "tatpurusa",
+    "tp": "tatpurusa",
+}
 
 
 # TODO: Some magic with metaclasses so that the template mappings
@@ -82,7 +133,7 @@ class TemplateMapping:
     extra: dict  = field(default_factory=dict)
 
     #: Arguments to ignore
-    ignore: tuple[str] = ()
+    ignore: tuple[str] = COMMON_IGNORE
 
     def variadic_transform(self, data: dict) -> None:
         if self.variadic_start is None:
@@ -149,25 +200,20 @@ class TemplateMapping:
 
 # Links
 
-shared_rename = {
-    "t": "gloss", "sc": "script_code", "tr": "transliteration", "ts": "transcription", "pos": "part_of_speech", "lit": "literal_translation", "id": "sense_id"
-}
 
 Link = TemplateMapping(
     name="link",
     template_names=["l", "link", "l-self", "ll"],
     rename={
-        "1": "lang", "2": "target", "3": "alt", "4": "gloss",
-        **shared_rename
+        "1": _LANG[1], "2": "src", "3": _ALT[1], "4": _T[1],
+        **COMMON_RENAME
     },
-    variadic_name="genders",
-    variadic_rename={"g": ""},
-    ignore=("accel-form", "accel-translit", "accel-lemma", "accel-lemma-translit", "accel-gender", "accel-nostore")
+    **WITH_GENDER
 )
 
 Mention = TemplateMapping(
     name="mention",
-    template_names=["m", "mention", "m-self"],
+    template_names=["m", "mention", "m-self", "langname-mention"],
     rename=Link.rename,
     ignore=Link.ignore
 )
@@ -178,133 +224,208 @@ Derived = TemplateMapping(
     name="derived",
     template_names=["derived", "der"],
     rename={
-        **shared_rename,
-        "1": "target_lang", "2": "source_lang", "3": "source", "4": "alt",
-        "5": "gloss", "nocat": "no_categorization", "sort": "sort_key"
+        **COMMON_RENAME,
+        "1": _LANG[1], "2": "src_lang", "3": "src", "4": _ALT[1],
+        "5": _T[1]
     },
 )
 
-Borrowed = TemplateMapping(
+Borrowed = Derived.copy(
     name="borrowed",
     template_names=["borrowed", "bor", "bor+"],
-    rename={
-        **Derived.rename,
-        # Also: "conj" for joining multiple sources
-    },
 )
 
-LearnedBorrowing = TemplateMapping(
+LearnedBorrowing = Borrowed.copy(
     name="learned_borrowing",
     template_names=["learned borrowing", "lbor", "lbor+"],
-    rename=Borrowed.rename,
-    ignore=("nocap", "notext")
 )
 
-OrthographicBorrowing = TemplateMapping(
+OrthographicBorrowing = Borrowed.copy(
     name="orthographic_borrowing",
     template_names=["orthographic borrowing", "obor", "obor+"],
-    rename=Borrowed.rename,
-    ignore=("nocap", "notext")
 )
 
 Root = TemplateMapping(
     name="root",
     template_names=["root"],
-    rename={"1": "target_lang", "2": "source_lang"},
+    rename={"1": "target_lang", "2": "src_lang"},
     variadic_start='3',
-    variadic_rename={"id": "sense_id"},
+    variadic_rename={**COMMON_RENAME},
 )
 
+# Agglutination
 
 # TODO: Add support for hyphens -> category 
 # https://en.wiktionary.org/wiki/Template:affix
-Affix = TemplateMapping(
+Compound = TemplateMapping(
     name="compound",
-    template_names=["affix", "af"],
+    template_names=["compound", "com"],
     rename={
-        "1": "lang", "sc": "script_code", "pos": "part_of_speech", "sort": "sort_key", "type": "compound_type"
+        "1": _LANG[1], "type": "compound_type", **COMMON_RENAME
     },
     variadic_name="morphemes",
     variadic_start="2",
-    variadic_rename={
-        # "": "morpheme",
-        "alt": "alt", "t": "gloss", "id": "sense_id", "sort": "sort_key", "g": "gender", "pos": "part_of_speech",  "tr": "transliteration", 
-        # Overwrites the parent level args
-        "lang": "lang", "sc": "script_code"
-    },
-    ignore=("nocap", "notext", "nocat"),
+    variadic_rename={**COMMON_RENAME, "g": _G[1]},
     extra_transform={
-        "compound_type": lambda t: {
-            "allit": "alliterative",
-            "ant": "antonymous",
-            "bahu": "bahuvrihi",
-            "bv": "bahuvrihi",
-            "coord": "coordinative",
-            "desc": "descriptive",
-            "det": "determinative",
-            "dva": "dvandva",
-            "endo": "endocentric",
-            "exo": "exocentric",
-            "karma": "karmadharaya",
-            "kd": "karmadharaya",
-            "rhy": "rhyming",
-            "syn": "synonymous",
-            "tat": "tatpurusa",
-            "tp": "tatpurusa",
-        }[t]
+        "compound_type": lambda t: COMPOUND_TYPES.get(t, t)
     },
+)
+
+Affix = Compound.copy(
+    template_names=["affix", "af"],
     extra={
         "subtype": "affix"
     }
 )
 
-Compound = Affix.copy(
-    name="compound",
-    template_names=["compound", "com"],
-    extra={}
-)
-
-Blend = Affix.copy(
-    name="compound",
+Blend = Compound.copy(
     template_names=["blend"],
     extra={
         "subtype": "blend"
     }
 )
 
-# NOTE: this is not quite variadic: it accepts 2 arguments (and only 2)
-Prefix = TemplateMapping(
-    name="compound",
-    template_names=["prefix", "pre", "suffix",],
-    rename={
-        "1": "lang", "sc": "script_code", "nocat": "no_categorization"
-    },
-    variadic_name="morphemes",
-    variadic_start="2",
-    variadic_rename={
-        # "": "morpheme",
-        "alt": "alt", "t": "gloss", "id": "sense_id",  "tr": "transliteration", "lang": "lang", "pos": "pos"
-    },
+Prefix = Compound.copy(
+    template_names=["prefix", "pre", "suffix"],
     extra={"subtype": "prefix"}
 )
 
-Confix = Prefix.copy(
-    name="compound", 
+Confix = Compound.copy(
     template_names=["confix", "con"], 
     extra={"subtype": "confix"}
 )
 
 
-Suffix = Prefix.copy(
-    name="compound",
+Suffix = Compound.copy(
     template_names=["suffix"], #, "suf"],
     extra={"subtype": "suffix"}
 )
 
-Interfix = Prefix.copy(
-    name="compound",
+Interfix = Compound.copy(
     template_names=["interfix", "inter"],
     extra={"subtype": "interfix"}
+)
+
+
+# Shortenings
+
+Clipping = TemplateMapping(
+    name="clipping",
+    template_names=["clipping of", "clipping"],
+    rename={
+        "1": _LANG[1], "2": "src_lang", "3": _ALT[1], "4": _T[1], 
+        **COMMON_RENAME
+    },
+    **WITH_GENDER
+)
+
+
+ShortFor = TemplateMapping(
+    name="short_for",
+    template_names=["short for", "clipping"],
+    rename={
+        "1": _LANG[1], "2": "word", "3": _ALT[1], "4": _T[1], 
+        **COMMON_RENAME
+    },
+    **WITH_GENDER,
+    ignore=(*COMMON_IGNORE, "nodot", "dot")
+)
+
+BackFormation = TemplateMapping(
+    name="back_formation",
+    template_names=["back-formation", "back-form", "bf"],
+    rename={
+        "1": _LANG[1], "2": "word", "3": _ALT[1], "4": _T[1], 
+        **COMMON_RENAME
+    },
+    **WITH_GENDER,
+)
+
+
+Doublet = TemplateMapping(
+    name="doublet",
+    template_names=["doublet", "dbt"],
+    rename={
+        "1": _LANG[1],
+    },
+    variadic_name="doublets",
+    variadic_start="2",
+    variadic_rename={**COMMON_RENAME, "g": _G[1]},
+)
+
+PiecewiseDoublet = Doublet.copy(
+    template_names=["piecewise doublet"],
+    extra={"subtype": "piecewise"},
+)
+
+Onomatopoeic = TemplateMapping(
+    name="onomatopoeic",
+    template_names=["onomatopoeic", "onom"],
+    rename={
+        "1": _LANG[1], "title": _ALT[1]
+    }
+)
+
+Calque = TemplateMapping(
+    name="calque",
+    template_names=["calque", "cal", "clq"],
+    rename={
+        "1": _LANG[1], "2": "src_lang", "3": "src", "4": _ALT[1], "5": _T[1],
+        **COMMON_RENAME
+    },
+    **WITH_GENDER
+)
+
+SemanticLoan = Calque.copy(
+    template_names=["semantic loan", "sl"],
+    extra={"subtype": "semantic_loan"}
+)
+
+PhonoSemanticMatching = Calque.copy(
+    template_names=["phono-semantic matching", 'psm'],
+    extra={"subtype": "phono-semantic matching"}
+)
+
+Eponym = TemplateMapping(
+    name="eponym",
+    template_names=["named-after"],
+    rename={
+        "1": _LANG[1], "2": "person", "nat": "nationality", "occ": "occupation", "wplink": "wplink", "born": "born", "died": "died",
+        **COMMON_RENAME 
+    }
+)
+
+Cognate = TemplateMapping(
+    name="cognate",
+    template_names=["cognate", "cog"],
+    rename={
+        **COMMON_RENAME,
+        "1": _LANG[1], "2": "word", "3": _ALT[1],
+        "4": _T[1]
+    },
+    **WITH_GENDER
+)
+
+Noncognate = Cognate.copy(
+    name="noncognate",
+    template_names=["noncognate", "noncog", "ncog", "nc"],
+)
+
+RequestForEtymology = TemplateMapping(
+    name="rfe",
+    template_names=["rfe"],
+    rename={
+        "1": _LANG[1], "2": "comment",
+    },
+    ignore=(*COMMON_IGNORE, "y", "m", "fragment", "section", "box", "noes")
+)
+
+Unknown = TemplateMapping(
+    name="unknown",
+    template_names=["unknown", "unk"],
+    rename={
+        "1": _LANG[1], "title": "alt",
+    },
 )
 
 
@@ -330,16 +451,32 @@ template_mappers = (
     LearnedBorrowing,
     OrthographicBorrowing,
     Root,
-    Affix,
+    Compound,
     Prefix,
     Confix,
     Suffix,
-    Compound,
+    Affix,
     Blend,
-    
+    Clipping,
+    ShortFor,
+    BackFormation,
+    Doublet,
+    PiecewiseDoublet, 
+    Onomatopoeic, 
+    Calque,
+    SemanticLoan, 
+    PhonoSemanticMatching,
+    Eponym,
+    Cognate,
+    Noncognate,
+    RequestForEtymology,
+    Unknown,
+
     # Other
     Qualifier, 
     Derived,
+
+
 )
 
 

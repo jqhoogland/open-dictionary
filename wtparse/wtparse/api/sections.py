@@ -51,7 +51,7 @@ def parse_section(section: wtp.Section, lang: LanguageCode = "en") -> list[wtp.S
     match section.title: 
         case "Alternative forms":
             return parse_alt_forms(section, lang=lang)
-        case "Etymology":
+        case "Etymology": # TODO: Support for multiple etymologies
             return parse_etymology(section, lang=lang)
 
     return None
