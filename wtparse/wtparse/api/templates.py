@@ -2,15 +2,21 @@ from dataclasses import dataclass, field
 from inspect import ArgSpec
 from pprint import pp
 import re
-from typing import Literal, Protocol
+from typing import Callable, Literal, Protocol, TypeVar
 import warnings
 from more_itertools import first_true
 import wikitextparser as wtp
+from wtparse.utils import get_regex
 
 from wtparse.wtypes import LanguageCode
 
 
+def get_arg(template: wtp.Template, arg_name: str) -> wtp.Argument | None:
+    return first_true(template.arguments, pred=lambda a: a.name == arg_name )
 
+
+# TODO: Some magic with metaclasses so that the template mappings
+#       are their own classes rather than implementations of TemplateMapping.
 @dataclass
 class TemplateMapping:
     """
@@ -54,63 +60,155 @@ class TemplateMapping:
     #: Arguments to ignore
     ignore: tuple[str] = ()
 
+    def transform(self, template: wtp.Template):
+        data = {}
 
+        for i, arg in enumerate(template.arguments):
+            if arg.name not in self.ignore:
+                key = self.rename.get(arg.name, None) \
+                    or get_regex(self.rename, arg.name, arg.name)
+
+                data[key] = arg.value
+
+        return {
+            "name": self.name,
+            **data
+        }
+
+
+# Links
+
+shared_rename = {
+    "t": "gloss", "sc": "script_code", "tr": "transliteration", "ts": "transcription", "pos": "part_of_speech", "lit": "literal_translation", "id": "sense_id"
+}
 
 Link = TemplateMapping(
     name="link",
-    template_names=["l", "link"],
+    template_names=["l", "link", "l-self", "ll"],
     rename={
-        "1": "lang", "2": "page", "3": "alt", "4": "gloss",
-        "t": "gloss", "sc": "script_code", "tr": "transliteration", "ts": "transcription", "pos": "part_of_speech", "lit": "literal_translation", "id": "sense_id"
+        "1": "lang", "2": "target", "3": "alt", "4": "gloss",
+        **shared_rename
     },
     ignore=("accel-form", "accel-translit", "accel-lemma", "accel-lemma-translit", "accel-gender", "accel-nostore")
 )
 
-DerivedTemplate = TemplateMapping(
+Mention = TemplateMapping(
+    name="mention",
+    template_names=["m", "mention", "m-self"],
+    rename=Link.rename,
+    ignore=Link.ignore
+)
+
+# Etymology
+
+Derived = TemplateMapping(
     name="derived",
     template_names=["derived", "der"],
     rename={
-        "alt": "alt_display", 
-        "1": "lang", "2": "page", "3": "alt", "4": "gloss",
+        **shared_rename,
+        "1": "target_lang", "2": "source_lang", "3": "source", "4": "alt",
+        "5": "gloss", "nocat": "no_categorization", "sort": "sort_key"
     },
 )
 
-Qualifier = TemplateMapping(
-    name="qualifier",
-    template_names=["qualifier", "q", "i", "qual"],
+Borrowed = TemplateMapping(
+    name="borrowed",
+    template_names=["borrowed", "bor", "bor+"],
     rename={
-        "1": "lang", "2": "word", "3": "gloss"
-    }
+        **Derived.rename,
+        # Also: "conj" for joining multiple sources
+    },
 )
 
+LearnedBorrowing = TemplateMapping(
+    name="learned_borrowing",
+    template_names=["learned borrowing", "lbor", "lbor+"],
+    rename=Borrowed.rename,
+    ignore=("nocap", "notext")
+)
+
+OrthographicBorrowing = TemplateMapping(
+    name="orthographic_borrowing",
+    template_names=["orthographic borrowing", "obor", "obor+"],
+    rename=Borrowed.rename,
+    ignore=("nocap", "notext")
+)
+
+class Root:
+    """
+    Status: Not Tested
+    [Source](https://en.wiktionary.org/wiki/Template:root)
+    """
+    name="root"
+    template_names=["root"]
+
+    @classmethod
+    def transform(cls, template: wtp.Template):
+        args = iter(template.arguments)
+        data = {
+            "name": "root",
+            "target_lang": next(args),
+            "source_lang": next(args),
+            "roots": []
+        }
+        
+        # Build with a dict because we don't know if the order is correct
+        roots = {}
+        for arg in args:
+            if re.match('^\d+$', arg.name):
+                roots[arg.name] = roots[arg.name] or {}
+                roots[arg.name].update({"root": arg.value})
+            elif re.match('^id\d+$', arg.name):
+                roots[arg.name[2:]] = roots[arg.name[2:]] or {}
+                roots[arg.name[2:]].update({"sense_id": arg.value})
+
+        for root in roots.values():
+            data["roots"].append(root)
+        
+        return roots
+
+# Other
+
+class Qualifier:
+    name="qualifier",
+    template_names=["qualifier", "qual", "i", "q"],
+
+    @classmethod
+    def transform(cls, template: wtp.Template):
+        return {
+            "name": "qualifier",
+            "qualifiers": [a.value for a in template.arguments]
+        }
+
+
 template_mappers = (
+    # Links
     Link,
+    Mention,
+    
+    # Etymology
+    Borrowed,
+    LearnedBorrowing,
+    OrthographicBorrowing,
+    Root,
+    
+    # Other
     Qualifier, 
-    DerivedTemplate
+    Derived,
 )
 
 
 def parse_template(template: wtp.Template) -> dict | None:
-    template_mapper = first_true(
+    mapper = first_true(
         template_mappers, 
-        lambda tm: template.name in tm.template_names,
-        None
-    )
+        pred=lambda tm: template.name in tm.template_names,
+        default=None
+    ) 
 
-    if not template_mapper:
+    if not mapper:
         return None
 
-    data={}
-
-    for i, arg in enumerate(template.arguments):
-        if arg.name not in template_mapper.ignore:
-            key = template_mapper.rename.get(arg.name, arg.name)
-            data[key] = arg.value
-
-    return {
-        "name": template_mapper.name,
-        **data
-    }
+    return mapper.transform(template)
 
 
 def parse_templates(templates_raw: str) -> list[dict]:
