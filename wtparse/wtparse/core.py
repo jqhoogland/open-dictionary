@@ -36,11 +36,41 @@ def parse_alt_forms(els: list[BeautifulSoup]):
 
     return [parse_alt_form(li) for li in lis]
 
+def parse_etymology(els: list[BeautifulSoup]):
+    """Given a list of html elements under the "Etymology" heading,
+    return a list of etymons corresponding to the given entry.
+    
+    NOTE: This is probably going to be one of the messier parsers (because  
+    it's not always clear which linked words are etymons, which are cognates, 
+     & which are just related words).
+    - Dates are thrown out
+    - Compounds (e.g., "endgame") are not (currently) supported
+    - [Etymology jargon](https://en.wiktionary.org/wiki/Wiktionary:Etymology#Etymology_jargon) 
+      is not (currently) supported.
+
+
+    The etymology is mentioned on the [main (lemma) entry](https://en.wiktionary.org/wiki/Wiktionary:Etymology#Lemma)
+     so this gives us a way to identify lemmas!
+    """
+    etymology = []
+
+    def parse_etymology_p(p: BeautifulSoup):
+        for it in p.find_all('it'):
+            return it.text
+
+    for el in els:
+        if el.name == "p":
+            etymology.extend(parse_etymology_p)
+
+    return [parse_etymology(li) for li in lis]
+
 
 def parse_subsection(heading: str, els: list[BeautifulSoup]):
     match heading:
         case "Alternative_forms":
             return parse_alt_forms(els)
+        case "Etymology":
+            return parse_etymology(els)
 
     return {}
 
