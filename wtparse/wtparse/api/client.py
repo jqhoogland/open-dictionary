@@ -14,13 +14,19 @@ which we may come to need.
 
 """
 
-from typing import Literal, TypedDict
+from dataclasses import dataclass, field
+from typing import Any, Literal, NamedTuple, TypedDict
+
+from more_itertools import first_true
 from pydantic import BaseModel
-import wikitextparser as wtp
 from requests import request
+import wikitextparser as wtp
+
 from wtparse.api.types import APIOptions, APIResponse
 from wtparse.utils import get_full_lang
-from wtparse.wtypes import LanguageCode
+from wtparse.api.templates import LinkedWord, Qualifier, parse_templates
+from wtparse.wtypes import AllowedPOSHeader
+from wtparse.wtypes import Word, LanguageCode
 
 
 def fetch_page(word: str, wiki: LanguageCode, opts: APIOptions = {}) -> APIResponse:
@@ -54,9 +60,11 @@ def get_entry_sections(
 
     return [s for s in get_sections()]
 
-class AltForm(TypedDict):
-    word: str
-    qualifiers: list[str]
+
+@dataclass
+class AltForm:
+    word: LinkedWord
+    qualifiers: list[Qualifier]
 
 
 def parse_alt_forms(
@@ -65,7 +73,11 @@ def parse_alt_forms(
     """Parse an alternative forms section of wikitext."""
 
     def parse_alt_form(li: str) -> AltForm | None:
-        return li
+        templates = parse_templates(wtp.parse(li).templates)
+        return AltForm(
+            word=first_true(templates, pred=lambda x: x.type == "linked_word"),
+            qualifiers=list(filter(lambda x: x.type == "qualifier", templates)),
+        )
 
     uls = section.get_lists()
     lis = uls[0].items if uls and uls[0].items else []
@@ -81,9 +93,36 @@ def parse_section(section: wtp.Section, lang: LanguageCode = "en") -> list[wtp.S
     return None
 
 
-def get_entry(
-    word: str, wiki: LanguageCode, lang: LanguageCode = "en"
-) -> list[wtp.Section]:
-    return {
-        s.title: parse_section(s, lang) for s in get_entry_sections(word, wiki, lang)
-    }
+@dataclass
+class Entry:
+    word: str
+    alt_forms: list[AltForm]
+    etymology: Any = ""  # Etymology
+    pronunciations: Any = field(default_factory=list)  # list[Pronunciation]
+    definitions: Any = field(
+        default_factory=dict
+    )  # dict[AllowedPOSHeader, POSDefinition]
+
+    @classmethod
+    def from_wiktionary(
+        cls, word, wiki: LanguageCode = "en", lang: LanguageCode = "en"
+    ) -> "Entry":
+        data = {
+            to_snake_case(s.title): parse_section(s, lang)
+            for s in get_entry_sections(word, wiki, lang)
+        }
+
+        alt_forms = data.pop("alternative_forms", [])
+        etymology = data.pop("etymology", "")
+        pronunciations = data.pop("alternative_forms", [])
+
+        return Entry(
+            word=word,
+            alt_forms=alt_forms,
+            etymology=etymology,
+            pronunciations=pronunciations,
+        )
+
+
+def to_snake_case(word):
+    return word.lower().replace(" ", "_")
