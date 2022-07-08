@@ -57,18 +57,61 @@ class TemplateMapping:
     #: Positional args are named "1", "2", ... (not my fault, blame wiktionary).
     rename: dict[str, str] = field(default_factory=dict)
 
+    #: Some templates are variadic. For example, `{{affix|nl|huis|-je|pos2=diminutive}}`. We'd like to convert this into 
+    #: ```
+    #: {
+    #:   "name": "affix", 
+    #:   "lang": "nl", 
+    #:   "morphemes": [
+    #:     {"morpheme": "huis"}, 
+    #:     {"morpheme": "-je", "part_of_speech": "diminutive"}
+    #:   ]
+    #: }
+    #: `variadic_start` is the *string* index of the first variadic argument, then 
+    #: `variadic_rename` is the same as `rename` but arguments are assumed to end #: in a number.
+    variadic_name: str = "values"
+    variadic_start: str | None = field(default=None)
+    variadic_rename: dict = field(default_factory=dict)
+
     #: Arguments to ignore
     ignore: tuple[str] = ()
+
+    def variadic_transform(self, data: dict) -> None:
+        if self.variadic_start is None:
+            return
+
+        start = int(self.variadic_start)
+        idx = start
+        variadic_args = {}
+
+        # Get positional arguments ("3", "4",...)
+        while (item := data.pop(str(idx), None)) is not None:
+            key = self.variadic_rename.get("", "value")
+            variadic_args[idx-start] = {key: item}
+            idx += 1
+
+        # Get prefixed arguments ("id1", "id2")
+        # Note kwarg "id1" does not necessarily match pos arg "1"
+        for k in [*data.keys()]:
+            if (m := re.match(r"^(\w+)(\d+)$", k)):
+                v = data.pop(k)
+                k, idx = m.groups()
+                idx = int(idx) -1 
+                variadic_args[idx] = variadic_args[idx] or {}
+                variadic_args[idx][k] = v
+
+        variadic_list = [variadic_args[k] for k in sorted(variadic_args.keys())]
+        data[self.variadic_name] = variadic_list
 
     def transform(self, template: wtp.Template):
         data = {}
 
-        for i, arg in enumerate(template.arguments):
+        for arg in template.arguments:
             if arg.name not in self.ignore:
-                key = self.rename.get(arg.name, None) \
-                    or get_regex(self.rename, arg.name, arg.name)
-
+                key = self.rename.get(arg.name, arg.name)
                 data[key] = arg.value
+
+        self.variadic_transform(data)
 
         return {
             "name": self.name,
@@ -134,51 +177,24 @@ OrthographicBorrowing = TemplateMapping(
     ignore=("nocap", "notext")
 )
 
-class Root:
-    """
-    Status: Not Tested
-    [Source](https://en.wiktionary.org/wiki/Template:root)
-    """
-    name="root"
-    template_names=["root"]
+Root = TemplateMapping(
+    name="root",
+    template_names=["root"],
+    rename={"1": "target_lang", "2": "source_lang"},
+    variadic_start='3',
+    variadic_rename={"id": "sense_id"},
+)
 
-    @classmethod
-    def transform(cls, template: wtp.Template):
-        args = iter(template.arguments)
-        data = {
-            "name": "root",
-            "target_lang": next(args),
-            "source_lang": next(args),
-            "roots": []
-        }
-        
-        # Build with a dict because we don't know if the order is correct
-        roots = {}
-        for arg in args:
-            if re.match('^\d+$', arg.name):
-                roots[arg.name] = roots[arg.name] or {}
-                roots[arg.name].update({"root": arg.value})
-            elif re.match('^id\d+$', arg.name):
-                roots[arg.name[2:]] = roots[arg.name[2:]] or {}
-                roots[arg.name[2:]].update({"sense_id": arg.value})
-
-        for root in roots.values():
-            data["roots"].append(root)
-        
-        return roots
 
 # Other
 
-class Qualifier:
+Qualifier = TemplateMapping(
     name="qualifier",
     template_names=["qualifier", "qual", "i", "q"],
-
-    @classmethod
-    def transform(cls, template: wtp.Template):
-        return {
-            "name": "qualifier",
-            "qualifiers": [a.value for a in template.arguments]
-        }
+    variadic_name="qualifiers",
+    variadic_start='1',
+    variadic_rename={"": "qualifier"},
+)
 
 
 template_mappers = (
