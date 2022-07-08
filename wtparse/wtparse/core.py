@@ -10,10 +10,6 @@ from wtparse.wtypes import LanguageCode, Language
 from wtparse.constants import LANGUAGES_TO_NAMES
 
 
-def get_full_lang(lang: LanguageCode) -> Language:
-    # return LANGUAGES_TO_NAMES[lang].capitalize()
-    return "English"
-
 
 def parse_alt_forms(els: list[BeautifulSoup]):
     """Given a list of elements under the "Alternative forms" heading,
