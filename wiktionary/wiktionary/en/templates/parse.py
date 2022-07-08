@@ -3,11 +3,13 @@ from more_itertools import first_true
 from wiktionary.en.templates.etymology import ETYMOLOGY_TEMPLATES
 from wiktionary.en.templates.links import LINK_TEMPLATES
 from wiktionary.en.templates.pronunciation import PRONUNCIATION_TEMPLATES
+from wiktionary.en.templates.semantics import SEMANTIC_TEMPLATES
 
 TEMPLATES = (
     *LINK_TEMPLATES,
     *ETYMOLOGY_TEMPLATES,
-    *PRONUNCIATION_TEMPLATES
+    *PRONUNCIATION_TEMPLATES,
+    *SEMANTIC_TEMPLATES
 )
 
 

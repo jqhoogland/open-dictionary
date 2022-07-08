@@ -210,3 +210,4 @@ class TemplateMapping:
         data.update(kwargs)
         return self.__class__(**data)
 
+

@@ -19,17 +19,7 @@ Mention = TemplateMapping(
     ignore=Link.ignore
 )
 
-Qualifier = TemplateMapping(
-    name="qualifier",
-    template_names=["qualifier", "qual", "i", "q"],
-    variadic_name="qualifiers",
-    variadic_start='1',
-    variadic_rename={"": "qualifier"},
-)
-
-
 LINK_TEMPLATES = (
     Link,
     Mention,
-    Qualifier
 )
