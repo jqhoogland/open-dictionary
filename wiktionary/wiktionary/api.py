@@ -23,7 +23,7 @@ from requests import request
 
 #
 from wiktionary.en.parser import EnParser
-from wiktionary.t import LanguageCode
+from wiktionary._types import LanguageCode
 from wiktionary.utils import get_full_lang
 
 APIProp = Literal[

@@ -1,3 +1,5 @@
+from wiktionary._types import LanguageCode
+
 LANGUAGES_TO_NAMES = {
     "en": "english",
     "es": "spanish",

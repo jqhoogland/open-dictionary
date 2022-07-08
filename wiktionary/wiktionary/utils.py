@@ -1,12 +1,12 @@
 import re
 
 from wiktionary.constants import LANGUAGES_TO_NAMES
-from wiktionary.t import Language, LanguageCode
+from wiktionary._types import Language, LanguageCode
 
 
 def get_full_lang(lang: LanguageCode) -> Language:
     """Returns a capitalized, English version of the language corresponding to `lang`"""
-    return LANGUAGES_TO_NAMES[lang].capitalize()
+    return LANGUAGES_TO_NAMES[lang].capitalize() # type: ignore
 
 
 def to_snake_case(word):

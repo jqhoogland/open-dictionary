@@ -1,20 +1,19 @@
 from dataclasses import dataclass, field
 from pprint import pp
-from typing import Any
+from typing import Any, Type
 
 import wikitextparser as wtp
 from more_itertools import first_true
 #
-from wiktionary.en.templates.links import Link, Qualifier
 from wiktionary.en.templates.parse import parse_templates
-from wiktionary.t import LanguageCode
+from wiktionary._types import LanguageCode
 from wiktionary.utils import get_full_lang, to_snake_case
 
 
 @dataclass
 class AltForm:
-    word: Link
-    qualifiers: list[Qualifier]
+    word: dict
+    qualifiers: dict
 
 
 def parse_alt_forms(
@@ -43,13 +42,17 @@ def parse_etymology(section: wtp.Section, **_) -> list[dict]:
     return templates
 
 
-def parse_section(section: wtp.Section, lang: LanguageCode = "en") -> list[wtp.Section]:
+def parse_section(
+    section: wtp.Section, lang: LanguageCode = "en"
+) -> list[wtp.Section] | None:
     """Parse a section of wikitext."""
-    match section.title: 
-        case "Alternative forms":
-            return parse_alt_forms(section, lang=lang)
-        case "Etymology": # TODO: Support for multiple etymologies
-            return parse_etymology(section, lang=lang)
+    if section.title == "Alternative forms":
+        return parse_alt_forms(section, lang=lang)
+    elif section.title == "Etymology": # TODO: Support for multiple etymologies
+        return parse_etymology(section, lang=lang)
+    elif section.title.startswith("Etymology"):
+        # Homographs (multiple definitions )
+        return []
 
     return None
 

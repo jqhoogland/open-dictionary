@@ -12,6 +12,7 @@ pydantic = "*"
 bs4 = "*"
 wikitextparser = "*"
 more-itertools = "*"
+mypy = "*"
 
 [dev-packages]
 pytest = "*"
