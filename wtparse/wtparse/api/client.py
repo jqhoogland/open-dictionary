@@ -15,18 +15,15 @@ which we may come to need.
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Literal, NamedTuple, TypedDict
+from typing import Any
 
-from more_itertools import first_true
-from pydantic import BaseModel
 from requests import request
 import wikitextparser as wtp
 
 from wtparse.api.types import APIOptions, APIResponse
 from wtparse.utils import get_full_lang
-from wtparse.api.templates import LinkedWord, Qualifier, parse_templates
-from wtparse.wtypes import AllowedPOSHeader
-from wtparse.wtypes import Word, LanguageCode
+from wtparse.api.sections import AltForm, parse_section
+from wtparse.wtypes import LanguageCode
 
 
 def fetch_page(word: str, wiki: LanguageCode, opts: APIOptions = {}) -> APIResponse:
@@ -59,38 +56,6 @@ def get_entry_sections(
             yield section
 
     return [s for s in get_sections()]
-
-
-@dataclass
-class AltForm:
-    word: LinkedWord
-    qualifiers: list[Qualifier]
-
-
-def parse_alt_forms(
-    section: wtp.Section, lang: LanguageCode = "en"
-) -> list[wtp.Section]:
-    """Parse an alternative forms section of wikitext."""
-
-    def parse_alt_form(li: str) -> AltForm | None:
-        templates = parse_templates(wtp.parse(li).templates)
-        return AltForm(
-            word=first_true(templates, pred=lambda x: x.type == "linked_word"),
-            qualifiers=list(filter(lambda x: x.type == "qualifier", templates)),
-        )
-
-    uls = section.get_lists()
-    lis = uls[0].items if uls and uls[0].items else []
-    return [parse_alt_form(li) for li in lis if li]
-
-
-def parse_section(section: wtp.Section, lang: LanguageCode = "en") -> list[wtp.Section]:
-    """Parse a section of wikitext."""
-    match section.title:
-        case "Alternative forms":
-            return parse_alt_forms(section, lang)
-
-    return None
 
 
 @dataclass
