@@ -1,11 +1,14 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pprint import pp
+from typing import Any
 
-from more_itertools import first_true
 import wikitextparser as wtp
-
-from wtparse.templates import Link, Qualifier, parse_templates
-from wtparse.wtypes import LanguageCode
+from more_itertools import first_true
+#
+from wiktionary.en.templates.links import Link, Qualifier
+from wiktionary.en.templates.parse import parse_templates
+from wiktionary.t import LanguageCode
+from wiktionary.utils import get_full_lang, to_snake_case
 
 
 @dataclass
@@ -49,3 +52,37 @@ def parse_section(section: wtp.Section, lang: LanguageCode = "en") -> list[wtp.S
             return parse_etymology(section, lang=lang)
 
     return None
+
+
+@dataclass
+class EnEntry:
+    word: str
+    lang: LanguageCode
+    alt_forms: list[AltForm]
+    etymology: Any = ""  # Etymology
+    pronunciations: Any = field(default_factory=list)  # list[Pronunciation]
+    definitions: Any = field(
+        default_factory=dict
+    )  # dict[AllowedPOSHeader, POSDefinition]
+
+
+class EnParser:
+    wiki: LanguageCode = "en"
+
+    @classmethod
+    def parse(cls, word: str, sections: list[wtp.Section], lang: LanguageCode) -> EnEntry:
+        data = {
+            to_snake_case(s.title): parse_section(s, lang)
+            for s in sections
+        }
+        alt_forms = data.pop("alternative_forms", [])
+        etymology = data.pop("etymology", "")
+        pronunciations = data.pop("alternative_forms", [])
+
+        return EnEntry(
+            word=word,
+            lang=lang,
+            alt_forms=alt_forms,
+            etymology=etymology,
+            pronunciations=pronunciations,
+        )

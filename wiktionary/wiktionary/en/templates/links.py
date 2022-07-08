@@ -1,5 +1,5 @@
 
-from wtparse.templates.base import (_ALT, _LANG, _T, COMMON_RENAME,
+from wiktionary.en.templates.base import (_ALT, _LANG, _T, COMMON_RENAME,
                                     WITH_GENDER, TemplateMapping)
 
 Link = TemplateMapping(

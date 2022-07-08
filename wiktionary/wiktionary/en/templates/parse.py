@@ -1,8 +1,8 @@
 
 import wikitextparser as wtp
 from more_itertools import first_true
-from wtparse.templates.etymology import ETYMOLOGY_TEMPLATES
-from wtparse.templates.links import LINK_TEMPLATES
+from wiktionary.en.templates.etymology import ETYMOLOGY_TEMPLATES
+from wiktionary.en.templates.links import LINK_TEMPLATES
 
 TEMPLATES = (
     *LINK_TEMPLATES,

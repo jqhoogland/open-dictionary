@@ -1,5 +1,5 @@
 
-from wtparse.templates.base import (_ALT, _G, _LANG, _T, COMMON_IGNORE,
+from wiktionary.en.templates.base import (_ALT, _G, _LANG, _T, COMMON_IGNORE,
                                     COMMON_RENAME, COMPOUND_TYPES, WITH_GENDER,
                                     TemplateMapping)
 

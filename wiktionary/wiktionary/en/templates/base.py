@@ -8,8 +8,8 @@ from typing import Callable, Literal, Protocol, TypeVar
 
 import wikitextparser as wtp
 from more_itertools import first_true
-from wtparse.utils import get_regex
-from wtparse.wtypes import LanguageCode
+from wiktionary.t import LanguageCode
+from wiktionary.utils import get_regex
 
 _LANG = "lang", "lang"
 _ALT = "alt", "alt"
