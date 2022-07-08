@@ -4,7 +4,7 @@ from pprint import pp
 from more_itertools import first_true
 import wikitextparser as wtp
 
-from wtparse.api.templates import Link, Qualifier, parse_templates
+from wtparse.templates import Link, Qualifier, parse_templates
 from wtparse.wtypes import LanguageCode
 
 
@@ -31,14 +31,8 @@ def parse_alt_forms(
     return [parse_alt_form(li) for li in lis if li]
 
 
-@dataclass
-class Etymology:
-    etymons: list[Link]
-    cognates: list[Link]
-    other: list[Link]
 
-
-def parse_etymology(section: wtp.Section, **_) -> Etymology:
+def parse_etymology(section: wtp.Section, **_) -> list[dict]:
     """Parse an etymology section of wikitext."""
     templates = parse_templates(section.contents)
     pp(section.contents)
