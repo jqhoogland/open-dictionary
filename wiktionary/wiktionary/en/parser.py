@@ -93,6 +93,9 @@ def parse_section(
             "name": to_snake_case(section.title),
             "data": parse_def_section(section, lang=lang)
         }
+    elif section.title in ("Derived Terms", "Related terms", "Collocations", "Synonyms", "Antonyms", "Hyperonyms", "Hyponyms", "Collocations", "Descendants", "Translations", "Anagrams"):
+        return _parse_default(section, lang)
+    
 
     return parse_default(section, lang=lang)
 
@@ -103,7 +106,7 @@ def parse_def_section(section: wtp.Section, lang: LanguageCode) -> list[dict]:
             return None
         if subsection.title == "Usage notes":
             pass
-        elif subsection.title in ("Derived Terms", "Related terms", "Collocations", "Synonyms", "Antonyms", "Hyperonyms", "Hyponyms", "Collocations", "Descendants", "Translations"):
+        elif subsection.title in ("Derived Terms", "Related terms", "Collocations", "Synonyms", "Antonyms", "Hyperonyms", "Hyponyms", "Collocations", "Descendants", "Translations", "Anagrams"):
             return _parse_default(subsection, lang)
 
         warnings.warn(f"Definition section not processed: {subsection.title}")

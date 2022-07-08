@@ -2,14 +2,18 @@ import wikitextparser as wtp
 from more_itertools import first_true
 from wiktionary.en.templates.etymology import ETYMOLOGY_TEMPLATES
 from wiktionary.en.templates.links import LINK_TEMPLATES
+from wiktionary.en.templates.other import OTHER_TEMPLATES
 from wiktionary.en.templates.pronunciation import PRONUNCIATION_TEMPLATES
 from wiktionary.en.templates.semantics import SEMANTIC_TEMPLATES
+from wiktionary.en.templates.translations import TRANSLATION_TEMPLATES
 
 TEMPLATES = (
     *LINK_TEMPLATES,
     *ETYMOLOGY_TEMPLATES,
     *PRONUNCIATION_TEMPLATES,
-    *SEMANTIC_TEMPLATES
+    *SEMANTIC_TEMPLATES,
+    *OTHER_TEMPLATES,
+    *TRANSLATION_TEMPLATES
 )
 
 
