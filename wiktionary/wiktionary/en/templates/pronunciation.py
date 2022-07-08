@@ -1,4 +1,3 @@
-from pipes import Template
 
 from wiktionary.en.templates.base import TemplateMapping
 
@@ -7,8 +6,8 @@ Dialect = TemplateMapping(
     template_names=("accent", "a"),
     variadic_name="dialects",
     variadic_start="1",
-    variadic_rename={"": "d"},
-    # extra_transform={"dialects": lambda ds: [d for d in ds]}
+    variadic_rename={"": "dialect"},
+    extra_transform={"dialects": lambda ds: [d["dialect"] for d in ds]}
 )
 
 IPA = TemplateMapping(

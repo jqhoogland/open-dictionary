@@ -7,7 +7,7 @@ from typing import Callable, Literal, Protocol, TypeVar
 
 import wikitextparser as wtp
 from more_itertools import first_true
-from wiktionary.types import LanguageCode
+from wiktionary._types import LanguageCode
 from wiktionary.utils import get_regex
 
 _LANG = "lang", "lang"
@@ -183,18 +183,20 @@ class TemplateMapping:
     def transform(self, template: wtp.Template):
         data = {}
 
+        # Transform non-variadic arguments
         for arg in template.arguments:
             if arg.name not in self.ignore:
                 k = self.rename.get(arg.name, arg.name)
                 v = arg.value
                 data[k] = v
 
+        # Transform variadic arguments
         self.variadic_transform(data)
 
+        # Apply final transformations
         for k in self.extra_transform:
             if k in data:
-                data[k] = self.extra_transform[k](v)
-
+                data[k] = self.extra_transform[k](data[k])
 
         data.update({**self.extra})
 

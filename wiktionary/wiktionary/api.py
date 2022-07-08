@@ -21,7 +21,7 @@ from typing import Generator, Literal, Protocol, TypedDict
 import wikitextparser as wtp
 from requests import request
 
-from wiktionary.types import LanguageCode
+from wiktionary._types import LanguageCode
 #
 from wiktionary.en.parser import EnParser
 from wiktionary.utils import get_full_lang

@@ -1,7 +1,7 @@
 import re
 
 from wiktionary.constants import LANGUAGES_TO_NAMES
-from wiktionary.types import Language, LanguageCode
+from wiktionary._types import Language, LanguageCode
 
 
 def get_full_lang(lang: LanguageCode) -> Language:
