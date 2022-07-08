@@ -52,8 +52,11 @@ def get_entry_sections(
             pass
 
         # Take sections until we encounter the next entry (i.e., new language)
-        while (section := next(sections)).level != 2:
-            yield section
+        try:
+            while (section := next(sections)).level != 2:
+                yield section
+        except StopIteration:
+            pass
 
     return list(get_sections())
 

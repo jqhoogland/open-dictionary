@@ -1,28 +1,29 @@
 from dataclasses import dataclass
+from pprint import pp
 
 from more_itertools import first_true
 import wikitextparser as wtp
 
-from wtparse.api.templates import LinkedWord, Qualifier, parse_templates
+from wtparse.api.templates import Link, Qualifier, parse_templates
 from wtparse.wtypes import LanguageCode
 
 
 @dataclass
 class AltForm:
-    word: LinkedWord
+    word: Link
     qualifiers: list[Qualifier]
 
 
 def parse_alt_forms(
     section: wtp.Section, **_
-) -> list[wtp.Section]:
+) -> list[AltForm]:
     """Parse an alternative forms section of wikitext."""
 
     def parse_alt_form(element: str) -> AltForm | None:
-        templates = parse_templates(wtp.parse(element).templates)
+        templates = parse_templates(element)
         return AltForm(
-            word=first_true(templates, pred=lambda x: x.type == "linked_word"),
-            qualifiers=list(filter(lambda x: x.type == "qualifier", templates)),
+            word=first_true(templates, pred=lambda x: x["name"] == "link"),
+            qualifiers=list(filter(lambda x: x["name"] == "qualifier", templates)),
         )
 
     uls = section.get_lists()
@@ -30,10 +31,27 @@ def parse_alt_forms(
     return [parse_alt_form(li) for li in lis if li]
 
 
+@dataclass
+class Etymology:
+    etymons: list[Link]
+    cognates: list[Link]
+    other: list[Link]
+
+
+def parse_etymology(section: wtp.Section, **_) -> Etymology:
+    """Parse an etymology section of wikitext."""
+    templates = parse_templates(section.contents)
+    pp(section.contents)
+
+    return templates
+
+
 def parse_section(section: wtp.Section, lang: LanguageCode = "en") -> list[wtp.Section]:
     """Parse a section of wikitext."""
-    match section.title:
+    match section.title: 
         case "Alternative forms":
             return parse_alt_forms(section, lang=lang)
+        case "Etymology":
+            return parse_etymology(section, lang=lang)
 
     return None
