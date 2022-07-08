@@ -7,7 +7,7 @@ from typing import Callable, Literal, Protocol, TypeVar
 
 import wikitextparser as wtp
 from more_itertools import first_true
-from wiktionary._types import LanguageCode
+from wiktionary.types import LanguageCode
 from wiktionary.utils import get_regex
 
 _LANG = "lang", "lang"

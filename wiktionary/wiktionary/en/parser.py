@@ -7,7 +7,7 @@ import warnings
 import wikitextparser as wtp
 from more_itertools import first_true
 #
-from wiktionary._types import LanguageCode
+from wiktionary.types import LanguageCode
 from wiktionary.en.templates.parse import parse_templates
 from wiktionary.utils import to_snake_case
 from wiktionary.en.constants import AllowedPOSHeader, get_category
