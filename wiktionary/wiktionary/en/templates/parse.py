@@ -1,12 +1,13 @@
-
 import wikitextparser as wtp
 from more_itertools import first_true
 from wiktionary.en.templates.etymology import ETYMOLOGY_TEMPLATES
 from wiktionary.en.templates.links import LINK_TEMPLATES
+from wiktionary.en.templates.pronunciation import PRONUNCIATION_TEMPLATES
 
 TEMPLATES = (
     *LINK_TEMPLATES,
-    *ETYMOLOGY_TEMPLATES
+    *ETYMOLOGY_TEMPLATES,
+    *PRONUNCIATION_TEMPLATES
 )
 
 

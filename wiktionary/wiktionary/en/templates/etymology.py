@@ -1,7 +1,7 @@
 
 from wiktionary.en.templates.base import (_ALT, _G, _LANG, _T, COMMON_IGNORE,
-                                    COMMON_RENAME, COMPOUND_TYPES, WITH_GENDER,
-                                    TemplateMapping)
+                                          COMMON_RENAME, COMPOUND_TYPES,
+                                          WITH_GENDER, TemplateMapping)
 
 Derived = TemplateMapping(
     name="derived",

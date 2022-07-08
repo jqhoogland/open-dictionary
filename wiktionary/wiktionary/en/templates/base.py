@@ -3,7 +3,6 @@ import warnings
 from dataclasses import dataclass, field
 from inspect import ArgSpec
 from pipes import Template
-from pprint import pp
 from typing import Callable, Literal, Protocol, TypeVar
 
 import wikitextparser as wtp
@@ -24,7 +23,8 @@ _ID = "id", "sense_id"
 _G = "g", "gender"
 WITH_GENDER = dict(
     variadic_name="genders",
-    variadic_rename={"g": _G[1]},
+    variadic_rename={"g": "g"},
+    extra_transform={"genders": lambda gs: [g["g"] for g in gs]}
 )
 
 
@@ -174,11 +174,8 @@ class TemplateMapping:
                 if k in self.extra_transform:
                     v = self.extra_transform[k](v)
 
-                if k == "":
-                    variadic_args[idx] = v
-                else:
-                    variadic_args[idx] = variadic_args[idx] or {}
-                    variadic_args[idx][k] = v
+                variadic_args[idx] = variadic_args[idx] or {}
+                variadic_args[idx][k] = v
 
         variadic_list = [variadic_args[k] for k in sorted(variadic_args.keys())]
         data[self.variadic_name] = variadic_list
@@ -190,13 +187,15 @@ class TemplateMapping:
             if arg.name not in self.ignore:
                 k = self.rename.get(arg.name, arg.name)
                 v = arg.value
-
-                if k in self.extra_transform:
-                    v = self.extra_transform[k](v)
-
                 data[k] = v
 
         self.variadic_transform(data)
+
+        for k in self.extra_transform:
+            if k in data:
+                data[k] = self.extra_transform[k](v)
+
+
         data.update({**self.extra})
 
         return {

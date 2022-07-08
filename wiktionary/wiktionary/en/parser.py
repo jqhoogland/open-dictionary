@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from itertools import dropwhile
 from pprint import pp
-from typing import Any
+from typing import Any, Generator
+import warnings
 
 import wikitextparser as wtp
 from more_itertools import first_true
@@ -23,16 +24,16 @@ def parse_alt_forms(
 ) -> list[AltForm]:
     """Parse an alternative forms section of wikitext."""
 
-    def parse_alt_form(element: str) -> AltForm | None:
-        templates = parse_templates(element)
-        return AltForm(
-            word=first_true(templates, pred=lambda x: x["name"] == "link"),
-            qualifiers=list(filter(lambda x: x["name"] == "qualifier", templates)),
-        )
+    def gen_alt_forms() -> Generator[AltForm, None, None]:
+        for ul in section.get_lists():
+            for li in ul.items:
+                templates = parse_templates(li)
+                yield AltForm(
+                    word=first_true(templates, pred=lambda x: x["name"] == "link"),
+                    qualifiers=list(filter(lambda x: x["name"] == "qualifier", templates)),
+                )
 
-    uls = section.get_lists()
-    lis = uls.items if uls and uls.items else []
-    return [parse_alt_form(li) for li in lis if li]
+    return list(gen_alt_forms())
 
 
 
@@ -43,16 +44,40 @@ def parse_etymology(section: wtp.Section, **_) -> list[dict]:
     return templates
 
 
+def parse_pronunciation(section: wtp.Section, lang: LanguageCode) -> dict:
+    """Parse a pronunciation section of wikitext."""
+    pp(section.contents)
+    def gen_pronunciation():
+        for ul in section.get_lists():
+            pp(ul)
+            for li in ul.items:
+                yield parse_templates(li)
+
+    return list(gen_pronunciation())
+    
+
+
 def parse_section(
     section: wtp.Section, lang: LanguageCode = "en"
-) -> dict | list[dict]:
+) -> dict:
     """Parse a section of wikitext."""
     if section.title == "Alternative forms":
         return parse_alt_forms(section, lang=lang)
     elif section.title == "Etymology": # TODO: Support for multiple multiple_etymologies
         return parse_etymology(section, lang=lang)
-    
+    elif section.title == "Pronunciation":
+        return parse_pronunciation(section, lang=lang)
 
+    warnings.warn(f"Not processed: {section.title}")
+    return None
+
+
+
+def parse_def_section(section: wtp.Section, lang: LanguageCode) -> dict:
+    if section.title == "Usage notes":
+        return None
+
+    warnings.warn(f"Not processed: {section.title}")
     return None
 
 
@@ -115,8 +140,14 @@ class EnParser:
     @classmethod
     def _parse_def(cls, word: str, section: wtp.Section, lang: LanguageCode) -> EnEntry:
         """Parse a definition section of wikitext."""
+        data = {
+            to_snake_case(s.title): parse_def_section(s, lang)
+            for s in section.sections if s
+        }   
+
         return {
-            "category": get_category(section.title)
+            "category": get_category(section.title),
+            **data
         }
 
 
@@ -128,11 +159,9 @@ class EnParser:
         }
         alt_forms = data.pop("Alternative forms", [])
         etymology = data.pop("Etymology", "")
-        pronunciations = data.pop("Pronunciations", [])
+        pronunciations = data.pop("Pronunciation", [])
         description = data.pop("Description", None)
         glyph_origin = data.pop("Glyph origin", None)
-
-        pp(data)
 
         return EnEntry(
             word=word,
