@@ -1,8 +1,7 @@
 from typing import Any, Literal
 
-# Adjective, Adverb, Ambiposition, Article, Circumposition, Classifier, Conjunction, Contraction, Counter, Determiner, Ideophone, Interjection, Noun, Numeral, Participle, Particle, Postposition, Preposition, Pronoun, Proper noun, Verb
-
-PARTS_OF_SPEECH = (
+# Adjective, Adverb, 
+PARTS_OF_SPEECH = {
     "noun",
     "verb",
     "adjective",
@@ -11,34 +10,17 @@ PARTS_OF_SPEECH = (
     "article",
     "preposition",
     "conjunction",
-    "proper noun",
-)
+    "proper_noun",
+    "ambiposition", "circumposition", "classifier", "contraction", "counter",  "ideophone", "interjection",  "numeral", "participle", "particle", "postposition", "pronoun",
+}
 
-# Circumfix, Combining form, Infix, Interfix, Prefix, Root, Suffix
 MORPHEMES = (
-    "letter",
-    "character",
-    "phrase",
-    "proverb",
-    "idiom",
-    "symbol",
-    "syllable",
-    "numeral",
-    "initialism",
-    "interjection",
-    "definitions",
-    "pronoun",
+    "circumfix", "combining_form", "infix", "interfix", "prefix", "root", "suffix"
 )
-
-# Diacritical mark, Letter, Ligature, Number, Punctuation mark, Syllable, Symbol
-SYMBOLS_AND_CHARS = ("diacritical mark",)
-
-# Phrases: Phrase, Proverb, Prepositional phrase[22]
-PHRASES = ("phrase",)
-# Han characters and language-specific varieties: Han character, Hanzi, Kanji, Hanja
-HAN_CHARS = ("han characters",)
-# Other: Romanization, Logogram, Determinative
-OTHER_POS_HEADERS = ("romanization",)
+SYMBOLS_AND_CHARS = ("diacritical_mark", "letter", "ligature", "number", "punctuation_mark", "syllable", "symbol")
+PHRASES = ("phrase", "proverb", "prepositional_phrase")
+HAN_CHARS = ("han_character", "hanzi", "kanji", "hanja")
+OTHER_POS_HEADERS = ("romanization", "logogram", "determinative")
 
 
 ALLOWED_POS_HEADERS = (

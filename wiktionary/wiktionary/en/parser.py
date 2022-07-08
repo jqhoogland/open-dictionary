@@ -56,21 +56,25 @@ def parse_pronunciation(section: wtp.Section, lang: LanguageCode) -> dict:
 
 
 
+def _parse_default(section: wtp.Section, lang: LanguageCode) -> dict:
+    """Parse a section of wikitext."""    
+    return {
+        "name": to_snake_case(section.title),
+        "linked": parse_templates(section.contents)
+    }
+
 def parse_default(section: wtp.Section, lang: LanguageCode) -> dict:
     """Parse a section of wikitext."""
     warnings.warn(f"Using default processor: {section.title}")
-    
     try:
         category = get_category(section.title)
     except ValueError:
-        category = None
-      
+        category = None  
 
     return {
-        "name": to_snake_case(section.title),
+        **_parse_default(section, lang),
         "category": category,
         "data": section.contents, # TODO: use `plaintext()` (using `contents` for debugging)
-        "linked": parse_templates(section.contents)
     }
 
 
@@ -84,18 +88,30 @@ def parse_section(
         return parse_etymology(section, lang=lang)
     elif section.title == "Pronunciation":
         return parse_pronunciation(section, lang=lang)
-    elif section.title in ALLOWED_POS_HEADERS:
-        return parse_def_section(section, lang=lang)
+    elif to_snake_case(section.title) in ALLOWED_POS_HEADERS:
+        return {
+            "name": to_snake_case(section.title),
+            "data": parse_def_section(section, lang=lang)
+        }
 
     return parse_default(section, lang=lang)
 
 
-def parse_def_section(section: wtp.Section, lang: LanguageCode) -> dict:
-    if section.title == "Usage notes":
-        return None
+def parse_def_section(section: wtp.Section, lang: LanguageCode) -> list[dict]:
+    def parse_def_subsection(subsection):
+        if to_snake_case(subsection.title) in ALLOWED_POS_HEADERS:
+            return None
+        if subsection.title == "Usage notes":
+            pass
+        elif subsection.title in ("Derived Terms", "Related terms", "Collocations", "Synonyms", "Antonyms", "Hyperonyms", "Hyponyms", "Collocations", "Descendants", "Translations"):
+            return _parse_default(subsection, lang)
 
-    warnings.warn(f"Definition section not processed: {section.title}")
-    return None
+        warnings.warn(f"Definition section not processed: {subsection.title}")
+
+    return [
+        res for s in section.sections 
+        if s and s.title and (res := parse_def_subsection(s))
+    ]
 
 
 @dataclass
