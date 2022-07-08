@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Literal
 
 # Adjective, Adverb, Ambiposition, Article, Circumposition, Classifier, Conjunction, Contraction, Counter, Determiner, Ideophone, Interjection, Noun, Numeral, Participle, Particle, Postposition, Preposition, Pronoun, Proper noun, Verb
 
@@ -50,12 +50,33 @@ ALLOWED_POS_HEADERS = (
     *OTHER_POS_HEADERS,
 )
 
+# TODO: Move this all somewhere more sensible
+
 Word = str
 
 PartOfSpeech = Any  # Literal[PARTS_OF_SPEECH]
-AllowedPOSHeader = Any  # Literal[ALLOWED_POS_HEADERS]
+AllowedPOSHeader = Literal[ALLOWED_POS_HEADERS]
 Morpheme = Any  # Literal[MORPHEMES]
 SymbolsAndChar = Any  # Literal[SYMBOLS_AND_CHARS]
 Phrase = Any  # Literal[PHRASES]
 HanChar = Any  # Literal[HAN_CHARS]
 OtherPosHeader = Any  # Literal[OTHER_POS_HEADERS]
+
+POSHeaderCategory = Literal["part_of_speech", "morpheme", "symbol_or_char", "phrase", "han_specific", "other"]
+
+
+def get_category(pos_header: AllowedPOSHeader) -> POSHeaderCategory:
+    if pos_header in PARTS_OF_SPEECH:
+        return "part_of_speech"
+    elif pos_header in MORPHEMES:
+        return "morpheme"
+    elif pos_header in SYMBOLS_AND_CHARS:
+        return "symbol_or_char"
+    elif pos_header in PHRASES:
+        return "phrase"
+    elif pos_header in HAN_CHARS:
+        return "han_specific"
+    elif pos_header in OTHER_POS_HEADERS:
+        return "other"
+
+    raise ValueError(f"Unknown POS header: {pos_header}")

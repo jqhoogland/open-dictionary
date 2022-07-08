@@ -21,9 +21,9 @@ from typing import Generator, Literal, Protocol, TypedDict
 import wikitextparser as wtp
 from requests import request
 
+from wiktionary._types import LanguageCode
 #
 from wiktionary.en.parser import EnParser
-from wiktionary._types import LanguageCode
 from wiktionary.utils import get_full_lang
 
 APIProp = Literal[
@@ -126,6 +126,7 @@ class WiktionaryClient:
             except StopIteration:
                 pass
 
-        sections = list(get_sections())
+        # h3 sections are contained under h3 sections
+        sections = [s for s in get_sections() if s.level == 3]  
         return self.parser.parse(word, sections, lang)
 
