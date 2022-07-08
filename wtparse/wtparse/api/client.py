@@ -21,17 +21,17 @@ from requests import request
 import wikitextparser as wtp
 
 from wtparse.api.types import APIOptions, APIResponse
-from wtparse.utils import get_full_lang
 from wtparse.api.sections import AltForm, parse_section
+from wtparse.utils import get_full_lang, to_snake_case
 from wtparse.wtypes import LanguageCode
 
-
+# pylint: disable=dangerous-default-value
 def fetch_page(word: str, wiki: LanguageCode, opts: APIOptions = {}) -> APIResponse:
     """Fetch the wikitext for a given word and language.
     NOTE: `wiki` is the languagecode for the wiktionary language, not the language of `word`.
     """
     url = (
-        f"https://{wiki}.wiktionary.org/w/api.php?action=parse&page=hello&format=json&prop=wikitext"
+        f"https://{wiki}.wiktionary.org/w/api.php?action=parse&page={word}&format=json&prop=wikitext"
         + "&".join(f"{k}={v}" for k, v in opts.items())
     )
     return request("get", url).json()
@@ -41,7 +41,7 @@ def get_entry_sections(
     word: str, wiki: LanguageCode, lang: LanguageCode = "en"
 ) -> list[wtp.Section]:
     """Fetch and parse the wikitext for a given word, language, and wiki."""
-    data = fetch_page(word, lang)
+    data = fetch_page(word, wiki)
     wikitext = data["parse"]["wikitext"]["*"]
 
     def get_sections():
@@ -55,7 +55,7 @@ def get_entry_sections(
         while (section := next(sections)).level != 2:
             yield section
 
-    return [s for s in get_sections()]
+    return list(get_sections())
 
 
 @dataclass
@@ -89,5 +89,3 @@ class Entry:
         )
 
 
-def to_snake_case(word):
-    return word.lower().replace(" ", "_")

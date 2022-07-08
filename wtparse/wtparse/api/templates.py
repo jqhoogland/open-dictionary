@@ -7,6 +7,10 @@ from wtparse.wtypes import LanguageCode
 
 
 class ParsedTemplate(Protocol):
+    """Templates are a feature of wikitext for duplicating formatting
+    structured content across pages.
+
+    [Read more](https://en.wiktionary.org/wiki/Wiktionary:Templates)."""
     value: str
     type: Literal["word", "qualifier"]
 
