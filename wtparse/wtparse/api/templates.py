@@ -67,11 +67,16 @@ class TemplateMapping:
     #:     {"morpheme": "-je", "part_of_speech": "diminutive"}
     #:   ]
     #: }
+    #: `variadic_name`: the name of the list of variadic arguments.
     #: `variadic_start` is the *string* index of the first variadic argument, then 
     #: `variadic_rename` is the same as `rename` but arguments are assumed to end #: in a number.
+    #: If any of the values of `variadic_rename` are empty (`=""`), store the value directly (rather than in a subdictionary)
     variadic_name: str = "values"
     variadic_start: str | None = field(default=None)
     variadic_rename: dict = field(default_factory=dict)
+
+    #: Dictionary of transformations to apply to the final dictionaries
+    extra_transform: dict = field(default_factory=dict)
 
     #: Arguments to ignore
     ignore: tuple[str] = ()
@@ -96,9 +101,18 @@ class TemplateMapping:
             if (m := re.match(r"^(\w+)(\d+)$", k)):
                 v = data.pop(k)
                 k, idx = m.groups()
+
+                k = self.variadic_rename.get(k, k)
                 idx = int(idx) -1 
-                variadic_args[idx] = variadic_args[idx] or {}
-                variadic_args[idx][k] = v
+
+                if k in self.extra_transform:
+                    v = self.extra_transform[k](v)
+
+                if k == "":
+                    variadic_args[idx] = v
+                else:
+                    variadic_args[idx] = variadic_args[idx] or {}
+                    variadic_args[idx][k] = v
 
         variadic_list = [variadic_args[k] for k in sorted(variadic_args.keys())]
         data[self.variadic_name] = variadic_list
@@ -108,8 +122,13 @@ class TemplateMapping:
 
         for arg in template.arguments:
             if arg.name not in self.ignore:
-                key = self.rename.get(arg.name, arg.name)
-                data[key] = arg.value
+                k = self.rename.get(arg.name, arg.name)
+                v = arg.value
+
+                if k in self.extra_transform:
+                    v = self.extra_transform[k](v)
+
+                data[k] = v
 
         self.variadic_transform(data)
 
@@ -132,6 +151,8 @@ Link = TemplateMapping(
         "1": "lang", "2": "target", "3": "alt", "4": "gloss",
         **shared_rename
     },
+    variadic_name="genders",
+    variadic_rename={"g": ""},
     ignore=("accel-form", "accel-translit", "accel-lemma", "accel-lemma-translit", "accel-gender", "accel-nostore")
 )
 
@@ -186,6 +207,45 @@ Root = TemplateMapping(
 )
 
 
+# TODO: Add support for hyphens -> category 
+# https://en.wiktionary.org/wiki/Template:affix
+Affix = TemplateMapping(
+    name="affix",
+    template_names=["affix", "af"],
+    rename={
+        "1": "lang", "sc": "script_code", "pos": "part_of_speech", "sort": "sort_key", "nocat": "no_categorization", "type": "compound_type"
+    },
+    variadic_name="morphemes",
+    variadic_start="2",
+    variadic_rename={
+        # "": "morpheme",
+        "alt": "alt", "t": "gloss", "id": "sense_id", "nocat": "no_categorization", "sort": "sort_key", "g": "gender", "pos": "part_of_speech", 
+        # Overwrites the parent level args
+        "lang": "lang", "sc": "script_code"
+    },
+    ignore=("nocap", "notext"),
+    extra_transform={
+        "compound_type": lambda t: {
+            "allit": "alliterative",
+            "ant": "antonymous",
+            "bahu": "bahuvrihi",
+            "bv": "bahuvrihi",
+            "coord": "coordinative",
+            "desc": "descriptive",
+            "det": "determinative",
+            "dva": "dvandva",
+            "endo": "endocentric",
+            "exo": "exocentric",
+            "karma": "karmadharaya",
+            "kd": "karmadharaya",
+            "rhy": "rhyming",
+            "syn": "synonymous",
+            "tat": "tatpurusa",
+            "tp": "tatpurusa",
+        }[t]
+    }
+)
+
 # Other
 
 Qualifier = TemplateMapping(
@@ -207,6 +267,10 @@ template_mappers = (
     LearnedBorrowing,
     OrthographicBorrowing,
     Root,
+    Affix,
+    # Prefix,
+    # Infix,
+    # Suffix,
     
     # Other
     Qualifier, 
