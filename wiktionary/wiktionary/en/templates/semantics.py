@@ -29,7 +29,7 @@ Gloss = TemplateMapping(
 
 Sense = TemplateMapping(
     name="sense",
-    template_names=["sense", "s"],
+    template_names=["sense", "s", "senseid", "senseno"],
     rename={"1": "sense"},
 )
 

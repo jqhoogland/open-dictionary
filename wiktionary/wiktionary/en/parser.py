@@ -94,6 +94,7 @@ def parse_section(
             "data": parse_def_section(section, lang=lang)
         }
     elif section.title in ("Derived Terms", "Related terms", "Collocations", "Synonyms", "Antonyms", "Hyperonyms", "Hyponyms", "Collocations", "Descendants", "Translations", "Anagrams"):
+        # Add support for converting any child links to the appropriate semantic link.
         return _parse_default(section, lang)
     
 
