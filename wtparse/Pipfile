@@ -8,6 +8,8 @@ requests = "*"
 typer = "*"
 tqdm = "*"
 googletrans = "==3.1.0a0"
+pydantic = "*"
+bs4 = "*"
 
 [dev-packages]
 pytest = "*"

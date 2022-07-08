@@ -92,21 +92,21 @@ MORPHEMES = (
 )
 
 # Diacritical mark, Letter, Ligature, Number, Punctuation mark, Syllable, Symbol
-SYMBOLS_AND_CHARS = (,s)
+SYMBOLS_AND_CHARS = ("diacritical mark",)
 
 # Phrases: Phrase, Proverb, Prepositional phrase[22]
-PHRASES = (,)
+PHRASES = ("phrase",)
 # Han characters and language-specific varieties: Han character, Hanzi, Kanji, Hanja
-HAN_CHARS = (),)
+HAN_CHARS = ("han characters",)
 # Other: Romanization, Logogram, Determinative
-OTHER_POS_HEADERS = (,)
+OTHER_POS_HEADERS = ("romanization",)
 
 
-ALLOWED_POS_HEADERS = tuple(
+ALLOWED_POS_HEADERS = (
     *PARTS_OF_SPEECH,
     *MORPHEMES,
     *SYMBOLS_AND_CHARS,
     *PHRASES,
     *HAN_CHARS,
-    *OTHER_POS_HEADERS
+    *OTHER_POS_HEADERS,
 )

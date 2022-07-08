@@ -16,15 +16,16 @@ from tqdm import tqdm
 import typer
 
 from wtparse.constants import LANGUAGES
-from wtparse.types import (
+from wtparse.wtypes import (
     Word,
-    Language,
+    LanguageCode,
     PartOfSpeech,
 )
+from wtparse.core import fetch_entry
 
 # typer doesn't accept literal values
 def main(language: str, word: str):
-    pass
+    pp(fetch_entry(word, language))
 
 
 if __name__ == "__main__":
