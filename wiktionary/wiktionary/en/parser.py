@@ -10,7 +10,7 @@ from more_itertools import first_true
 from wiktionary._types import LanguageCode
 from wiktionary.en.templates.parse import parse_templates
 from wiktionary.utils import to_snake_case
-from wiktionary.en.constants import AllowedPOSHeader, get_category
+from wiktionary.en.constants import AllowedPOSHeader, get_category,  ALLOWED_POS_HEADERS
 
 
 @dataclass
@@ -46,7 +46,6 @@ def parse_etymology(section: wtp.Section, **_) -> list[dict]:
 
 def parse_pronunciation(section: wtp.Section, lang: LanguageCode) -> dict:
     """Parse a pronunciation section of wikitext."""
-    pp(section.contents)
     def gen_pronunciation():
         for ul in section.get_lists():
             pp(ul)
@@ -54,7 +53,25 @@ def parse_pronunciation(section: wtp.Section, lang: LanguageCode) -> dict:
                 yield parse_templates(li)
 
     return list(gen_pronunciation())
+
+
+
+def parse_default(section: wtp.Section, lang: LanguageCode) -> dict:
+    """Parse a section of wikitext."""
+    warnings.warn(f"Using default processor: {section.title}")
     
+    try:
+        category = get_category(section.title)
+    except ValueError:
+        category = None
+      
+
+    return {
+        "name": to_snake_case(section.title),
+        "category": category,
+        "data": section.contents, # TODO: use `plaintext()` (using `contents` for debugging)
+        "linked": parse_templates(section.contents)
+    }
 
 
 def parse_section(
@@ -67,17 +84,17 @@ def parse_section(
         return parse_etymology(section, lang=lang)
     elif section.title == "Pronunciation":
         return parse_pronunciation(section, lang=lang)
+    elif section.title in ALLOWED_POS_HEADERS:
+        return parse_def_section(section, lang=lang)
 
-    warnings.warn(f"Not processed: {section.title}")
-    return None
-
+    return parse_default(section, lang=lang)
 
 
 def parse_def_section(section: wtp.Section, lang: LanguageCode) -> dict:
     if section.title == "Usage notes":
         return None
 
-    warnings.warn(f"Not processed: {section.title}")
+    warnings.warn(f"Definition section not processed: {section.title}")
     return None
 
 
@@ -137,18 +154,6 @@ class EnParser:
         "Further reading",
         "Anagrams",
     ]   
-    @classmethod
-    def _parse_def(cls, word: str, section: wtp.Section, lang: LanguageCode) -> EnEntry:
-        """Parse a definition section of wikitext."""
-        data = {
-            to_snake_case(s.title): parse_def_section(s, lang)
-            for s in section.sections if s
-        }   
-
-        return {
-            "category": get_category(section.title),
-            **data
-        }
 
 
     @classmethod
@@ -171,9 +176,7 @@ class EnParser:
             pronunciations=pronunciations,
             description=description,
             glyph_origin=glyph_origin,
-            definitions=[
-                cls._parse_def(word, v, lang) for v in data.values() if v
-            ],
+            definitions=list(data.values()),
         )
 
     @classmethod
@@ -181,13 +184,12 @@ class EnParser:
         """This returns a list of entries (one for each etymology). Often, there will be only one etymology, and thus only one entry."""       
         
         multiple_etymologies = [
-            s for s in sections 
-            if s.title.startswith("Etymology") and not s == "Etymology"
+            s for s in sections if s.title.startswith("Etymology ")
         ]
 
         if multiple_etymologies:
-            pre_def_sections = [
-                s for s in sections if s.title in cls.HEADINGS_BEFORE_DEFS
+            other_sections = [
+                s for s in sections if not s.title.startswith("Etymology ")
             ]
             
             def parse_multiple():
@@ -195,7 +197,7 @@ class EnParser:
                     # The first subsection is always (hopefully) `None`
                     subsections = etymology.sections[1:]
                     subsections[0].title = "Etymology"  
-                    _sections = [*pre_def_sections, *subsections]
+                    _sections = [*other_sections, *subsections]
                     yield cls._parse(word, _sections, lang)
 
             return list(parse_multiple())
