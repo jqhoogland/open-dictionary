@@ -78,6 +78,9 @@ class TemplateMapping:
     #: Dictionary of transformations to apply to the final dictionaries
     extra_transform: dict = field(default_factory=dict)
 
+    #: Extra information to attach to the produced dictionary.
+    extra: dict  = field(default_factory=dict)
+
     #: Arguments to ignore
     ignore: tuple[str] = ()
 
@@ -131,11 +134,17 @@ class TemplateMapping:
                 data[k] = v
 
         self.variadic_transform(data)
+        data.update({**self.extra})
 
         return {
             "name": self.name,
             **data
         }
+
+    def copy(self, **kwargs):
+        data = {**self.__dict__}
+        data.update(kwargs)
+        return self.__class__(**data)
 
 
 # Links
@@ -213,17 +222,17 @@ Affix = TemplateMapping(
     name="compound",
     template_names=["affix", "af"],
     rename={
-        "1": "lang", "sc": "script_code", "pos": "part_of_speech", "sort": "sort_key", "nocat": "no_categorization", "type": "compound_type"
+        "1": "lang", "sc": "script_code", "pos": "part_of_speech", "sort": "sort_key", "type": "compound_type"
     },
     variadic_name="morphemes",
     variadic_start="2",
     variadic_rename={
         # "": "morpheme",
-        "alt": "alt", "t": "gloss", "id": "sense_id", "nocat": "no_categorization", "sort": "sort_key", "g": "gender", "pos": "part_of_speech", 
+        "alt": "alt", "t": "gloss", "id": "sense_id", "sort": "sort_key", "g": "gender", "pos": "part_of_speech",  "tr": "transliteration", 
         # Overwrites the parent level args
         "lang": "lang", "sc": "script_code"
     },
-    ignore=("nocap", "notext"),
+    ignore=("nocap", "notext", "nocat"),
     extra_transform={
         "compound_type": lambda t: {
             "allit": "alliterative",
@@ -243,12 +252,30 @@ Affix = TemplateMapping(
             "tat": "tatpurusa",
             "tp": "tatpurusa",
         }[t]
+    },
+    extra={
+        "subtype": "affix"
     }
 )
 
+Compound = Affix.copy(
+    name="compound",
+    template_names=["compound", "com"],
+    extra={}
+)
+
+Blend = Affix.copy(
+    name="compound",
+    template_names=["blend"],
+    extra={
+        "subtype": "blend"
+    }
+)
+
+# NOTE: this is not quite variadic: it accepts 2 arguments (and only 2)
 Prefix = TemplateMapping(
     name="compound",
-    template_names=["prefix", "pre"],
+    template_names=["prefix", "pre", "suffix",],
     rename={
         "1": "lang", "sc": "script_code", "nocat": "no_categorization"
     },
@@ -256,9 +283,31 @@ Prefix = TemplateMapping(
     variadic_start="2",
     variadic_rename={
         # "": "morpheme",
-        "alt": "alt", "t": "gloss", "id": "sense_id", 
+        "alt": "alt", "t": "gloss", "id": "sense_id",  "tr": "transliteration", "lang": "lang", "pos": "pos"
     },
+    extra={"subtype": "prefix"}
 )
+
+Confix = Prefix.copy(
+    name="compound", 
+    template_names=["confix", "con"], 
+    extra={"subtype": "confix"}
+)
+
+
+Suffix = Prefix.copy(
+    name="compound",
+    template_names=["suffix"], #, "suf"],
+    extra={"subtype": "suffix"}
+)
+
+Interfix = Prefix.copy(
+    name="compound",
+    template_names=["interfix", "inter"],
+    extra={"subtype": "interfix"}
+)
+
+
 
 # Other
 
@@ -283,8 +332,10 @@ template_mappers = (
     Root,
     Affix,
     Prefix,
-    # Infix,
-    # Suffix,
+    Confix,
+    Suffix,
+    Compound,
+    Blend,
     
     # Other
     Qualifier, 
