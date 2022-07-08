@@ -210,7 +210,7 @@ Root = TemplateMapping(
 # TODO: Add support for hyphens -> category 
 # https://en.wiktionary.org/wiki/Template:affix
 Affix = TemplateMapping(
-    name="affix",
+    name="compound",
     template_names=["affix", "af"],
     rename={
         "1": "lang", "sc": "script_code", "pos": "part_of_speech", "sort": "sort_key", "nocat": "no_categorization", "type": "compound_type"
@@ -246,6 +246,20 @@ Affix = TemplateMapping(
     }
 )
 
+Prefix = TemplateMapping(
+    name="compound",
+    template_names=["prefix", "pre"],
+    rename={
+        "1": "lang", "sc": "script_code", "nocat": "no_categorization"
+    },
+    variadic_name="morphemes",
+    variadic_start="2",
+    variadic_rename={
+        # "": "morpheme",
+        "alt": "alt", "t": "gloss", "id": "sense_id", 
+    },
+)
+
 # Other
 
 Qualifier = TemplateMapping(
@@ -268,7 +282,7 @@ template_mappers = (
     OrthographicBorrowing,
     Root,
     Affix,
-    # Prefix,
+    Prefix,
     # Infix,
     # Suffix,
     

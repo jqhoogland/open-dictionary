@@ -6,8 +6,8 @@ from wtparse.api import Entry
 
 
 # typer doesn't accept literal values
-def main(wiki: str, word: str):
-    pp(Entry.from_wiktionary(word, wiki))
+def main(wiki: str, word: str, lang: str):
+    pp(Entry.from_wiktionary(word, wiki, lang))
 
 
 if __name__ == "__main__":

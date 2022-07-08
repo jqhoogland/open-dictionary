@@ -58,6 +58,7 @@ LANGUAGES_TO_NAMES = {
     "am": "amhara",
     "kmr": "kurdish",
     "az": "azerbaijani",
+    "la": "latin"
 }
 
 LANGUAGES = tuple(LANGUAGES_TO_NAMES.keys())
