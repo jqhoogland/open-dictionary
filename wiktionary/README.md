@@ -2,7 +2,17 @@
 
 This is a **non-official** Wiktionary API client written in Python. 
 
-This is very early & very non-stable. 
+This is very early & very non-stable. Breaking changes will come regularly.
+
+## ❓ How it works
+
+Wiktionary articles contain lots of internal structure in the form of [templates](https://meta.wikimedia.org/wiki/Help:Template).
+With a bit of manual pruning, we convert these templates into Wiktionary-agnostic ["semantic triples"](https://en.wikipedia.org/wiki/Semantic_triple).
+
+Then, with [SPARQL](https://en.wikipedia.org/wiki/SPARQL) and tools built on top of it, like [GraphQL-LD](https://github.com/rubensworks/GraphQL-LD.js),
+we can query the data consistently.
+
+In actual fact, there's a bit more going on: we look at context (so section headings & also crawl standard wikilinks and non-templated information).
 
 ## The Problem
 
