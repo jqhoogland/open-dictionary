@@ -12,7 +12,7 @@ from wiktionary.utils import get_regex
 
 _LANG = "lang", "lang"
 _ALT = "alt", "alt"
-_T = "t", "gloss"
+_T = "t", "translation"
 _SC = "sc", "script_code"
 _TR = "tr", "transliteration"
 _TS = "ts", "transcription"
@@ -26,7 +26,6 @@ WITH_GENDER = dict(
     variadic_rename={"g": "g"},
     extra_transform={"genders": lambda gs: [g["g"] for g in gs]}
 )
-
 
 COMMON_IGNORE = 'accel', 'nocap', 'notext', 'nocat', 'sort', "accel-form", "accel-translit", "accel-lemma", "accel-lemma-translit", "accel-gender", "accel-nostore" 
 
@@ -98,10 +97,10 @@ class TemplateMapping:
 
     ```json
     {   
-        "type": "mention",
+        "name": "mention",
         "word": "hello",
         "lang": "en",
-        "gloss": "a standard greeting"        
+        "translation": "a standard greeting"        
     }
     ```
 
@@ -109,10 +108,10 @@ class TemplateMapping:
 
     """
 
-    #: The value we give to `type` in the produced dictionary.
+    #: The value we give to `name` in the produced dictionary.
     name: str
     
-    #: The names of the template to match against, e.g. `["m", "member"]`.
+    #: The names of the template to match against, e.g. `["m", "mention"]`.
     template_names: list[str] 
 
     #: Mapping from template arg names to the keys in the outputted dictionary.

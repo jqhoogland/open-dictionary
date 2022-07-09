@@ -194,6 +194,7 @@ HansardQuote = BookQuote.copy(
 )
 
 AVCite = AVQuote.copy(
+    name="cite",
     template_names=["cite-av"],
     rename={
         **AVQuote.rename,
