@@ -1,14 +1,14 @@
-# Open Dictionary Ontology
+# 📖 Open Dictionary Ontology
 
 This provides a [semantic web ontology](https://www.w3.org/standards/semanticweb/ontology) for the relationships between words in natural languages. 
 
-The aim is a standard representation that can serve as a "compile" target of different wiktionaries' entries. This way, we'll be able to convert entries from `en.wiktionary.org`, `fr.wiktionary.org`, etc. to a consistent data structure. 
+The aim is a standard representation that can serve as a "compile" target of different wiktionaries. This way, we'll be able to convert entries from `en.wiktionary.org`, `fr.wiktionary.org`, etc. to a consistent data structure. 
 
 By using the conventions of the semantic web, we can use take advantage of existing tooling (like [SPARQL](https://en.wikipedia.org/wiki/SPARQL)). 
 
 It's expressed in terms of [JSON-LD](https://www.w3.org/TR/json-ld/) rather than [RDF](https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/Overview.html) because it'll be more familiar to those who are new to the semantic web.
  
-# The semantic web
+# 🕸 The semantic web
 
 The "semantic" web starts with a simple idea. Instead of links that just point from one web page to another, the semantic web introduces the idea of "labeled" links, so we can specify what kind of link we have.
 
@@ -24,13 +24,24 @@ This ontology is a collection of definitions for concepts in natural language li
 
 [Read more about the semantic web here.](https://en.wikipedia.org/wiki/Semantic_Web#Components)
 
-# Ok, but the semantic web is dead
+# ☠️ Ok, but the semantic web is dead
 
 So it's true that most of the semantic web stuff happened more than a decade ago and has been pretty much forgotten. This was the original "Web3" before we got today's "Web3". (Also, most of it is based on XML 🤢).
 
 Of the two, I'm still betting on the first "Web3". Not just because [Tim Berners Lee is still fighting for it with tooth and nail](https://solidproject.org/). No, it's just a really good idea that deserves more attention. And it offers valuable insights even in the absence of a large community of true practitioners.
 
-# [JSON-LD](https://www.w3.org/TR/json-ld/)
+# 🏛 An ontology for natural language
+
+We're interested in words and the relations between them. 
+
+But what is a word? Is it the *graphemic* cluster — that which we write? Or is the *phonemic* cluster — that which we say? 
+Or maybe the *semantic* cluster — that which we mean? 
+
+Sometimes, these varieties of "word" align, but more often than not, the overlap is imperfect.
+
+
+# 🔗 [JSON-LD](https://www.w3.org/TR/json-ld/)
 
 A few important notes:
 - JSON-LD arrays are unordered by default, and must be labeled explicitly with `@list`
+

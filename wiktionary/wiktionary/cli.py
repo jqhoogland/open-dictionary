@@ -15,7 +15,7 @@ def main(word: str, lang: str, wiki: str = "en"):
 
     entries = client.fetch_entry(word, lang)
 
-    entries_json = json.dumps([asdict(e) for e in entries], indent=2)
+    entries_json = json.dumps([asdict(e) for e in entries], indent=2, ensure_ascii=False)
     print(entries_json)
 
     return entries

@@ -2,6 +2,8 @@
 
 This is a **non-official** Wiktionary API client written in Python. 
 
+This is very early & very non-stable. 
+
 ## The Problem
 
 There is an actual [Wiktionary API](https://en.wiktionary.org/w/api.php).
@@ -26,4 +28,545 @@ Pretty much every single Wiktionary has its own, non-interoperable standards. So
 So... we're starting with the English-language Wiktionary. Depending on how that goes, we might move on to additional wiktionaries.
 
 
+# Structure
 
+The current return structure is as follows:
+
+```ts
+{
+  word: string,
+  lang: string, // ISO language code
+  alt_forms: LinkedWord[],
+  etymology: LinkedWord[],
+  pronunciations: (Pronunciation | Qualifier)[][],
+  definitions: LinkedWord[]   
+}[]
+
+```
+
+There is an entry for each 
+
+
+# Example
+Using the CLI to retrieve the English entries for "foo"
+
+```sh
+python wiktionary/cli.py foo en
+```
+
+Returns the following object, a list of entries (one for each unique etymology):
+
+```json
+[
+  {
+    "word": "foo",
+    "lang": "en",
+    "alt_forms": [],
+    "etymology": [
+      {
+        "name": "derived",
+        "lang": "en",
+        "src_lang": "cmn",
+        "src": "府",
+        "transliteration": "fǔ"
+      },
+      {
+        "name": "label",
+        "lang": "en",
+        "2": "historical",
+        "3": "obsolete"
+      }
+    ],
+    "pronunciations": [
+      [
+        {
+          "name": "dialect",
+          "dialects": [
+            "UK"
+          ]
+        },
+        {
+          "name": "ipa",
+          "lang": "en",
+          "pronunciations": [
+            {
+              "ipa": "/fuː/"
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "name": "En-au-foo.ogg",
+          "lang": "en",
+          "url": "Audio (AU)"
+        }
+      ],
+      [
+        {
+          "name": "rhymes",
+          "lang": "en",
+          "s": "1",
+          "rhymes": [
+            {
+              "rhyme": "uː"
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "name": "homophones",
+          "lang": "en",
+          "rhymes": [
+            {
+              "homophone": "-fu"
+            }
+          ]
+        }
+      ]
+    ],
+    "glyph_origin": null,
+    "description": null,
+    "definitions": [
+      {
+        "name": "references",
+        "linked": [],
+        "category": null,
+        "data": "<references/>\n* [[rfc:3092]], ''Etymology of \"Foo\"'', {{w|Internet Engineering Task Force}} (IETF)\n\n"
+      },
+      {
+        "name": "anagrams",
+        "linked": [
+          {
+            "name": "anagram",
+            "lang": "en",
+            "alphagram": "foo",
+            "anagrams": [
+              "oof"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "noun",
+        "data": []
+      }
+    ]
+  },
+  {
+    "word": "foo",
+    "lang": "en",
+    "alt_forms": [],
+    "etymology": [
+      {
+        "name": "derived",
+        "lang": "en",
+        "src_lang": "zh",
+        "src": "福",
+        "alt": "",
+        "translation": "[[fortunate]]; [[prosperity]], [[good]] [[luck]]",
+        "transliteration": "fú"
+      },
+      {
+        "name": "mention",
+        "lang": "zh",
+        "src": "福星",
+        "alt": "",
+        "translation": "[[Jupiter]]",
+        "transliteration": "Fúxīng"
+      },
+      {
+        "name": "mention",
+        "lang": "en",
+        "src": "om mani padme hum"
+      },
+      {
+        "name": "mention",
+        "lang": "en",
+        "src": "FUBAR"
+      },
+      {
+        "name": "label",
+        "lang": "en",
+        "2": "programming"
+      },
+      {
+        "name": "label",
+        "lang": "en",
+        "2": "fandom slang"
+      },
+      {
+        "name": "link",
+        "lang": "en",
+        "src": "foobar"
+      },
+      {
+        "name": "link",
+        "lang": "en",
+        "src": "FUBAR"
+      }
+    ],
+    "pronunciations": [
+      [
+        {
+          "name": "dialect",
+          "dialects": [
+            "UK"
+          ]
+        },
+        {
+          "name": "ipa",
+          "lang": "en",
+          "pronunciations": [
+            {
+              "ipa": "/fuː/"
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "name": "En-au-foo.ogg",
+          "lang": "en",
+          "url": "Audio (AU)"
+        }
+      ],
+      [
+        {
+          "name": "rhymes",
+          "lang": "en",
+          "s": "1",
+          "rhymes": [
+            {
+              "rhyme": "uː"
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "name": "homophones",
+          "lang": "en",
+          "rhymes": [
+            {
+              "homophone": "-fu"
+            }
+          ]
+        }
+      ]
+    ],
+    "glyph_origin": null,
+    "description": null,
+    "definitions": [
+      {
+        "name": "references",
+        "linked": [],
+        "category": null,
+        "data": "<references/>\n* [[rfc:3092]], ''Etymology of \"Foo\"'', {{w|Internet Engineering Task Force}} (IETF)\n\n"
+      },
+      {
+        "name": "anagrams",
+        "linked": [
+          {
+            "name": "anagram",
+            "lang": "en",
+            "alphagram": "foo",
+            "anagrams": [
+              "oof"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "noun",
+        "data": [
+          {
+            "name": "derived_terms",
+            "linked": [
+              {
+                "name": "link",
+                "lang": "en",
+                "src": "foobar"
+              }
+            ]
+          },
+          {
+            "name": "related_terms",
+            "linked": [
+              {
+                "name": "link",
+                "lang": "en",
+                "src": "FUBAR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "derived_terms",
+        "linked": [
+          {
+            "name": "link",
+            "lang": "en",
+            "src": "foobar"
+          }
+        ]
+      },
+      {
+        "name": "related_terms",
+        "linked": [
+          {
+            "name": "link",
+            "lang": "en",
+            "src": "FUBAR"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "foo",
+    "lang": "en",
+    "alt_forms": [],
+    "etymology": [
+      {
+        "name": "mention",
+        "lang": "en",
+        "src": "fuck"
+      },
+      {
+        "name": "sense",
+        "sense": "expression of disgust"
+      },
+      {
+        "name": "link",
+        "lang": "en",
+        "src": "darn"
+      },
+      {
+        "name": "link",
+        "lang": "en",
+        "src": "drat"
+      }
+    ],
+    "pronunciations": [
+      [
+        {
+          "name": "dialect",
+          "dialects": [
+            "UK"
+          ]
+        },
+        {
+          "name": "ipa",
+          "lang": "en",
+          "pronunciations": [
+            {
+              "ipa": "/fuː/"
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "name": "En-au-foo.ogg",
+          "lang": "en",
+          "url": "Audio (AU)"
+        }
+      ],
+      [
+        {
+          "name": "rhymes",
+          "lang": "en",
+          "s": "1",
+          "rhymes": [
+            {
+              "rhyme": "uː"
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "name": "homophones",
+          "lang": "en",
+          "rhymes": [
+            {
+              "homophone": "-fu"
+            }
+          ]
+        }
+      ]
+    ],
+    "glyph_origin": null,
+    "description": null,
+    "definitions": [
+      {
+        "name": "references",
+        "linked": [],
+        "category": null,
+        "data": "<references/>\n* [[rfc:3092]], ''Etymology of \"Foo\"'', {{w|Internet Engineering Task Force}} (IETF)\n\n"
+      },
+      {
+        "name": "anagrams",
+        "linked": [
+          {
+            "name": "anagram",
+            "lang": "en",
+            "alphagram": "foo",
+            "anagrams": [
+              "oof"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "interjection",
+        "data": [
+          {
+            "name": "synonyms",
+            "linked": [
+              {
+                "name": "sense",
+                "sense": "expression of disgust"
+              },
+              {
+                "name": "link",
+                "lang": "en",
+                "src": "darn"
+              },
+              {
+                "name": "link",
+                "lang": "en",
+                "src": "drat"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "synonyms",
+        "linked": [
+          {
+            "name": "sense",
+            "sense": "expression of disgust"
+          },
+          {
+            "name": "link",
+            "lang": "en",
+            "src": "darn"
+          },
+          {
+            "name": "link",
+            "lang": "en",
+            "src": "drat"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "word": "foo",
+    "lang": "en",
+    "alt_forms": [
+      {
+        "word": {
+          "name": "link",
+          "lang": "en",
+          "src": "foo'"
+        },
+        "qualifiers": []
+      }
+    ],
+    "etymology": [
+      {
+        "name": "link",
+        "lang": "en",
+        "src": "foo'"
+      },
+      {
+        "name": "label",
+        "lang": "en",
+        "2": "slang"
+      }
+    ],
+    "pronunciations": [
+      [
+        {
+          "name": "dialect",
+          "dialects": [
+            "UK"
+          ]
+        },
+        {
+          "name": "ipa",
+          "lang": "en",
+          "pronunciations": [
+            {
+              "ipa": "/fuː/"
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "name": "En-au-foo.ogg",
+          "lang": "en",
+          "url": "Audio (AU)"
+        }
+      ],
+      [
+        {
+          "name": "rhymes",
+          "lang": "en",
+          "s": "1",
+          "rhymes": [
+            {
+              "rhyme": "uː"
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "name": "homophones",
+          "lang": "en",
+          "rhymes": [
+            {
+              "homophone": "-fu"
+            }
+          ]
+        }
+      ]
+    ],
+    "glyph_origin": null,
+    "description": null,
+    "definitions": [
+      {
+        "name": "references",
+        "linked": [],
+        "category": null,
+        "data": "<references/>\n* [[rfc:3092]], ''Etymology of \"Foo\"'', {{w|Internet Engineering Task Force}} (IETF)\n\n"
+      },
+      {
+        "name": "anagrams",
+        "linked": [
+          {
+            "name": "anagram",
+            "lang": "en",
+            "alphagram": "foo",
+            "anagrams": [
+              "oof"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "noun",
+        "data": []
+      }
+    ]
+  }
+]
+```

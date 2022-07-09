@@ -91,9 +91,9 @@ def parse_section(
     elif to_snake_case(section.title) in ALLOWED_POS_HEADERS:
         return {
             "name": to_snake_case(section.title),
-            "data": parse_def_section(section, lang=lang)
+            **parse_def_section(section, lang=lang)
         }
-    elif section.title in ("Derived Terms", "Related terms", "Collocations", "Synonyms", "Antonyms", "Hyperonyms", "Hyponyms", "Collocations", "Descendants", "Translations", "Anagrams"):
+    elif section.title.lower() in ("derived terms", "related terms", "collocations", "synonyms", "antonyms", "hyperonyms", "hyponyms", "collocations", "descendants", "translations", "anagrams"):
         # Add support for converting any child links to the appropriate semantic link.
         return _parse_default(section, lang)
     
@@ -102,21 +102,42 @@ def parse_section(
 
 
 def parse_def_section(section: wtp.Section, lang: LanguageCode) -> list[dict]:
-    def parse_def_subsection(subsection):
+
+    def parse_def_subsection(subsection: wtp.Section):
         if to_snake_case(subsection.title) in ALLOWED_POS_HEADERS:
-            return None
+            del subsection.title
+            section_start = subsection.contents.split("===", maxsplit=1)[0]
+            headline, section_start = section_start.split("\n", maxsplit=1)
+
+            lis = [
+                li for ul in wtp.parse(section_start).get_lists() 
+                for li in ul.items
+            ]
+
+            items = [
+                {
+                    "text": text, 
+                    "links": parse_templates(li)
+                } for li in lis if (text := wtp.parse(li).plain_text().strip())
+            ]
+
+            return {
+                "name": "def",
+                "headline": headline,
+                "items": items,
+            }
         if subsection.title == "Usage notes":
             pass
-        elif subsection.title in ("Derived Terms", "Related terms", "Collocations", "Synonyms", "Antonyms", "Hyperonyms", "Hyponyms", "Collocations", "Descendants", "Translations", "Anagrams"):
+        elif subsection.title.lower() in ("derived terms", "related terms", "collocations", "synonyms", "antonyms", "hyperonyms", "hyponyms", "collocations", "descendants", "translations", "anagrams"):
             return _parse_default(subsection, lang)
 
         warnings.warn(f"Definition section not processed: {subsection.title}")
 
-    return [
-        res for s in section.sections 
-        if s and s.title and (res := parse_def_subsection(s))
-    ]
-
+    return {
+        res["name"]: res for s in section.sections 
+        if s and s.title and (res := parse_def_subsection(s)) 
+        and res.get("name")
+    }
 
 @dataclass
 class EnEntry:

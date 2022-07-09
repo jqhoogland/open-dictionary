@@ -1,5 +1,6 @@
 import wikitextparser as wtp
 from more_itertools import first_true
+from wiktionary.en.templates.base import TemplateMapping
 from wiktionary.en.templates.etymology import ETYMOLOGY_TEMPLATES
 from wiktionary.en.templates.links import LINK_TEMPLATES
 from wiktionary.en.templates.other import OTHER_TEMPLATES
@@ -7,13 +8,25 @@ from wiktionary.en.templates.pronunciation import PRONUNCIATION_TEMPLATES
 from wiktionary.en.templates.semantics import SEMANTIC_TEMPLATES
 from wiktionary.en.templates.translations import TRANSLATION_TEMPLATES
 
+
+def default_template_mapper(new_name, template_name):
+    return TemplateMapping(
+        name=new_name,
+        template_names=[template_name]
+    )
+
+DEFAULT_TEMPLATE_MAPPERS = [
+    ("transcription", "pronunciation spelling of")
+]
+
 TEMPLATES = (
     *LINK_TEMPLATES,
     *ETYMOLOGY_TEMPLATES,
     *PRONUNCIATION_TEMPLATES,
     *SEMANTIC_TEMPLATES,
     *OTHER_TEMPLATES,
-    *TRANSLATION_TEMPLATES
+    *TRANSLATION_TEMPLATES,
+    *(default_template_mapper(*args) for args in DEFAULT_TEMPLATE_MAPPERS)
 )
 
 

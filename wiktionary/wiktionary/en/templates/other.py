@@ -13,6 +13,15 @@ Anagram = TemplateMapping(
     extra_transform={"anagrams": lambda anagrams: [a["a"] for a in anagrams]},
 )
 
+Def = TemplateMapping(
+    name="def",
+    template_names=["non-gloss definition"],
+    rename={
+        "1": "value",
+    }
+)
+
 OTHER_TEMPLATES = [
-    Anagram
+    Anagram,
+    Def
 ]
