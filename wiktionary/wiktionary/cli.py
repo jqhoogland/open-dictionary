@@ -13,10 +13,12 @@ def main(word: str, lang: str, wiki: str = "en"):
 
     client = WiktionaryClient(parser=EnParser())
 
-    entry = json.dumps(asdict(client.fetch_entry(word, lang)), indent=2)
-    print(entry)
+    entries = client.fetch_entry(word, lang)
 
-    return entry
+    entries_json = json.dumps([asdict(e) for e in entries], indent=2)
+    print(entries_json)
+
+    return entries
 
 
 if __name__ == "__main__":

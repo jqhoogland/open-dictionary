@@ -487,7 +487,10 @@
     },
     "collocation": {
         "@id": "collocation",
-        "@type": "rdf:predicate",
+        "@type": [
+            "rdf:predicate",
+            "owl:SymmetricProperty"
+        ],
         "rdfs:domain": "vocab:LanguageElement",
         "rdfs:range": "vocab:LanguageElement",
         "dc:description": "Terms that are frequently used together"
