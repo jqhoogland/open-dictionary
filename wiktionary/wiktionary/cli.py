@@ -1,4 +1,5 @@
-from pprint import pp
+import json
+from dataclasses import asdict
 
 import typer
 
@@ -12,8 +13,8 @@ def main(word: str, lang: str, wiki: str = "en"):
 
     client = WiktionaryClient(parser=EnParser())
 
-    entry = client.fetch_entry(word, lang)
-    pp(entry)
+    entry = json.dumps(asdict(client.fetch_entry(word, lang)), indent=2)
+    print(entry)
 
     return entry
 
