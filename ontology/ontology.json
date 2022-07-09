@@ -10,266 +10,487 @@
         "dc": "http://purl.org/dc/terms/",
         "schema": "http://schema.org/",
     },
-    "etymology": {
-        "@id": "etymology",
-        "derivativeOf": {
-            "@id": "derivativeOf",
-            "@type": "rdf:predicate"
-        },
-        "hasDerivative": {
-            "@id": "hasDerivative",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "derivativeOf"
-        },
-        "borrowingOf": {
-            "@id": "borrowingOf",
-            "@type": "rdf:predicate"
-        },
-        "hasBorrowing": {
-            "@id": "hasBorrowing",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "borrowingOf"
-        },
-        "learnedBorrowingOf": {
-            "@id": "learnedBorrowingOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "borrowingOf"
-        },
-        "hasLearnedBorrowing": {
-            "@id": "hasLearnedBorrowing",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "hasBorrowing",
-            "owl:inverseOf": "learnedBorrowingOf"
-        },
-        "orthographicBorrowingOf": {
-            "@id": "orthographicBorrowingOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "borrowingOf"
-        },
-        "hasOrthographicBorrowing": {
-            "@id": "hasOrthographicBorrowing",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "hasBorrowing",
-            "owl:inverseOf": "orthographicBorrowingOf"
-        },
-        "rootOf": {
-            "@id": "rootOf",
-            "@type": "rdf:predicate"
-        },
-        "hasRoot": {
-            "@id": "hasRoot",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "rootOf"
-        },
-        "compoundOf": {
-            "@id": "compoundOf",
-            "@type": "rdf:predicate"
-        },
-        "affixOf": {
-            "@id": "affixOf",
-            "@type": "rdf:predicate"
-        },
-        "hasAffix": {
-            "@id": "hasAffix",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "affixOf"
-        },
-        "suffixOf": {
-            "@id": "suffixOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "affixOf"
-        },
-        "hasSuffix": {
-            "@id": "hasSuffix",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "hasAffix",
-            "owl:inverseOf": "suffixOf"
-        },
-        "prefixOf": {
-            "@id": "prefixOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "affixOf"
-        },
-        "hasPrefix": {
-            "@id": "hasPrefix",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "hasAffix",
-            "owl:inverseOf": "prefixOf"
-        },
-        "interfixOf": {
-            "@id": "interfixOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "affixOf"
-        },
-        "hasInterfix": {
-            "@id": "hasInterfix",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "hasAffix",
-            "owl:inverseOf": "interfixOf"
-        },
-        "blendOf": {
-            "@id": "blendOf",
-            "@type": "rdf:predicate"
-        },
-        "hasBlend": {
-            "@id": "hasBlend",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "blendOf"
-        },
-        "clippingOf": {
-            "@id": "clippingOf",
-            "@type": "rdf:predicate"
-        },
-        "hasClipping": {
-            "@id": "hasClipping",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "clippingOf"
-        },
-        "shortFor": {
-            "@id": "shortFor",
-            "@type": "rdf:predicate"
-        },
-        "hasShortForm": {
-            "@id": "hasShortForm",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "shortFor"
-        },
-        "backFormationOf": {
-            "@id": "backFormationOf",
-            "@type": "rdf:predicate"
-        },
-        "hasBackFormation": {
-            "@id": "hasBackFormation",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "backFormationOf"
-        },
-        "doubletOf": {
-            "@id": "doubletOf",
-            "@type": "rdf:predicate"
-        },
-        "hasDoublet": {
-            "@id": "hasDoublet",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "doubletOf"
-        },
-        "piecewiseDoubletOf": {
-            "@id": "piecewiseDoubletOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "doubletOf"
-        },
-        "hasPiecewiseDoublet": {
-            "@id": "hasPiecewiseDoublet",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "piecewiseDoubletOf",
-            "rdfs:subClassOf": "hasDoublet"
-        },
-        "calqueOf": {
-            "@id": "calqueOf",
-            "@type": "rdf:predicate"
-        },
-        "hasCalque": {
-            "@id": "hasCalque",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "calqueOf"
-        },
-        "phraseologicalCalqueOf": {
-            "@id": "phraseologicalCalqueOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "calqueOf"
-        },
-        "hasPhraseologicalCalque": {
-            "@id": "hasPhraseologicalCalque",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "phraseologicalCalqueOf",
-            "rdfs:subClassOf": "hasCalque",
-            "dc:description": "Phraseological calques are idiomatic phrases that are translated word for word."
-        },
-        "syntacticCalqueOf": {
-            "@id": "syntacticCalqueOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "calqueOf",
-            "dc:description": "Syntactic calques are constructions that are imitated in structure and in violation of their meaning."
-        },
-        "hasSyntacticCalque": {
-            "@id": "hasSyntacticCalque",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "syntacticCalqueOf",
-            "rdfs:subClassOf": "hasCalque"
-        },
-        "loanTranslationOf": {
-            "@id": "loanTranslationOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "calqueOf",
-            "dc:description": "Words are translated morpheme by morpheme or component by component"
-        },
-        "hasLoanTranslation": {
-            "@id": "hasLoanTranslation",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "loanTranslationOf",
-            "rdfs:subClassOf": "hasCalque"
-        },
-        "semanticLoanOf": {
-            "@id": "semanticLoanOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "calqueOf",
-            "dc:description": "Semantic loans involve additional meanings being transferred between languages (such as computer mouse in addition to the animal mouse)."
-        },
-        "hasSemanticLoan": {
-            "@id": "hasSemanticLoan",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "semanticLoanOf",
-            "rdfs:subClassOf": "hasCalque"
-        },
-        "morphologicalCalqueOf": {
-            "@id": "morphologicalCalqueOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "calqueOf",
-            "dc:description": "Morphological calques transfer the inflection of a word."
-        },
-        "hasMorphologicalCalque": {
-            "@id": "hasMorphologicalCalque",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "morphologicalCalqueOf",
-            "rdfs:subClassOf": "hasCalque"
-        },
-        "phonoSemanticMatchingOf": {
-            "@id": "phonoSemanticMatchingOf",
-            "@type": "rdf:predicate",
-            "rdfs:subClassOf": "calqueOf",
-            "dc:description": "Phono-semantic matching is when a language copies both meaning and phonology."
-        },
-        "hasPhonoSemanticMatching": {
-            "@id": "hasPhonoSemanticMatching",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "phonoSemanticMatchingOf",
-            "rdfs:subClassOf": "hasCalque"
-        },
-        "eponymOf": {
-            "@id": "eponymOf",
-            "@type": "rdf:predicate"
-        },
-        "hasEponym": {
-            "@id": "hasEponym",
-            "@type": "rdf:predicate",
-            "owl:inverseOf": "eponymOf",
-            "rdf:subject": {
-                "@type": "schema:Person"
-            }
-        },
-        "cognateOf": {
-            "@id": "cognateOf",
-            "@type": [
-                "rdf:predicate",
-                "owl:SymmetricProperty"
-            ]
-        },
-        "nonCognateOf": {
-            "@id": "nonCognateOf",
-            "@type": [
-                "rdf:predicate",
-                "owl:SymmetricProperty"
-            ],
-        }
+    "LanguageElement": {
+        "@id": "vocab:LanguageElement",
+        "@type": "rdfs:Class"
+    },
+    "Word": {
+        "@id": "vocab:Word",
+        "@type": "rdfs:Class",
+        "dc:description": "The smallest sequence of phonemes that can be uttered in isolation with objective or practical meaning. Often equivalent to a sequence of graphemes.",
+        "rdfs:subClassOf": "vocab:LanguageElement"
+    },
+    "Phrase": {
+        "@id": "vocab:Phrase",
+        "@type": "rdfs:Class",
+        "dc:description": "A sequence of words or phrases that are used to express a meaning.",
+        "rdfs:subClassOf": "vocab:LanguageElement"
+    },
+    "Clause": {
+        "@id": "vocab:Clause",
+        "@type": "rdfs:Class",
+        "dc:description": "A sequence of words or phrases that are used to express a meaning.",
+        "rdfs:subClassOf": "vocab:LanguageElement"
+    },
+    "Sentence": {
+        "@id": "vocab:Sentence",
+        "@type": "rdfs:Class",
+        "dc:description": "A sequence of words or phrases that are used to express a meaning.",
+        "rdfs:subClassOf": "vocab:LanguageElement"
+    },
+    "Pronunciation": {
+        "@id": "vocab:Pronunciation",
+        "@type": "rdfs:Class",
+        "dc:description": "The sound of a word or phrase in a language.",
+        "rdfs:subClassOf": "vocab:LanguageElement"
+    },
+    "Phoneme": {
+        "@id": "vocab:Phoneme",
+        "@type": "rdfs:Class",
+        "dc:description": "A phonetic symbol in a language.",
+        "rdfs:subClassOf": "vocab:LanguageElement"
+    },
+    "Grapheme": {
+        "@id": "vocab:Grapheme",
+        "@type": "rdfs:Class",
+        "dc:description": "A phonetic symbol in a language.",
+        "rdfs:subClassOf": "vocab:LanguageElement"
+    },
+    "Morpheme": {
+        "@id": "vocab:Morpheme",
+        "@type": "rdfs:Class",
+        "dc:description": "A phonetic symbol in a language.",
+        "rdfs:subClassOf": "vocab:LanguageElement"
+    },
+    "Etymology": {
+        "@id": "vocab:Etymology",
+        "@type": "rdf:predicate"
+    },
+    "@id": "Etymology",
+    "derivativeOf": {
+        "@id": "derivativeOf",
+        "@type": "Etymology",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasDerivative": {
+        "@id": "hasDerivative",
+        "@type": "Etymology",
+        "owl:inverseOf": "derivativeOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "borrowingOf": {
+        "@id": "borrowingOf",
+        "@type": "Etymology",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasBorrowing": {
+        "@id": "hasBorrowing",
+        "@type": "Etymology",
+        "owl:inverseOf": "borrowingOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "learnedBorrowingOf": {
+        "@id": "learnedBorrowingOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "borrowingOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasLearnedBorrowing": {
+        "@id": "hasLearnedBorrowing",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "hasBorrowing",
+        "owl:inverseOf": "learnedBorrowingOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "orthographicBorrowingOf": {
+        "@id": "orthographicBorrowingOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "borrowingOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasOrthographicBorrowing": {
+        "@id": "hasOrthographicBorrowing",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "hasBorrowing",
+        "owl:inverseOf": "orthographicBorrowingOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "rootOf": {
+        "@id": "rootOf",
+        "@type": "Etymology",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasRoot": {
+        "@id": "hasRoot",
+        "@type": "Etymology",
+        "owl:inverseOf": "rootOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "compoundOf": {
+        "@id": "compoundOf",
+        "@type": "Etymology",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "affixOf": {
+        "@id": "affixOf",
+        "@type": "Etymology",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasAffix": {
+        "@id": "hasAffix",
+        "@type": "Etymology",
+        "owl:inverseOf": "affixOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "suffixOf": {
+        "@id": "suffixOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "affixOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasSuffix": {
+        "@id": "hasSuffix",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "hasAffix",
+        "owl:inverseOf": "suffixOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "prefixOf": {
+        "@id": "prefixOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "affixOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasPrefix": {
+        "@id": "hasPrefix",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "hasAffix",
+        "owl:inverseOf": "prefixOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "interfixOf": {
+        "@id": "interfixOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "affixOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasInterfix": {
+        "@id": "hasInterfix",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "hasAffix",
+        "owl:inverseOf": "interfixOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "blendOf": {
+        "@id": "blendOf",
+        "@type": "Etymology",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasBlend": {
+        "@id": "hasBlend",
+        "@type": "Etymology",
+        "owl:inverseOf": "blendOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "clippingOf": {
+        "@id": "clippingOf",
+        "@type": "Etymology",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasClipping": {
+        "@id": "hasClipping",
+        "@type": "Etymology",
+        "owl:inverseOf": "clippingOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "shortFor": {
+        "@id": "shortFor",
+        "@type": "Etymology",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasShortForm": {
+        "@id": "hasShortForm",
+        "@type": "Etymology",
+        "owl:inverseOf": "shortFor",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "backFormationOf": {
+        "@id": "backFormationOf",
+        "@type": "Etymology",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasBackFormation": {
+        "@id": "hasBackFormation",
+        "@type": "Etymology",
+        "owl:inverseOf": "backFormationOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "doubletOf": {
+        "@id": "doubletOf",
+        "@type": "Etymology",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasDoublet": {
+        "@id": "hasDoublet",
+        "@type": "Etymology",
+        "owl:inverseOf": "doubletOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "piecewiseDoubletOf": {
+        "@id": "piecewiseDoubletOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "doubletOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasPiecewiseDoublet": {
+        "@id": "hasPiecewiseDoublet",
+        "@type": "Etymology",
+        "owl:inverseOf": "piecewiseDoubletOf",
+        "rdfs:subClassOf": "hasDoublet",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "calqueOf": {
+        "@id": "calqueOf",
+        "@type": "Etymology",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasCalque": {
+        "@id": "hasCalque",
+        "@type": "Etymology",
+        "owl:inverseOf": "calqueOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "phraseologicalCalqueOf": {
+        "@id": "phraseologicalCalqueOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "calqueOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasPhraseologicalCalque": {
+        "@id": "hasPhraseologicalCalque",
+        "@type": "Etymology",
+        "owl:inverseOf": "phraseologicalCalqueOf",
+        "rdfs:subClassOf": "hasCalque",
+        "dc:description": "Phraseological calques are idiomatic phrases that are translated word for word.",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "syntacticCalqueOf": {
+        "@id": "syntacticCalqueOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "calqueOf",
+        "dc:description": "Syntactic calques are constructions that are imitated in structure and in violation of their meaning.",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasSyntacticCalque": {
+        "@id": "hasSyntacticCalque",
+        "@type": "Etymology",
+        "owl:inverseOf": "syntacticCalqueOf",
+        "rdfs:subClassOf": "hasCalque",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "loanTranslationOf": {
+        "@id": "loanTranslationOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "calqueOf",
+        "dc:description": "Words are translated morpheme by morpheme or component by component",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasLoanTranslation": {
+        "@id": "hasLoanTranslation",
+        "@type": "Etymology",
+        "owl:inverseOf": "loanTranslationOf",
+        "rdfs:subClassOf": "hasCalque",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "semanticLoanOf": {
+        "@id": "semanticLoanOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "calqueOf",
+        "dc:description": "Semantic loans involve additional meanings being transferred between languages (such as computer mouse in addition to the animal mouse).",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasSemanticLoan": {
+        "@id": "hasSemanticLoan",
+        "@type": "Etymology",
+        "owl:inverseOf": "semanticLoanOf",
+        "rdfs:subClassOf": "hasCalque",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "morphologicalCalqueOf": {
+        "@id": "morphologicalCalqueOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "calqueOf",
+        "dc:description": "Morphological calques transfer the inflection of a word.",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasMorphologicalCalque": {
+        "@id": "hasMorphologicalCalque",
+        "@type": "Etymology",
+        "owl:inverseOf": "morphologicalCalqueOf",
+        "rdfs:subClassOf": "hasCalque",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "phonoSemanticMatchingOf": {
+        "@id": "phonoSemanticMatchingOf",
+        "@type": "Etymology",
+        "rdfs:subClassOf": "calqueOf",
+        "dc:description": "Phono-semantic matching is when a language copies both meaning and phonology.",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasPhonoSemanticMatching": {
+        "@id": "hasPhonoSemanticMatching",
+        "@type": "Etymology",
+        "owl:inverseOf": "phonoSemanticMatchingOf",
+        "rdfs:subClassOf": "hasCalque",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "eponymOf": {
+        "@id": "eponymOf",
+        "@type": "Etymology",
+        "rdf:range": "schema:Person",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hasEponym": {
+        "@id": "hasEponym",
+        "@type": "Etymology",
+        "owl:inverseOf": "eponymOf",
+        "rdf:domain": "schema:Person",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "cognateOf": {
+        "@id": "cognateOf",
+        "@type": [
+            "Etymology",
+            "owl:SymmetricProperty"
+        ],
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "nonCognateOf": {
+        "@id": "nonCognateOf",
+        "@type": [
+            "Etymology",
+            "owl:SymmetricProperty"
+        ],
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "SemanticRelationship": {
+        "@id": "SemanticRelationship",
+        "@type": "rdfs:Class",
+        "rdfs:label": "Semantic relationship",
+        "rdfs:comment": "A semantic relationship is a relationship between two language elements concerning their meaning.",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "synonymOf": {
+        "@id": "synonymOf",
+        "@type": "SemanticRelationship",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "antonymOf": {
+        "@id": "antonymOf",
+        "@type": "SemanticRelationship",
+        "owl:inverseOf": "synonymOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hypernymOf": {
+        "@id": "hypernymOf",
+        "@type": "SemanticRelationship",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "hyponymOf": {
+        "@id": "hyponymOf",
+        "@type": "SemanticRelationship",
+        "owl:inverseOf": "hypernymOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "meronymOf": {
+        "@id": "meronymOf",
+        "@type": "SemanticRelationship",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "holonymOf": {
+        "@id": "holonymOf",
+        "@type": "SemanticRelationship",
+        "owl:inverseOf": "meronymOf",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "troponymOf": {
+        "@id": "troponymOf",
+        "@type": "SemanticRelationship",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement"
+    },
+    "coordinateTermOf": {
+        "@id": "coordinateTermsWith",
+        "@type": [
+            "SemanticRelationship",
+            "owl:SymmetricProperty"
+        ],
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement",
+        "dc:description": "A term that shares a hypernym with another"
+    },
+    "collocation": {
+        "@id": "collocation",
+        "@type": "rdf:predicate",
+        "rdfs:domain": "vocab:LanguageElement",
+        "rdfs:range": "vocab:LanguageElement",
+        "dc:description": "Terms that are frequently used together"
     },
     "@graph": [
         "isOnomatopoeia",
