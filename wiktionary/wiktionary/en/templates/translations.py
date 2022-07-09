@@ -5,7 +5,7 @@ Translation = TemplateMapping(
     template_names=["translation", "t", "t-check", "t+", "t+check", "tt", "tt+", "tt+check", "tt-check"],
     rename={
         "1": _LANG[1],
-        "2": "translation",
+        "2": "gloss",
         # TODO: Add support for gender & number specification (|3=, |4=, ...)
         **COMMON_RENAME
     }

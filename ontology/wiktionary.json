@@ -1,0 +1,35 @@
+{
+    "@context": {
+        "@base": "https://opendictionary.org/",
+        "@vocab": "ld#",
+        "od": "https://opendictionary.org/",
+        "wt": "https://wiktionary.org/",
+        "wt-en": "https://en.wiktionary.org/",
+        "wm-meta": "https://meta.wikimedia.org/",
+        "wp": "http://wikipedia.org/",
+        "wp-en": "http://en.wikipedia.org/",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "dc": "http://purl.org/dc/terms/",
+        "schema": "http://schema.org/"
+    },
+    "Page": {
+        "@id": "Page",
+        "@type": "@id",
+        "dc:description": "A page is a list of language-specific entries.",
+        "dc:comment": "This differs from Wiktionary's own naming conventions. They call each page an 'entry' and break each 'entry' up into 'language sections'. 'Page' and 'Entry' are chosen here to more closely match the conventional understanding of 'web page' and 'dictionary entry'."
+    },
+    "Entry": {
+        "@id": "Entry",
+        "@type": "@id",
+        "dc:description": "An entry is a word or phrase in a single language on a 'Page'.",
+        "dc:comment": "This differs from Wiktionary's own naming conventions. They call each page an 'entry' and break each 'entry' up into 'language sections'. 'Page' and 'Entry' are chosen here to more closely match the conventional understanding of 'web page' and 'dictionary entry'."
+    },
+    "Template": {
+        "@id": "wt-meta:wiki/Category:Templates",
+        "@type": "@id",
+        "dc:description": "A template is a special tag in wikitext for structuring recurring types of information in a consistent way.",
+        "dc:comment": "Templates often map very neatly onto semantic triples. They're the whole reason this project works."
+    }
+}

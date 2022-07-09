@@ -39,7 +39,7 @@ The current return structure is as follows:
   alt_forms: LinkedWord[],
   etymology: LinkedWord[],
   pronunciations: (Pronunciation | Qualifier)[][],
-  definitions: LinkedWord[]   
+  definitions: LinkedWord   
 }[]
 
 ```
@@ -64,14 +64,14 @@ Returns the following object, a list of entries (one for each unique etymology):
     "alt_forms": [],
     "etymology": [
       {
-        "name": "derived",
+        "@id": "derived",
         "lang": "en",
         "src_lang": "cmn",
         "src": "府",
         "transliteration": "fǔ"
       },
       {
-        "name": "label",
+        "@id": "label",
         "lang": "en",
         "2": "historical",
         "3": "obsolete"
@@ -80,13 +80,13 @@ Returns the following object, a list of entries (one for each unique etymology):
     "pronunciations": [
       [
         {
-          "name": "dialect",
+          "@id": "dialect",
           "dialects": [
             "UK"
           ]
         },
         {
-          "name": "ipa",
+          "@id": "ipa",
           "lang": "en",
           "pronunciations": [
             {
@@ -97,14 +97,14 @@ Returns the following object, a list of entries (one for each unique etymology):
       ],
       [
         {
-          "name": "En-au-foo.ogg",
+          "@id": "En-au-foo.ogg",
           "lang": "en",
           "url": "Audio (AU)"
         }
       ],
       [
         {
-          "name": "rhymes",
+          "@id": "rhymes",
           "lang": "en",
           "s": "1",
           "rhymes": [
@@ -116,7 +116,7 @@ Returns the following object, a list of entries (one for each unique etymology):
       ],
       [
         {
-          "name": "homophones",
+          "@id": "homophones",
           "lang": "en",
           "rhymes": [
             {
@@ -130,16 +130,16 @@ Returns the following object, a list of entries (one for each unique etymology):
     "description": null,
     "definitions": [
       {
-        "name": "references",
+        "@id": "references",
         "linked": [],
         "category": null,
         "data": "<references/>\n* [[rfc:3092]], ''Etymology of \"Foo\"'', {{w|Internet Engineering Task Force}} (IETF)\n\n"
       },
       {
-        "name": "anagrams",
+        "@id": "anagrams",
         "linked": [
           {
-            "name": "anagram",
+            "@id": "anagram",
             "lang": "en",
             "alphagram": "foo",
             "anagrams": [
@@ -149,7 +149,7 @@ Returns the following object, a list of entries (one for each unique etymology):
         ]
       },
       {
-        "name": "noun",
+        "@id": "noun",
         "data": []
       }
     ]
@@ -160,49 +160,49 @@ Returns the following object, a list of entries (one for each unique etymology):
     "alt_forms": [],
     "etymology": [
       {
-        "name": "derived",
+        "@id": "derived",
         "lang": "en",
         "src_lang": "zh",
         "src": "福",
         "alt": "",
-        "translation": "[[fortunate]]; [[prosperity]], [[good]] [[luck]]",
+        "gloss": "[[fortunate]]; [[prosperity]], [[good]] [[luck]]",
         "transliteration": "fú"
       },
       {
-        "name": "mention",
+        "@id": "mention",
         "lang": "zh",
         "src": "福星",
         "alt": "",
-        "translation": "[[Jupiter]]",
+        "gloss": "[[Jupiter]]",
         "transliteration": "Fúxīng"
       },
       {
-        "name": "mention",
+        "@id": "mention",
         "lang": "en",
         "src": "om mani padme hum"
       },
       {
-        "name": "mention",
+        "@id": "mention",
         "lang": "en",
         "src": "FUBAR"
       },
       {
-        "name": "label",
+        "@id": "label",
         "lang": "en",
         "2": "programming"
       },
       {
-        "name": "label",
+        "@id": "label",
         "lang": "en",
         "2": "fandom slang"
       },
       {
-        "name": "link",
+        "@id": "link",
         "lang": "en",
         "src": "foobar"
       },
       {
-        "name": "link",
+        "@id": "link",
         "lang": "en",
         "src": "FUBAR"
       }
@@ -210,13 +210,13 @@ Returns the following object, a list of entries (one for each unique etymology):
     "pronunciations": [
       [
         {
-          "name": "dialect",
+          "@id": "dialect",
           "dialects": [
             "UK"
           ]
         },
         {
-          "name": "ipa",
+          "@id": "ipa",
           "lang": "en",
           "pronunciations": [
             {
@@ -227,14 +227,14 @@ Returns the following object, a list of entries (one for each unique etymology):
       ],
       [
         {
-          "name": "En-au-foo.ogg",
+          "@id": "En-au-foo.ogg",
           "lang": "en",
           "url": "Audio (AU)"
         }
       ],
       [
         {
-          "name": "rhymes",
+          "@id": "rhymes",
           "lang": "en",
           "s": "1",
           "rhymes": [
@@ -246,7 +246,7 @@ Returns the following object, a list of entries (one for each unique etymology):
       ],
       [
         {
-          "name": "homophones",
+          "@id": "homophones",
           "lang": "en",
           "rhymes": [
             {
@@ -260,16 +260,16 @@ Returns the following object, a list of entries (one for each unique etymology):
     "description": null,
     "definitions": [
       {
-        "name": "references",
+        "@id": "references",
         "linked": [],
         "category": null,
         "data": "<references/>\n* [[rfc:3092]], ''Etymology of \"Foo\"'', {{w|Internet Engineering Task Force}} (IETF)\n\n"
       },
       {
-        "name": "anagrams",
+        "@id": "anagrams",
         "linked": [
           {
-            "name": "anagram",
+            "@id": "anagram",
             "lang": "en",
             "alphagram": "foo",
             "anagrams": [
@@ -279,23 +279,23 @@ Returns the following object, a list of entries (one for each unique etymology):
         ]
       },
       {
-        "name": "noun",
+        "@id": "noun",
         "data": [
           {
-            "name": "derived_terms",
+            "@id": "derived_terms",
             "linked": [
               {
-                "name": "link",
+                "@id": "link",
                 "lang": "en",
                 "src": "foobar"
               }
             ]
           },
           {
-            "name": "related_terms",
+            "@id": "related_terms",
             "linked": [
               {
-                "name": "link",
+                "@id": "link",
                 "lang": "en",
                 "src": "FUBAR"
               }
@@ -304,20 +304,20 @@ Returns the following object, a list of entries (one for each unique etymology):
         ]
       },
       {
-        "name": "derived_terms",
+        "@id": "derived_terms",
         "linked": [
           {
-            "name": "link",
+            "@id": "link",
             "lang": "en",
             "src": "foobar"
           }
         ]
       },
       {
-        "name": "related_terms",
+        "@id": "related_terms",
         "linked": [
           {
-            "name": "link",
+            "@id": "link",
             "lang": "en",
             "src": "FUBAR"
           }
@@ -331,21 +331,21 @@ Returns the following object, a list of entries (one for each unique etymology):
     "alt_forms": [],
     "etymology": [
       {
-        "name": "mention",
+        "@id": "mention",
         "lang": "en",
         "src": "fuck"
       },
       {
-        "name": "sense",
+        "@id": "sense",
         "sense": "expression of disgust"
       },
       {
-        "name": "link",
+        "@id": "link",
         "lang": "en",
         "src": "darn"
       },
       {
-        "name": "link",
+        "@id": "link",
         "lang": "en",
         "src": "drat"
       }
@@ -353,13 +353,13 @@ Returns the following object, a list of entries (one for each unique etymology):
     "pronunciations": [
       [
         {
-          "name": "dialect",
+          "@id": "dialect",
           "dialects": [
             "UK"
           ]
         },
         {
-          "name": "ipa",
+          "@id": "ipa",
           "lang": "en",
           "pronunciations": [
             {
@@ -370,14 +370,14 @@ Returns the following object, a list of entries (one for each unique etymology):
       ],
       [
         {
-          "name": "En-au-foo.ogg",
+          "@id": "En-au-foo.ogg",
           "lang": "en",
           "url": "Audio (AU)"
         }
       ],
       [
         {
-          "name": "rhymes",
+          "@id": "rhymes",
           "lang": "en",
           "s": "1",
           "rhymes": [
@@ -389,7 +389,7 @@ Returns the following object, a list of entries (one for each unique etymology):
       ],
       [
         {
-          "name": "homophones",
+          "@id": "homophones",
           "lang": "en",
           "rhymes": [
             {
@@ -403,16 +403,16 @@ Returns the following object, a list of entries (one for each unique etymology):
     "description": null,
     "definitions": [
       {
-        "name": "references",
+        "@id": "references",
         "linked": [],
         "category": null,
         "data": "<references/>\n* [[rfc:3092]], ''Etymology of \"Foo\"'', {{w|Internet Engineering Task Force}} (IETF)\n\n"
       },
       {
-        "name": "anagrams",
+        "@id": "anagrams",
         "linked": [
           {
-            "name": "anagram",
+            "@id": "anagram",
             "lang": "en",
             "alphagram": "foo",
             "anagrams": [
@@ -422,22 +422,22 @@ Returns the following object, a list of entries (one for each unique etymology):
         ]
       },
       {
-        "name": "interjection",
+        "@id": "interjection",
         "data": [
           {
-            "name": "synonyms",
+            "@id": "synonyms",
             "linked": [
               {
-                "name": "sense",
+                "@id": "sense",
                 "sense": "expression of disgust"
               },
               {
-                "name": "link",
+                "@id": "link",
                 "lang": "en",
                 "src": "darn"
               },
               {
-                "name": "link",
+                "@id": "link",
                 "lang": "en",
                 "src": "drat"
               }
@@ -446,19 +446,19 @@ Returns the following object, a list of entries (one for each unique etymology):
         ]
       },
       {
-        "name": "synonyms",
+        "@id": "synonyms",
         "linked": [
           {
-            "name": "sense",
+            "@id": "sense",
             "sense": "expression of disgust"
           },
           {
-            "name": "link",
+            "@id": "link",
             "lang": "en",
             "src": "darn"
           },
           {
-            "name": "link",
+            "@id": "link",
             "lang": "en",
             "src": "drat"
           }
@@ -472,7 +472,7 @@ Returns the following object, a list of entries (one for each unique etymology):
     "alt_forms": [
       {
         "word": {
-          "name": "link",
+          "@id": "link",
           "lang": "en",
           "src": "foo'"
         },
@@ -481,12 +481,12 @@ Returns the following object, a list of entries (one for each unique etymology):
     ],
     "etymology": [
       {
-        "name": "link",
+        "@id": "link",
         "lang": "en",
         "src": "foo'"
       },
       {
-        "name": "label",
+        "@id": "label",
         "lang": "en",
         "2": "slang"
       }
@@ -494,13 +494,13 @@ Returns the following object, a list of entries (one for each unique etymology):
     "pronunciations": [
       [
         {
-          "name": "dialect",
+          "@id": "dialect",
           "dialects": [
             "UK"
           ]
         },
         {
-          "name": "ipa",
+          "@id": "ipa",
           "lang": "en",
           "pronunciations": [
             {
@@ -511,14 +511,14 @@ Returns the following object, a list of entries (one for each unique etymology):
       ],
       [
         {
-          "name": "En-au-foo.ogg",
+          "@id": "En-au-foo.ogg",
           "lang": "en",
           "url": "Audio (AU)"
         }
       ],
       [
         {
-          "name": "rhymes",
+          "@id": "rhymes",
           "lang": "en",
           "s": "1",
           "rhymes": [
@@ -530,7 +530,7 @@ Returns the following object, a list of entries (one for each unique etymology):
       ],
       [
         {
-          "name": "homophones",
+          "@id": "homophones",
           "lang": "en",
           "rhymes": [
             {
@@ -544,16 +544,16 @@ Returns the following object, a list of entries (one for each unique etymology):
     "description": null,
     "definitions": [
       {
-        "name": "references",
+        "@id": "references",
         "linked": [],
         "category": null,
         "data": "<references/>\n* [[rfc:3092]], ''Etymology of \"Foo\"'', {{w|Internet Engineering Task Force}} (IETF)\n\n"
       },
       {
-        "name": "anagrams",
+        "@id": "anagrams",
         "linked": [
           {
-            "name": "anagram",
+            "@id": "anagram",
             "lang": "en",
             "alphagram": "foo",
             "anagrams": [
@@ -563,7 +563,7 @@ Returns the following object, a list of entries (one for each unique etymology):
         ]
       },
       {
-        "name": "noun",
+        "@id": "noun",
         "data": []
       }
     ]

@@ -28,7 +28,7 @@ Audio = TemplateMapping(
     template_names=["audio", ],
     rename={
         "1": _LANG[1],
-        "2": "name",
+        "2": "filename",
         "3": "url",
         "format": "format",
     }
@@ -39,7 +39,7 @@ AudioWitihIPA = TemplateMapping(
     template_names=["audio-IPA", ],
     rename={
         "1": _LANG[1],
-        "2": "name",
+        "2": "filename",
         "3": "ipa",
         "format": "format",
         "dial": "dialect"

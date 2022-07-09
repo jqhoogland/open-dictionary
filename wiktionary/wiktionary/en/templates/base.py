@@ -12,13 +12,13 @@ from wiktionary.utils import get_regex
 
 _LANG = "lang", "lang"
 _ALT = "alt", "alt"
-_T = "t", "translation"
-_SC = "sc", "script_code"
+_T = "t", "gloss"
+_SC = "sc", "script"
 _TR = "tr", "transliteration"
 _TS = "ts", "transcription"
-_POS  = "pos", "part_of_speech"
-_LIT = "lit", "literal_translation"
-_ID = "id", "sense_id"
+_POS  = "pos", "partOfSpeech"
+_LIT = "lit", "literalTranslation"
+_ID = "id", "sense"
 
 _G = "g", "gender"
 WITH_GENDER = dict(
@@ -97,10 +97,10 @@ class TemplateMapping:
 
     ```json
     {   
-        "name": "mention",
+        "@id": "mention",
         "word": "hello",
         "lang": "en",
-        "translation": "a standard greeting"        
+        "gloss": "a standard greeting"        
     }
     ```
 
@@ -122,7 +122,7 @@ class TemplateMapping:
     #: Some templates are variadic. For example, `{{affix|nl|huis|-je|pos2=diminutive}}`. We'd like to convert this into 
     #: ```
     #: {
-    #:   "name": "affix", 
+    #:   "@id": "affix", 
     #:   "lang": "nl", 
     #:   "morphemes": [
     #:     {"morpheme": "huis"}, 
@@ -200,7 +200,7 @@ class TemplateMapping:
         data.update({**self.extra})
 
         return {
-            "name": self.name,
+            "@id": self.name,
             **data
         }
 

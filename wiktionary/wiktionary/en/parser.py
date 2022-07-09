@@ -1,5 +1,8 @@
 from dataclasses import dataclass, field
 from itertools import dropwhile
+import json
+import os
+from pathlib import Path
 from pprint import pp
 from typing import Any, Generator
 import warnings
@@ -9,8 +12,8 @@ from more_itertools import first_true
 #
 from wiktionary._types import LanguageCode
 from wiktionary.en.templates.parse import parse_templates
-from wiktionary.utils import to_snake_case
 from wiktionary.en.constants import AllowedPOSHeader, get_category,  ALLOWED_POS_HEADERS
+from wiktionary.utils import template_to_dict, transform_template_dict, to_snake_case
 
 
 @dataclass
@@ -29,8 +32,8 @@ def parse_alt_forms(
             for li in ul.items:
                 templates = parse_templates(li)
                 yield AltForm(
-                    word=first_true(templates, pred=lambda x: x["name"] == "link"),
-                    qualifiers=list(filter(lambda x: x["name"] == "qualifier", templates)),
+                    word=first_true(templates, pred=lambda x: x["@id"] == "link"),
+                    qualifiers=list(filter(lambda x: x["@id"] == "qualifier", templates)),
                 )
 
     return list(gen_alt_forms())
@@ -59,7 +62,7 @@ def parse_pronunciation(section: wtp.Section, lang: LanguageCode) -> dict:
 def _parse_default(section: wtp.Section, lang: LanguageCode) -> dict:
     """Parse a section of wikitext."""    
     return {
-        "name": to_snake_case(section.title),
+        "@id": to_snake_case(section.title),
         "linked": parse_templates(section.contents)
     }
 
@@ -90,7 +93,7 @@ def parse_section(
         return parse_pronunciation(section, lang=lang)
     elif to_snake_case(section.title) in ALLOWED_POS_HEADERS:
         return {
-            "name": to_snake_case(section.title),
+            "@id": to_snake_case(section.title),
             **parse_def_section(section, lang=lang)
         }
     elif section.title.lower() in ("derived terms", "related terms", "collocations", "synonyms", "antonyms", "hyperonyms", "hyponyms", "collocations", "descendants", "translations", "anagrams"):
@@ -122,7 +125,7 @@ def parse_def_section(section: wtp.Section, lang: LanguageCode) -> list[dict]:
             ]
 
             return {
-                "name": "def",
+                "@id": "def",
                 "headline": headline,
                 "items": items,
             }
@@ -134,9 +137,9 @@ def parse_def_section(section: wtp.Section, lang: LanguageCode) -> list[dict]:
         warnings.warn(f"Definition section not processed: {subsection.title}")
 
     return {
-        res["name"]: res for s in section.sections 
+        res["@id"]: res for s in section.sections 
         if s and s.title and (res := parse_def_subsection(s)) 
-        and res.get("name")
+        and res.get("@id")
     }
 
 @dataclass
@@ -244,3 +247,14 @@ class EnParser:
             return list(parse_multiple())
 
         return cls._parse(word, sections, lang)
+
+    @classmethod
+    def jsonld(cls, word: str, sections: list[wtp.Section], lang: LanguageCode) -> dict:
+        """This returns JSON-LD triples coresponding to this entry."""
+        
+        # with open(Path(os.path.dirname(__file__)) / "templates/templates.json", "r+") as f:
+        #     transforms = json.load(f)
+
+        return parse_templates("".join((s.contents for s in sections)))
+
+        

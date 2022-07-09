@@ -15,7 +15,9 @@ which we may come to need.
 """
 
 
+import json
 from dataclasses import dataclass
+from re import M
 from typing import Generator, Literal, Protocol, TypedDict
 
 import wikitextparser as wtp
@@ -69,12 +71,17 @@ Page = dict[APIProp, dict | list | str]
 class Parser(Protocol):
     wiki: LanguageCode = "en"
     def parse(self, entry: str) -> dict: ...
+    def jsonld(self, entry: str) -> list[dict]: ...
 
 
 class Entry(Protocol):
     word: str
     lang: str
 
+
+def get_ontology() -> dict:
+    with open("../ontology/ontology.json", "r+") as f:
+        return json.load(f)
 
 @dataclass
 class WiktionaryClient:
@@ -106,7 +113,7 @@ class WiktionaryClient:
         data = self.fetch_page(word)
         return data.get("parse", {}).get("wikitext", {}).get("*", "")
 
-    def fetch_entry(self, word: str, lang: LanguageCode) -> Entry:
+    def _fetch_entry_sections(self, word: str, lang: LanguageCode) -> Entry:
         """
         Each entry starts with a `h2` tag. We read all the sections following
         a tag until the next `h2` tag, which marks the start of the next entry.
@@ -127,6 +134,28 @@ class WiktionaryClient:
                 pass
 
         # h3 sections are contained under h3 sections
-        sections = [s for s in get_sections() if s.level == 3]  
+        return [s for s in get_sections() if s.level == 3]  
+
+    def fetch_entry(self, word: str, lang: LanguageCode) -> Entry:
+        sections = self._fetch_entry_sections(word, lang)
         return self.parser.parse(word, sections, lang)
 
+    def fetch_jsonld(self, word: str, lang: LanguageCode) -> dict:
+        """
+        Retrieves a list of JSON-LD triples for a given word's entry (+ context)
+        """
+        sections = self._fetch_entry_sections(word, lang)
+        
+        ontology = get_ontology()
+        context = ontology["@context"]
+
+        return {
+            "@context": {
+                "@base": context["@base"],
+                "wt": context["wt"],
+                "wt-en": context["wt-en"],
+                "od": context["od"],
+                "temp": "http://www.wiktionary.org/wiki/Template:",
+            },
+            "@graph": self.parser.jsonld(word, sections, lang)
+        }

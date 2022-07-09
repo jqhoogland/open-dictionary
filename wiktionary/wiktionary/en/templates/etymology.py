@@ -8,7 +8,7 @@ Derived = TemplateMapping(
     template_names=["derived", "der"],
     rename={
         **COMMON_RENAME,
-        "1": _LANG[1], "2": "src_lang", "3": "src", "4": _ALT[1],
+        "1": _LANG[1], "2": "srcLang", "3": "src", "4": _ALT[1],
         "5": _T[1]
     },
 )
@@ -31,7 +31,7 @@ OrthographicBorrowing = Borrowed.copy(
 Root = TemplateMapping(
     name="root",
     template_names=["root"],
-    rename={"1": "target_lang", "2": "src_lang"},
+    rename={"1": "dstLang", "2": "srcLang"},
     variadic_start='3',
     variadic_rename={**COMMON_RENAME},
 )
@@ -44,7 +44,7 @@ Compound = TemplateMapping(
     name="compound",
     template_names=["compound", "com"],
     rename={
-        "1": _LANG[1], "type": "compound_type", **COMMON_RENAME
+        "1": _LANG[1], "type": "compoundType", **COMMON_RENAME
     },
     variadic_name="morphemes",
     variadic_start="2",
@@ -96,7 +96,7 @@ Clipping = TemplateMapping(
     name="clipping",
     template_names=["clipping of", "clipping"],
     rename={
-        "1": _LANG[1], "2": "src_lang", "3": _ALT[1], "4": _T[1], 
+        "1": _LANG[1], "2": "srcLang", "3": _ALT[1], "4": _T[1], 
         **COMMON_RENAME
     },
     **WITH_GENDER
@@ -104,7 +104,7 @@ Clipping = TemplateMapping(
 
 
 ShortFor = TemplateMapping(
-    name="short_for",
+    name="shortFor",
     template_names=["short for", "clipping"],
     rename={
         "1": _LANG[1], "2": "word", "3": _ALT[1], "4": _T[1], 
@@ -115,7 +115,7 @@ ShortFor = TemplateMapping(
 )
 
 BackFormation = TemplateMapping(
-    name="back_formation",
+    name="backFormation",
     template_names=["back-formation", "back-form", "bf"],
     rename={
         "1": _LANG[1], "2": "word", "3": _ALT[1], "4": _T[1], 
@@ -153,7 +153,7 @@ Calque = TemplateMapping(
     name="calque",
     template_names=["calque", "cal", "clq"],
     rename={
-        "1": _LANG[1], "2": "src_lang", "3": "src", "4": _ALT[1], "5": _T[1],
+        "1": _LANG[1], "2": "srcLang", "3": "src", "4": _ALT[1], "5": _T[1],
         **COMMON_RENAME
     },
     **WITH_GENDER
@@ -161,12 +161,12 @@ Calque = TemplateMapping(
 
 SemanticLoan = Calque.copy(
     template_names=["semantic loan", "sl"],
-    extra={"subtype": "semantic_loan"}
+    extra={"subtype": "SemanticLoan"}
 )
 
 PhonoSemanticMatching = Calque.copy(
     template_names=["phono-semantic matching", 'psm'],
-    extra={"subtype": "phono-semantic matching"}
+    extra={"subtype": "PhonoSemanticMatching"}
 )
 
 Eponym = TemplateMapping(
