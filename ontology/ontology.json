@@ -1,0 +1,279 @@
+{
+    "@base": "https://opendictionary.org/",
+    "@context": {
+        "@vocab": "vocab/",
+        "wt": "https://wiktionary.org/wiki/",
+        "wt:en": "https://en.wiktionary.org/wiki/",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "dc": "http://purl.org/dc/terms/",
+        "schema": "http://schema.org/",
+    },
+    "etymology": {
+        "@id": "etymology",
+        "derivativeOf": {
+            "@id": "derivativeOf",
+            "@type": "rdf:predicate"
+        },
+        "hasDerivative": {
+            "@id": "hasDerivative",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "derivativeOf"
+        },
+        "borrowingOf": {
+            "@id": "borrowingOf",
+            "@type": "rdf:predicate"
+        },
+        "hasBorrowing": {
+            "@id": "hasBorrowing",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "borrowingOf"
+        },
+        "learnedBorrowingOf": {
+            "@id": "learnedBorrowingOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "borrowingOf"
+        },
+        "hasLearnedBorrowing": {
+            "@id": "hasLearnedBorrowing",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "hasBorrowing",
+            "owl:inverseOf": "learnedBorrowingOf"
+        },
+        "orthographicBorrowingOf": {
+            "@id": "orthographicBorrowingOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "borrowingOf"
+        },
+        "hasOrthographicBorrowing": {
+            "@id": "hasOrthographicBorrowing",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "hasBorrowing",
+            "owl:inverseOf": "orthographicBorrowingOf"
+        },
+        "rootOf": {
+            "@id": "rootOf",
+            "@type": "rdf:predicate"
+        },
+        "hasRoot": {
+            "@id": "hasRoot",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "rootOf"
+        },
+        "compoundOf": {
+            "@id": "compoundOf",
+            "@type": "rdf:predicate"
+        },
+        "affixOf": {
+            "@id": "affixOf",
+            "@type": "rdf:predicate"
+        },
+        "hasAffix": {
+            "@id": "hasAffix",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "affixOf"
+        },
+        "suffixOf": {
+            "@id": "suffixOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "affixOf"
+        },
+        "hasSuffix": {
+            "@id": "hasSuffix",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "hasAffix",
+            "owl:inverseOf": "suffixOf"
+        },
+        "prefixOf": {
+            "@id": "prefixOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "affixOf"
+        },
+        "hasPrefix": {
+            "@id": "hasPrefix",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "hasAffix",
+            "owl:inverseOf": "prefixOf"
+        },
+        "interfixOf": {
+            "@id": "interfixOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "affixOf"
+        },
+        "hasInterfix": {
+            "@id": "hasInterfix",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "hasAffix",
+            "owl:inverseOf": "interfixOf"
+        },
+        "blendOf": {
+            "@id": "blendOf",
+            "@type": "rdf:predicate"
+        },
+        "hasBlend": {
+            "@id": "hasBlend",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "blendOf"
+        },
+        "clippingOf": {
+            "@id": "clippingOf",
+            "@type": "rdf:predicate"
+        },
+        "hasClipping": {
+            "@id": "hasClipping",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "clippingOf"
+        },
+        "shortFor": {
+            "@id": "shortFor",
+            "@type": "rdf:predicate"
+        },
+        "hasShortForm": {
+            "@id": "hasShortForm",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "shortFor"
+        },
+        "backFormationOf": {
+            "@id": "backFormationOf",
+            "@type": "rdf:predicate"
+        },
+        "hasBackFormation": {
+            "@id": "hasBackFormation",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "backFormationOf"
+        },
+        "doubletOf": {
+            "@id": "doubletOf",
+            "@type": "rdf:predicate"
+        },
+        "hasDoublet": {
+            "@id": "hasDoublet",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "doubletOf"
+        },
+        "piecewiseDoubletOf": {
+            "@id": "piecewiseDoubletOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "doubletOf"
+        },
+        "hasPiecewiseDoublet": {
+            "@id": "hasPiecewiseDoublet",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "piecewiseDoubletOf",
+            "rdfs:subClassOf": "hasDoublet"
+        },
+        "calqueOf": {
+            "@id": "calqueOf",
+            "@type": "rdf:predicate"
+        },
+        "hasCalque": {
+            "@id": "hasCalque",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "calqueOf"
+        },
+        "phraseologicalCalqueOf": {
+            "@id": "phraseologicalCalqueOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "calqueOf"
+        },
+        "hasPhraseologicalCalque": {
+            "@id": "hasPhraseologicalCalque",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "phraseologicalCalqueOf",
+            "rdfs:subClassOf": "hasCalque",
+            "dc:description": "Phraseological calques are idiomatic phrases that are translated word for word."
+        },
+        "syntacticCalqueOf": {
+            "@id": "syntacticCalqueOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "calqueOf",
+            "dc:description": "Syntactic calques are constructions that are imitated in structure and in violation of their meaning."
+        },
+        "hasSyntacticCalque": {
+            "@id": "hasSyntacticCalque",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "syntacticCalqueOf",
+            "rdfs:subClassOf": "hasCalque"
+        },
+        "loanTranslationOf": {
+            "@id": "loanTranslationOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "calqueOf",
+            "dc:description": "Words are translated morpheme by morpheme or component by component"
+        },
+        "hasLoanTranslation": {
+            "@id": "hasLoanTranslation",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "loanTranslationOf",
+            "rdfs:subClassOf": "hasCalque"
+        },
+        "semanticLoanOf": {
+            "@id": "semanticLoanOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "calqueOf",
+            "dc:description": "Semantic loans involve additional meanings being transferred between languages (such as computer mouse in addition to the animal mouse)."
+        },
+        "hasSemanticLoan": {
+            "@id": "hasSemanticLoan",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "semanticLoanOf",
+            "rdfs:subClassOf": "hasCalque"
+        },
+        "morphologicalCalqueOf": {
+            "@id": "morphologicalCalqueOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "calqueOf",
+            "dc:description": "Morphological calques transfer the inflection of a word."
+        },
+        "hasMorphologicalCalque": {
+            "@id": "hasMorphologicalCalque",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "morphologicalCalqueOf",
+            "rdfs:subClassOf": "hasCalque"
+        },
+        "phonoSemanticMatchingOf": {
+            "@id": "phonoSemanticMatchingOf",
+            "@type": "rdf:predicate",
+            "rdfs:subClassOf": "calqueOf",
+            "dc:description": "Phono-semantic matching is when a language copies both meaning and phonology."
+        },
+        "hasPhonoSemanticMatching": {
+            "@id": "hasPhonoSemanticMatching",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "phonoSemanticMatchingOf",
+            "rdfs:subClassOf": "hasCalque"
+        },
+        "eponymOf": {
+            "@id": "eponymOf",
+            "@type": "rdf:predicate"
+        },
+        "hasEponym": {
+            "@id": "hasEponym",
+            "@type": "rdf:predicate",
+            "owl:inverseOf": "eponymOf",
+            "rdf:subject": {
+                "@type": "schema:Person"
+            }
+        },
+        "cognateOf": {
+            "@id": "cognateOf",
+            "@type": [
+                "rdf:predicate",
+                "owl:SymmetricProperty"
+            ]
+        },
+        "nonCognateOf": {
+            "@id": "nonCognateOf",
+            "@type": [
+                "rdf:predicate",
+                "owl:SymmetricProperty"
+            ],
+        }
+    },
+    "@graph": [
+        "isOnomatopoeia",
+        "hasRequestForEtymology",
+        "hasUnknownEtymology"
+    ]
+}

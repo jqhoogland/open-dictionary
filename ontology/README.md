@@ -16,14 +16,21 @@ This idea forms the basis of semantic web "[triples](https://en.wikipedia.org/wi
 
 With the additional requirement that subjects, predicates, and objects are labeled by unique URIs, triples can be unambiguously queried by machines ([example](https://en.wikipedia.org/wiki/Semantic_triple#Subject,_predicate_and_object)).
 
-"[Ontologies](https://en.wikipedia.org/wiki/Ontology_(information_science))" or "vocabularies" are systematic naming conventions for particular domains. In the semantic web, an "[ontology](https://www.w3.org/standards/semanticweb/ontology" refers to a collection of URIs that people can "import" into their triple definitions. 
+"[Ontologies](https://en.wikipedia.org/wiki/Ontology_(information_science))" or "vocabularies" are systematic naming conventions for particular domains. In the semantic web, an "[ontology](https://www.w3.org/standards/semanticweb/ontology" refers to a collection of URIs (actually [IRIs](https://en.wikipedia.org/wiki/Internationalized_Resource_Identifier)) that people can "import" into their triple definitions. 
 
-Some of these are very general, like [OWL](https://www.w3.org/TR/owl-features/), which provides building pieces for defining general relationships like taxonomies. Others, like [FOAF](https://en.wikipedia.org/wiki/FOAF_(ontology)) provides definitions for defining relationships between people.
+Some of these are very general, like [OWL](https://www.w3.org/TR/owl-features/), which provides building pieces for defining properties & classes. Others, like [FOAF](https://en.wikipedia.org/wiki/FOAF_(ontology)) provides definitions for defining relationships between people.
 
 This ontology is a collection of definitions for concepts in natural language like "is a synonym of", "is a translation of", or "has the transliteration". There may already exist an ontology for this purpose, but I couldn't find one (so please point me to an existing standard if you know of one).
 
+[Read more about the semantic web here.](https://en.wikipedia.org/wiki/Semantic_Web#Components)
+
 # Ok, but the semantic web is dead
 
-So it's true that most of the semantic web stuff happened more than a decade ago and has been pretty much forgotten. This was the original "Web3" before we got today's "Web3".
+So it's true that most of the semantic web stuff happened more than a decade ago and has been pretty much forgotten. This was the original "Web3" before we got today's "Web3". (Also, most of it is based on XML 🤢).
 
 Of the two, I'm still betting on the first "Web3". Not just because [Tim Berners Lee is still fighting for it with tooth and nail](https://solidproject.org/). No, it's just a really good idea that deserves more attention. And it offers valuable insights even in the absence of a large community of true practitioners.
+
+# [JSON-LD](https://www.w3.org/TR/json-ld/)
+
+A few important notes:
+- JSON-LD arrays are unordered by default, and must be labeled explicitly with `@list`
