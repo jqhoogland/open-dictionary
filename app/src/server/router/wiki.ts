@@ -1,11 +1,8 @@
+import { EntryQuerySchema } from "../../parser/iri";
 import { z } from "zod";
+import { JSONLDSchema, parseWikiText } from "../../parser/page";
 import { createRouter } from "./context";
 
-const EntryRequestSchema = z.object({
-  word: z.string().min(1),
-  lang: z.string().default("en"),
-  wiki: z.string().default("en"),
-});
 interface WikiResponse {
   parse: {
     title: string;
@@ -16,7 +13,7 @@ interface WikiResponse {
   };
 }
 
-const getWikiText = async (input: z.infer<typeof EntryRequestSchema>) =>
+const getWikiText = async (input: z.infer<typeof EntryQuerySchema>) =>
   fetch(
     `https://${input?.wiki}.wiktionary.org/w/api.php?action=parse&page=${input.word}&format=json&prop=wikitext`
   )
@@ -34,7 +31,7 @@ const wikiRouter = createRouter()
         description: "Retrieve the wiktionary results for the given id",
       },
     },
-    input: EntryRequestSchema,
+    input: EntryQuerySchema,
     output: z.string(),
     async resolve({ input }) {
       return getWikiText(input);
@@ -51,10 +48,10 @@ const wikiRouter = createRouter()
           "Parse the linked data contained on the corresponding wiktionary page",
       },
     },
-    input: EntryRequestSchema,
-    output: z.string(),
+    input: EntryQuerySchema,
+    output: JSONLDSchema,
     async resolve({ input }) {
-      return getWikiText(input).then(parseWikitext);
+      return getWikiText(input).then((text) => parseWikiText(input, text));
     },
   });
 

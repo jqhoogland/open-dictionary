@@ -1,0 +1,17 @@
+{
+    "@context": {
+        "@base": "https://opendictionary.org/",
+        "@vocab": "ld#",
+        "od": "https://opendictionary.org/",
+        "wt": "https://wiktionary.org/",
+        "wt-en": "https://en.wiktionary.org/",
+        "wm-meta": "https://meta.wikimedia.org/",
+        "wp": "http://wikipedia.org/",
+        "wp-en": "http://en.wikipedia.org/",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "dc": "http://purl.org/dc/terms/",
+        "schema": "http://schema.org/"
+    }
+}

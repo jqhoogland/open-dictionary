@@ -17,7 +17,7 @@ const MyApp: AppType = ({
   );
 };
 
-const getBaseUrl = () => {
+export const getBaseUrl = () => {
   if (typeof window !== "undefined") {
     return "";
   }

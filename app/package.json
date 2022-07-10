@@ -25,6 +25,7 @@
     "@trpc/server": "^9.25.3",
     "cuid": "^2.1.8",
     "daisyui": "^2.18.0",
+    "jsonld": "^6.0.0",
     "lodash": "^4.17.21",
     "next": "12.2.0",
     "next-auth": "^4.8.0",
@@ -37,6 +38,7 @@
     "zod": "^3.17.3"
   },
   "devDependencies": {
+    "@types/jsonld": "^1.5.6",
     "@types/lodash": "^4.14.182",
     "@types/node": "^18.0.3",
     "@types/react": "18.0.14",

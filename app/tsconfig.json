@@ -25,7 +25,7 @@
     "**/*.ts",
     "**/*.tsx",
     "prisma/seed.js"
-  ],
+, "src/parser"  ],
   "exclude": [
     "node_modules"
   ],
