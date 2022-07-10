@@ -13,7 +13,6 @@
         "dc": "http://purl.org/dc/terms/",
         "schema": "http://schema.org/"
     },
-    
 
     "LanguageElement": {
         "@id": "LanguageElement",

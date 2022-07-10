@@ -1,15 +1,17 @@
 # Wiktionary API 
 
-This is a **non-official** Wiktionary API client written in Python. 
-
-This is very early & very non-stable. Breaking changes will come regularly.
+> This is a **non-official** Wiktionary API client written in Python. 
+>
+> This is very non-stable. Expect many breaking changes.
 
 ## ❓ How it works
 
 Wiktionary articles contain lots of internal structure in the form of [templates](https://meta.wikimedia.org/wiki/Help:Template).
-With a bit of manual pruning, we convert these templates into Wiktionary-agnostic ["semantic triples"](https://en.wikipedia.org/wiki/Semantic_triple).
+With a bit of manual pruning, we convert these templates into Wiktionary-agnostic ["semantic triples"](https://en.wikipedia.org/wiki/SemanticTriple). (These use a new [ontology for natural language](/ontology)).
 
-Then, with [SPARQL](https://en.wikipedia.org/wiki/SPARQL) and tools built on top of it, like [GraphQL-LD](https://github.com/rubensworks/GraphQL-LD.js),
+(Note: they're not perfect triples yet.)
+
+Then, with [SPARQL](https://en.wikipedia.org/wiki/SPARQL) and tools built on top of it ([GraphQL-LD](https://github.com/rubensworks/GraphQL-LD.js)),
 we can query the data consistently.
 
 In actual fact, there's a bit more going on: we look at context (so section headings & also crawl standard wikilinks and non-templated information).
@@ -18,7 +20,8 @@ In actual fact, there's a bit more going on: we look at context (so section head
 
 There is an actual [Wiktionary API](https://en.wiktionary.org/w/api.php).
 
-Unfortunately, it only returns pages in `html` or `wikitext` (Wikipedia's internal markup language) — not the friendliest for computers to read. 
+Unfortunately, it only returns pages in `html` or `wikitext` (Wikipedia's internal markup language), which is not the friendliest for computers to read. 
+
 Fortunately, `wikitext` has a decent bit of internal structure and is ~~easy~~ not impossible to work with.
 
 This library provides a client that uses [wikitextparser](https://github.com/5j9/wikitextparser) (plus some custom logic) to convert wikitext into 
@@ -30,7 +33,7 @@ It's much more comprehensive and accurate than [WiktionaryParser](https://github
 
 There's one problem: Wiktionary is not one thing. 
 
-No [there are 183 different Wiktionaries in 183 different languages](https://meta.wikimedia.org/wiki/Wiktionary#List_of_Wiktionaries). 
+No [there are 183 different Wiktionaries in 183 different languages](https://meta.wikimedia.org/wiki/Wiktionary#ListOfWiktionaries). 
 Pretty much every single Wiktionary has its own, non-interoperable standards. So you have to have to build unique parsing logic for each Wiktionary.
 
 (These are identified by the an [ISO 639 code](https://www.iso.org/iso-639-language-codes.html) subdomain (as in `en.wiktionary.com`))
@@ -46,7 +49,7 @@ The current return structure is as follows:
 {
   word: string,
   lang: string, // ISO language code
-  alt_forms: LinkedWord[],
+  altForms: LinkedWord[],
   etymology: LinkedWord[],
   pronunciations: (Pronunciation | Qualifier)[][],
   definitions: LinkedWord   
@@ -71,12 +74,12 @@ Returns the following object, a list of entries (one for each unique etymology):
   {
     "word": "foo",
     "lang": "en",
-    "alt_forms": [],
+    "altForms": [],
     "etymology": [
       {
         "@id": "derived",
         "lang": "en",
-        "src_lang": "cmn",
+        "srcLang": "cmn",
         "src": "府",
         "transliteration": "fǔ"
       },
@@ -136,7 +139,7 @@ Returns the following object, a list of entries (one for each unique etymology):
         }
       ]
     ],
-    "glyph_origin": null,
+    "glyphOrigin": null,
     "description": null,
     "definitions": [
       {
@@ -167,12 +170,12 @@ Returns the following object, a list of entries (one for each unique etymology):
   {
     "word": "foo",
     "lang": "en",
-    "alt_forms": [],
+    "altForms": [],
     "etymology": [
       {
         "@id": "derived",
         "lang": "en",
-        "src_lang": "zh",
+        "srcLang": "zh",
         "src": "福",
         "alt": "",
         "gloss": "[[fortunate]]; [[prosperity]], [[good]] [[luck]]",
@@ -266,7 +269,7 @@ Returns the following object, a list of entries (one for each unique etymology):
         }
       ]
     ],
-    "glyph_origin": null,
+    "glyphOrigin": null,
     "description": null,
     "definitions": [
       {
@@ -292,7 +295,7 @@ Returns the following object, a list of entries (one for each unique etymology):
         "@id": "noun",
         "data": [
           {
-            "@id": "derived_terms",
+            "@id": "derivedTerms",
             "linked": [
               {
                 "@id": "link",
@@ -302,7 +305,7 @@ Returns the following object, a list of entries (one for each unique etymology):
             ]
           },
           {
-            "@id": "related_terms",
+            "@id": "relatedTerms",
             "linked": [
               {
                 "@id": "link",
@@ -314,7 +317,7 @@ Returns the following object, a list of entries (one for each unique etymology):
         ]
       },
       {
-        "@id": "derived_terms",
+        "@id": "derivedTerms",
         "linked": [
           {
             "@id": "link",
@@ -324,7 +327,7 @@ Returns the following object, a list of entries (one for each unique etymology):
         ]
       },
       {
-        "@id": "related_terms",
+        "@id": "relatedTerms",
         "linked": [
           {
             "@id": "link",
@@ -338,7 +341,7 @@ Returns the following object, a list of entries (one for each unique etymology):
   {
     "word": "foo",
     "lang": "en",
-    "alt_forms": [],
+    "altForms": [],
     "etymology": [
       {
         "@id": "mention",
@@ -409,7 +412,7 @@ Returns the following object, a list of entries (one for each unique etymology):
         }
       ]
     ],
-    "glyph_origin": null,
+    "glyphOrigin": null,
     "description": null,
     "definitions": [
       {
@@ -479,7 +482,7 @@ Returns the following object, a list of entries (one for each unique etymology):
   {
     "word": "foo",
     "lang": "en",
-    "alt_forms": [
+    "altForms": [
       {
         "word": {
           "@id": "link",
@@ -550,7 +553,7 @@ Returns the following object, a list of entries (one for each unique etymology):
         }
       ]
     ],
-    "glyph_origin": null,
+    "glyphOrigin": null,
     "description": null,
     "definitions": [
       {
