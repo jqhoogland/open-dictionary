@@ -9,7 +9,17 @@ import ontology from "../../../ontology/language.json";
 import { Expand } from "../utils/types";
 import { getSection } from "./section";
 
-const JSONLDNodeSchema = z.string().or(z.array(z.string()));
+const literalSchema = z.union([z.string(), z.number(), z.boolean(), z.null()]);
+type Literal = z.infer<typeof literalSchema>;
+type Json = Literal | { [key: string]: Json } | Json[];
+
+const JSONLDNodeSchema: z.ZodType<Json> = z.lazy(() =>
+  z.union([
+    literalSchema,
+    z.array(JSONLDNodeSchema),
+    z.record(JSONLDNodeSchema),
+  ])
+);
 
 export const JSONLDSchema = z
   .object({
@@ -27,11 +37,11 @@ export const parseWikiText = async (
   wikitext: string
 ): Promise<JSONLD> => {
   const section = await getSection(entryQuery, wikitext);
-
-  return {
+  const data = {
     "@id": await getEntryIRI(entryQuery),
     "@context": getContextIRI(),
-    page: wikitext,
-    section: section ?? "",
   };
+
+  // @ts-ignore
+  return { ...data, ...section };
 };
