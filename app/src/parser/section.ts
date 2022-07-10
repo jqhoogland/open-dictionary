@@ -2,13 +2,41 @@ import { Expand } from "./../utils/types";
 import { EntryQuery, langCodesToNames } from "./iri";
 import set from "lodash/set";
 import camelCase from "lodash/camelCase";
+import snakeCase from "lodash/snakeCase";
 
-const getTemplates = (text: string): string[] => {
+const parseTemplate = (template: string): Record<string, string> => {
+  template = template.slice(2, template.length - 2);
+  const parts = template.split("|");
+  const data: Record<string, string> = {};
+
+  parts.forEach((part, i) => {
+    if (part.includes("=")) {
+      const [key, value] = part.split("=", 1) as [string, string];
+      data[key] = value ?? true;
+    } else if (i === 0) {
+      data["@id"] = snakeCase(part);
+    } else {
+      data[(i + 1).toString()] = part;
+    }
+  });
+
+  return data;
+};
+
+const getTemplates = (text: string): Record<string, string>[] => {
   const templates = text.match(/{{[^}]+}}/g);
   if (templates === null) {
     return [];
   }
-  return templates;
+  return templates.map(parseTemplate);
+};
+
+const getWikilinks = (text: string): Record<string, string>[] => {
+  const wikilinks = text.match(/\[\[[^\]]+\]\]/g);
+  if (wikilinks === null) {
+    return [];
+  }
+  return wikilinks.map(parseTemplate);
 };
 
 interface Section extends Record<string, string[] | Section> {}
@@ -67,6 +95,7 @@ export const getSection = async (entryQuery: EntryQuery, text: string) => {
       }
     }
     items.push(...getTemplates(line));
+    items.push(...getWikilinks(line));
   }
 
   lines = lines.splice(start, end - start);
