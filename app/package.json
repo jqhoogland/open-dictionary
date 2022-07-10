@@ -33,10 +33,12 @@
     "react-query": "^3.39.1",
     "superjson": "^1.9.1",
     "trpc-openapi": "^0.1.1",
+    "wtast-util-from-wikitext": "link:../rewikijs/wtast-util-from-wikitext",
     "zod": "^3.17.3"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.182",
+    "@types/node": "^18.0.3",
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",
     "autoprefixer": "^10.4.7",

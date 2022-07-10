@@ -5,10 +5,12 @@ import superjson from "superjson";
 
 import { entryRouter } from "./entry";
 import { pronunciationRouter } from "./pronunciation";
+import wikiRouter from "./wiki";
 // import { authRouter } from "./auth";
 
 export const appRouter = createRouter()
   .transformer(superjson)
+  .merge("wiki.", wikiRouter)
   .merge("entry.", entryRouter)
   .merge("pronunciation.", pronunciationRouter)
   .merge("definition.", definitionRouter);
