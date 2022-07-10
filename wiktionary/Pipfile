@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "*"
+typer = "*"
+tqdm = "*"
+googletrans = "==3.1.0a0"
+pydantic = "*"
+bs4 = "*"
+wikitextparser = "*"
+more-itertools = "*"
+mypy = "*"
+pyld = "*"
+
+[dev-packages]
+pytest = "*"
