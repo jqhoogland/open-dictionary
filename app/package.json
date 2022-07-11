@@ -33,7 +33,7 @@
     "react-dom": "18.2.0",
     "react-query": "^3.39.1",
     "superjson": "^1.9.1",
-    "trpc-openapi": "^0.1.1",
+    "trpc-openapi": "0.2.1-alpha.0",
     "wtast-util-from-wikitext": "link:../rewikijs/wtast-util-from-wikitext",
     "zod": "^3.17.3"
   },

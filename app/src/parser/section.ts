@@ -3,6 +3,7 @@ import { EntryQuery, langCodesToNames } from "./iri";
 import set from "lodash/set";
 import camelCase from "lodash/camelCase";
 import snakeCase from "lodash/snakeCase";
+import { transformTemplate } from "./en/templates";
 
 const parseTemplate = (template: string): Record<string, string> => {
   template = template.slice(2, template.length - 2);
@@ -14,13 +15,13 @@ const parseTemplate = (template: string): Record<string, string> => {
       const [key, value] = part.split("=", 1) as [string, string];
       data[key] = value ?? true;
     } else if (i === 0) {
-      data["@id"] = snakeCase(part);
+      data["@template"] = snakeCase(part);
     } else {
-      data[(i + 1).toString()] = part;
+      data[i.toString()] = part;
     }
   });
 
-  return data;
+  return transformTemplate(data);
 };
 
 const getTemplates = (text: string): Record<string, string>[] => {
@@ -52,6 +53,7 @@ export const getSection = async (entryQuery: EntryQuery, text: string) => {
 
   let depth = 1;
   let sectionName = "preface";
+  let path: string[] = [];
   let section: Section = {};
   let items = [];
 
@@ -70,8 +72,6 @@ export const getSection = async (entryQuery: EntryQuery, text: string) => {
         let newDepth = m[1]!.length - 2;
         let newSectionName = camelCase(m[2]!);
 
-        console.log({ newSectionName, sectionName, newDepth, depth });
-
         if (newDepth > depth) {
           // Down
           set(section, `${sectionName}.preface`, items);
@@ -84,11 +84,13 @@ export const getSection = async (entryQuery: EntryQuery, text: string) => {
           sectionName = newSectionName;
         } else {
           // Up
-          const path = sectionName.split(".");
-          const parent = path
+          path = sectionName.split(".");
+          sectionName = path
             .slice(0, path.length - (depth - newDepth))
             .join(".");
-          sectionName = parent ? `${parent}.${newSectionName}` : newSectionName;
+          sectionName = sectionName
+            ? `${sectionName}.${newSectionName}`
+            : newSectionName;
         }
 
         depth = newDepth;

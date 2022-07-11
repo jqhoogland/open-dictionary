@@ -34,7 +34,7 @@ specifiers:
   react-query: ^3.39.1
   superjson: ^1.9.1
   tailwindcss: ^3.1.4
-  trpc-openapi: ^0.1.1
+  trpc-openapi: 0.2.1-alpha.0
   type-fest: ^2.16.0
   typescript: 4.7.4
   wtast-util-from-wikitext: link:../rewikijs/wtast-util-from-wikitext
@@ -62,7 +62,7 @@ dependencies:
   react-dom: 18.2.0_react@18.2.0
   react-query: 3.39.1_biqbaboplfbrettd7655fr4n2y
   superjson: 1.9.1
-  trpc-openapi: 0.1.1_5zkoywanuxf5zpyqjjt34qanl4
+  trpc-openapi: 0.2.1-alpha.0_5zkoywanuxf5zpyqjjt34qanl4
   wtast-util-from-wikitext: link:../rewikijs/wtast-util-from-wikitext
   zod: 3.17.3
 
@@ -2966,8 +2966,8 @@ packages:
     engines: {node: '>=0.6'}
     dev: false
 
-  /trpc-openapi/0.1.1_5zkoywanuxf5zpyqjjt34qanl4:
-    resolution: {integrity: sha512-cG9G/lCKrlVIUqPm6/NyFYNN1gk5bzg9W3FTKl8UAB0kxFkWkULQdTWKgkyO/AhG1pPfNnaHR0JGRwKDZpNA1w==}
+  /trpc-openapi/0.2.1-alpha.0_5zkoywanuxf5zpyqjjt34qanl4:
+    resolution: {integrity: sha512-6uxPgGJZJhQZ0x5jwXSNxjktsYi641VRHDCDkvz+Kh8TguQv5vqJ51tau/3/nhof7MoBkhbhHaBO8GhkpO0lnw==}
     peerDependencies:
       '@trpc/server': ^9.23.0
       zod: ^3.14.4

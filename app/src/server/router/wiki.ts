@@ -1,8 +1,11 @@
 import { EntryQuerySchema } from "../../parser/iri";
 import { z } from "zod";
-import { JSONLDSchema, parseWikiText } from "../../parser/page";
+import { JSONLDNode, JSONLDSchema, parseWikiText } from "../../parser/page";
 import { createRouter } from "./context";
+import fs from "fs";
+import { flatten } from "../../parser/en/templates";
 
+const examplePage = fs.readFileSync("tests/example.wt", "utf8");
 interface WikiResponse {
   parse: {
     title: string;
@@ -14,6 +17,7 @@ interface WikiResponse {
 }
 
 const getWikiText = async (input: z.infer<typeof EntryQuerySchema>) =>
+  // examplePage;
   fetch(
     `https://${input?.wiki}.wiktionary.org/w/api.php?action=parse&page=${input.word}&format=json&prop=wikitext`
   )
@@ -42,8 +46,8 @@ const wikiRouter = createRouter()
       openapi: {
         enabled: true,
         method: "GET",
-        path: "/wiki/ld/{word}",
-        summary: "Get entry JSON-LD",
+        path: "/wiki/json/{word}",
+        summary: "Get entry JSON (nested)",
         description:
           "Parse the linked data contained on the corresponding wiktionary page",
       },
@@ -51,7 +55,36 @@ const wikiRouter = createRouter()
     input: EntryQuerySchema,
     output: JSONLDSchema,
     async resolve({ input }) {
-      return getWikiText(input).then((text) => parseWikiText(input, text));
+      return await getWikiText(input).then((text) =>
+        parseWikiText(input, text)
+      );
+    },
+  })
+  .query("getWikiJsonLD", {
+    meta: {
+      openapi: {
+        enabled: true,
+        method: "GET",
+        path: "/wiki/ld/{word}",
+        summary: "Get entry JSON-LD",
+        description:
+          "Parse the linked data contained on the corresponding wiktionary page",
+      },
+    },
+    input: EntryQuerySchema,
+    output: z.any(), //JSONLDSchema,
+    async resolve({ input }) {
+      const data = await getWikiText(input).then((text) =>
+        parseWikiText(input, text)
+      );
+
+      const { "@context": context, "@id": id, ...rest } = data;
+      return {
+        "@context": context,
+        "@id": id,
+        "@type": "od:Word",
+        ...flatten(rest as any),
+      };
     },
   });
 

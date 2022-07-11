@@ -33,13 +33,21 @@ export const EntryQuerySchema = PageQuerySchema.merge(
 
 export type EntryQuery = z.infer<typeof EntryQuerySchema>;
 
-export const getWikiIRI = (wiki: ISO639) =>
-  `https://${wiki}.wiktionary.org/wiki/`;
+export const getWikiIRI = (wiki: ISO639, prefix = false) =>
+  prefix ? `wt-${wiki}:` : `https://${wiki}.wiktionary.org/wiki/`;
 
-export const getPageIRI = (pageQuery: PageQuery) =>
-  `${getWikiIRI(pageQuery.wiki)}${pageQuery.word}`;
+export const getPageIRI = (pageQuery: PageQuery, prefix = false) =>
+  `${getWikiIRI(pageQuery.wiki, prefix)}${pageQuery.word}`;
 
-export const getEntryIRI = async (entryQuery: EntryQuery) =>
-  `${getPageIRI(entryQuery)}#${langCodesToNames[entryQuery.lang]}`;
+export const getEntryIRI = (entryQuery: EntryQuery, prefix = false) =>
+  `${getPageIRI(entryQuery, prefix)}#${langCodesToNames[entryQuery.lang]}`;
 
-export const getContextIRI = () => `${getBaseUrl()}/contexts/v1.json`;
+export const getBaseIRI = (prefix = false) => (prefix ? "od:" : getBaseUrl());
+
+export const getContextIRI = (prefix = false) =>
+  `${getBaseIRI(prefix)}/contexts/v1.json`;
+
+export const getTemplateIRI = (
+  { template, wiki = "en" }: { template: string; wiki?: ISO639 },
+  prefix = false
+) => `${getWikiIRI(wiki, prefix)}/Template:${template}`;
