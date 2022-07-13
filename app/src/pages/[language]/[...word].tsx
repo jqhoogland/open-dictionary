@@ -29,7 +29,6 @@ const EntryPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
 
   const router = useRouter();
 
-  console.log([entryQuery, pronunciationQuery, definitionQuery]);
   const doesNotExist = entryQuery.isFetched && !entryQuery.data;
 
   const pronunciation = groupBy(entryQuery.data ?? [], "partOfSpeech");

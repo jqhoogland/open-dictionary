@@ -6,7 +6,7 @@ import { WordAndLanguage } from "../utils/validators";
 import Logo from "./Logo";
 import SearchBar from "./SearchBar";
 
-const NavBar: React.FC<SetOptional<WordAndLanguage, "word">> = ({
+const NavBar: React.FC<Partial<WordAndLanguage>> = ({
   word,
   language,
 }) => {
@@ -28,7 +28,7 @@ const NavBar: React.FC<SetOptional<WordAndLanguage, "word">> = ({
       ) : (
         <div className="flex flex-1"></div>
       )}
-      <Link href={`/${language}`}>
+      <Link href={`/${language ?? ""}`}>
         <a className="btn btn-ghost normal-case">Explore</a>
       </Link>
     </nav>

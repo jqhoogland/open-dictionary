@@ -1,0 +1,132 @@
+import DocsLayout from "../../../components/DocsLayout";
+
+export const meta = {
+    title: "The Semantic Web",
+    author: "Jesse Hoogland"
+}
+
+# The Semantic Web
+
+What's wrong with the web?
+
+Is it corporate interests & surveillance capitalism? 
+Mob justice and cancel culture?
+Overregulation? 
+Underregulation...?
+
+
+Maybe it's something altogether more innocuous — say,
+bad standards & messy data.
+
+
+Suppose data were structured consistently across websites. 
+
+If data were to have a consistent shape across websites, then it would be free to move around. 
+You could own your own data and bring it to the services you want to use rather as you need.
+
+The solution is built on "triples" — instead of links that simply point from resource A to B, we label links with semantic information. This lets us encode information like "John is 35 years old".
+
+## The Semantic Web & Natural Language
+
+So how does one go about applying these concepts to natural language?
+
+First, we need a way of assigning IRIs to words that are:
+- unique
+- consistent
+- automatable.
+
+That raises the follow-up question: what is a word?
+
+Is it the collection of graphemes we write on a page? 
+The collection of sounds that leave our mouths? 
+Or the particular meaning we have in mind?
+
+## Written Word
+
+The word that is written is easiest to work with.
+
+That's because we probably already have its representation somewhere in utf-8 space.
+Our identifier could be the obvious `wiktionary.org/wiki/<my-word>`. 
+
+There's an immediate problem with thi — this url doesn't exist on its own. 
+No, you'll be redirected to the appropriate wiktionary for your `x-accept-language` headers, in my case `en.wiktionary.org/wiki/<my-word>`.
+
+This means the entry I receive will be written in English (NOT that the language of the word has to be in English).
+`en.wiktionary.org/wiki/hello` descibes the word "hello" in English, `fr.wiktionary.org/wiki/Hello` describes it in French, and so on.
+
+This redundancy across subdomains is a problem because the written representation of a word is independent of the language we use to talk it.
+The same is also true for pronunciations and meanings, so, unfortunately, Wiktionary is just a bad namespace.
+
+Instead, Open Dictionary places the **g**raphemic word under the namespace `https://opendictionary.org/g/<my-word>`.
+(We'll use a prefix from now for brevity and write `od:g/my-word`.
+
+Now, this IRI won't be enough for the purposes of semantic modeling because, for example, two words might be spelled the same in two different languages, and, even in one language, the same written word can have various pronunciations, etymolgies, and meanings.
+
+For completeness, we need distinct IRIs for the phonetic and semantic senses of these words.
+
+> There's another problem, which is that not all scripts are supported online.
+In these cases, we identify a consistent transliteration for that language and apply it universally. 
+
+## Spoken Word
+
+The word that is spoken is harder to write down.
+But it's still possible thanks to the [IPA]() — an alphabet that gives every sound a single, unique character.
+
+The complication it introducess is the distinction between broad and narrow transcription.
+Phonetic (that which is pronounced) space is continuous, but phonemic (that which is heard) space is discrete.
+Our mind maps whole regions of sound space into distinguishable clusters. 
+It's why, for example, Japanese speakers have difficulty with /l/ and /r/.
+In their heads, /l/ & /r/ belong to the same phonemic attractor; they're literally indistinguishable.
+
+Where broad transcription aims for within-language accuracy (and is often invariant under a change of accent), narrow transcription aims for universal, between-language accuracy.
+
+Since we often get narrow transcriptions without a corresponding broad transcription & vice-versa, we group all pronunciations under the `p` namespace.
+
+`od:p/word`
+
+Narrow transcriptions are instances of broad transcriptions, and we model their relation with the `hasNarrowTranscription` and `broadTranscriptionOf`
+
+
+## Intended Word
+
+The word that is meant is the most difficult of all.
+
+That's because there are usually many more meanings than written representations. 
+Fortunately. 
+It makes writing much more efficient, and context mostly remedies the ambiguity that remains.
+
+So, currently, the best we can do is group a list of definitions under the heading of the written representation.
+That works fine for everyday purposes, but the problem is that the orders of definitions don't line up across dictionaries.
+Semantic space is continuous and speaker-dependent. 
+How we decide to parcel it is quite a bit more arbitrary than how we decide to parcel phonetic space.
+
+Wiktionary (& other dictionaries) solve this in two ways: 
+1. Grouping definitions & relations by part of speech. 
+2. Grouping those by etymology. 
+
+So we can use this principle to identfy **s**emantic clusters with IRIs such as: `od:g/<my-word>/noun`. 
+Or if there are multiple etymologes present: `od:g/<my-word>/1/noun`.
+
+Still, this isn't always enough. 
+Consider, for example "" as in and "" as in.
+They're spelled the same, pronounced the same, have the same etymology, and are the same part of speech, but their meanings are opposites.
+What to do?
+
+As long as the definitions don't change their order, we could index them as in `od:g/<my-word>/noun/1`, `od:g/<my-word>/noun/2`.
+But definitions get updated, and since we rely on Wiktionary for definitions, such an ordering can't be trusted to remain consistent.
+
+So for now, we'll use the broader etymology + part of speech clasification.
+In the future, we can introduce uniquely indexed definitions. 
+We can grant theses unique ids and save them under the `od:s/<id>` namespace.
+For backwards compatibility, we'll enforce that any relations we apply to these top-level semantic clusters are transitively applied to more narrow definitions.
+
+> What about words with alternate spellings? When possible, locate these words as narrowly as you can: e.g., `od:en-US/center` & `od:en-UK/center`. Make sure you mark the forms as `alternativeFormOf` each other.
+
+# Shorthand
+
+
+export default ({ children }) => (
+  <DocsLayout {...meta}>
+    {children}
+  </DocsLayout>
+)
