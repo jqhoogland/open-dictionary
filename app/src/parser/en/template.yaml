@@ -1,0 +1,701 @@
+# Shared snippets
+
+- _id: "_base"
+  _description: "Base translations used by many other templates."
+  "lang": "lang"
+  "alt": "alt"
+  "t": "gloss"
+  "sc": "script"
+  "tr": "transliteration"
+  "ts": "transcription"
+  "pos": "partOfSpeech"
+  "lit": "literalTranslation"
+  "id": "sense"
+
+- _id: "_with_genders": 
+  _description: "For templates that allow multiple genders"
+  "g": "genders[0]"
+  "g(\d+)": "genders[\1]"
+
+# Actual templates
+
+- _id: "link"
+  _match:
+    - "l"
+    - "link"
+    - "l-self"
+    - "ll"
+  _extends: 
+    - "_base"
+    - "_with_genders"
+  "1": "lang"
+  "2": "src"
+  "3": "alt"
+  "4": "gloss"
+ 
+
+
+- _id: "mention"
+  _match:
+    - "m"
+    - "mention"
+    - "m-self"
+    - "langname-mention"
+  _extends: _base
+  "1": "lang"
+  "2": "src"
+  "3": "alt"
+  "4": "gloss"
+  
+
+- _id: "derived"
+  _match:
+    - "derived"
+    - "der"
+  _extends: _base
+  "1": "lang"
+  "2": "srcLang"
+  "3": "src"
+  "4": "alt"
+  "5": "gloss"
+
+- _id: "borrowed"
+  _match:
+    - "borrowed"
+    - "bor"
+    - "bor+"
+  _extends: _base
+  "1": "lang"
+  "2": "srcLang"
+  "3": "src"
+  "4": "alt"
+  "5": "gloss"
+
+- _id: "learned_borrowing"
+  _match: 
+      - "learned borrowing"
+      - "lbor"
+      - "lbor+"
+  _extends: _base
+  "1": "lang"
+  "2": "srcLang"
+  "3": "src"
+  "4": "alt"
+  "5": "gloss"
+
+- _id: "orthographic_borrowing"
+  _match:
+    - "orthographic borrowing"
+    - "obor"
+    - "obor+"
+  _extends: _base
+  "1": "lang"
+  "2": "srcLang"
+  "3": "src"
+  "4": "alt"
+  "5": "gloss"
+
+- _id: "root"
+  _match: 
+    - "root"
+  _extends: _base
+  "1": "dstLang"
+  "2": "srcLang"
+  "([3-9])": "values[\1-3]"
+
+- _id: "compound"
+  _match: 
+    - "compound"
+    - "com"
+  _extends: _base
+
+  "1": "lang"
+  "type":  _compound_type # TODO
+  "g": "gender"
+ "([2-9])": "morphemes[\1-2]"
+
+- _id: "prefix"
+  _match: 
+    - "prefix"
+    - "pre"
+    - "suffix"
+  _extends: compound
+
+- _id: "confix"
+  _match: 
+    - "confix"
+    - "con"
+  _extends: "compound"
+
+
+- _id: "suffix"
+  _match: 
+    - "suffix"
+  _extends: "compound"
+
+
+- _id: "affix"
+  _match:
+    - "affix"
+    - "af"
+  _extends: "compound"
+
+
+- _id: "blend"
+  _match: 
+    - blend
+  _extends: "compound"
+
+- _id: "clipping"
+  _match:
+    - "clipping of"
+    - "clipping"
+  "1": "lang"
+  "2": "srcLang"
+  "3": "alt"
+  "4": "gloss"
+  "lang": "lang"
+  "alt": "alt"
+  "t": "gloss"
+  "sc": "script"
+  "tr": "transliteration"
+  "ts": "transcription"
+  "pos": "partOfSpeech"
+  "lit": "literalTranslation"
+  "id": "sense"
+  "g": "genders[0]"
+  "g(\d+)": "genders[\1]"
+
+- _id: "shortFor"
+  _match: 
+    - "short for"
+  _extends: 
+    - _base
+    - _with_genders
+  "1": "lang"
+  "2": "word"
+  "3": "alt"
+  "4": "gloss"
+
+- _id: "backFormation"
+  _match: 
+    - "back-formation"
+    - "back-form"
+    - "bf"
+  _extends: 
+    - _base
+    - _with_genders
+  "1": "lang"
+  "2": "word"
+  "3": "alt"
+  "4": "gloss"
+
+- _id: "doublet"
+  _match: 
+    - "doublet"
+    - "dbt"
+  _extends: _base 
+  "1": "lang" 
+  "g": "gender"
+  "([2-9])": "doublets[\1-2]"
+
+- _id: "piecewise_doublet"
+  _match: 
+    - "piecewise doublet"
+  _extends: _base 
+  "1": "lang"
+  "g": "gender"
+  "([2-9])": "doublets[\1-2]"
+
+- _id: "onomatopoeic"
+  _match: 
+    - "onomatopoeic"
+    - "onom"
+  "1": "lang"
+  "title": "alt"
+
+- _id: "calque"
+  _match: 
+    - "calque"
+    - "cal"
+    - "clq"
+  _extends: 
+    - _base
+    - _with_genders
+  "1": "lang"
+  "2": "srcLang"
+  "3": "src"
+  "4": "alt"
+  "5": "gloss"
+
+- _id: "semantic_loan"
+  _match: 
+    - "semantic loan"
+    - "sl"
+  _extends: calque
+
+- _id: "phono_semantic_matching"
+  _match: 
+    - "phono-semantic matching"
+    - "psm"  
+  _extends: calque
+
+- _id: "eponym"
+  _match: 
+    - "named-after"
+  _extends: 
+    - _base
+  "1": "lang"
+  "2": "person"
+  "nat": "nationality"
+  "occ": "occupation"
+  "wplink": "wplink"
+  "born": "born"
+  "died": "died"
+
+- _id: "cognate"
+  _match:
+    - "cognate"
+    - "cog"
+  _extends:
+    - _base
+    - _with_genders
+  "1": "lang"
+  "2": "word"
+  "3": "alt"
+  "4": "gloss"
+
+- _id: "noncognate"
+  _match: 
+    - "noncognate"
+    - "noncog"
+    - "ncog"
+    - "nc"
+  _extends:
+    - _base
+    - _with_genders
+  "1": "lang"
+  "2": "word"
+  "3": "alt"
+  "4": "gloss"
+
+
+- _id: "rfe"
+  _match: 
+    - "rfe"
+    - "etystub"
+  "1": "lang"
+  "2": "comment"
+
+- _id: "unknown"
+  _match: 
+    - "unknown"
+    - "unk"
+  "1": "lang"
+  "title": "alt"
+
+- _id: "dialect"
+  _match: 
+    - "accent"
+    - "a"
+  "(\d+)": "dialects[\1-1]"
+
+- _id: "ipa"
+  _match: 
+    - "IPA"
+  "1": "lang"
+  "qual": "qualifier"
+  "ref": "ref"
+  "([2-9])": "pronunciations[\1-1]"
+  
+- _id: "audio"
+  _match: 
+    - "audio"
+  "1": "lang"
+  "2": "filename"
+  "3": "url"
+  "format": "format"
+
+- _id: "rhymes"
+  _match: 
+    - "rhymes"
+  "1": "lang"
+  "q": "qualifier"
+  "s": "syllables"
+  "(\d+)": "rhymes[\1-1]"
+
+- _id: "homophones"
+  _match: 
+    - "homophones"
+    - "homophone"
+    - "hmp"
+  _extends: 
+    - _base
+  "1": "lang"
+  "(\d+)": "homophones[\1-1]"
+
+- _id: "qualifier"
+  _match: 
+    - "qualifier"
+    - "qual"
+    - "i"
+    - "q"
+  "(\d+)": "qualifiers[\1-1]"
+
+- _id: "label"
+  _match: 
+    - "label"
+    - "lb"
+    - "lbl"
+  "1": "lang"
+
+- _id: "gloss"
+  _match: 
+    - "gloss"
+    - "gl"
+  "1": "gloss"
+
+- _id: "sense"
+  _match: 
+    - "sense"
+    - "s"
+    - "senseid"
+    - "senseno"
+  "1": "sense"
+
+- _id: "synonyms"
+  _match: [
+    "synonyms"
+    "syn"
+    "synonyms"
+  ]
+  "1": "lang"
+  "q": "synonyms[0].qualifier"
+  "qq": "synonyms[0].qualifier"
+  "g": "synonyms[0].gender"
+  "lang": "synonyms[0].lang"
+  "alt": "synonyms[0].alt"
+  "t": "synonyms[0].gloss"
+  "sc": "synonyms[0].script"
+  "tr": "synonyms[0].transliteration"
+  "ts": "synonyms[0].transcription"
+  "pos": "synonyms[0].partOfSpeech"
+  "lit": "synonyms[0].literalTranslation"
+  "id": "synonyms[0].sense"
+  "([2-9])": "synonyms[\1-2].synonym",
+  "q([2-9])": "synonyms[\1-2].qualifier"
+  "qq([2-9])": "synonyms[\1-2].qualifier"
+  "g([2-9])": "synonyms[\1-2].gender"
+  "lang([2-9])": "synonyms[\1-2].lang"
+  "alt([2-9])": "synonyms[\1-2].alt"
+  "t([2-9])": "synonyms[\1-2].gloss"
+  "sc([2-9])": "synonyms[\1-2].script"
+  "tr([2-9])": "synonyms[\1-2].transliteration"
+  "ts([2-9])": "synonyms[\1-2].transcription"
+  "pos([2-9])": "synonyms[\1-2].partOfSpeech"
+  "lit([2-9])": "synonyms[\1-2].literalTranslation"
+  "id([2-9])": "synonyms[\1-2].sense"
+
+- _id: "antonyms"
+  _match: 
+    - "antonym"
+    - "ant"
+    - "antonyms"
+  "1": "lang"
+  "q": "antonyms[0].qualifier"
+  "qq": "antonyms[0].qualifier"
+  "g": "antonyms[0].gender"
+  "lang": "antonyms[0].lang"
+  "alt": "antonyms[0].alt"
+  "t": "antonyms[0].gloss"
+  "sc": "antonyms[0].script"
+  "tr": "antonyms[0].transliteration"
+  "ts": "antonyms[0].transcription"
+  "pos": "antonyms[0].partOfSpeech"
+  "lit": "antonyms[0].literalTranslation"
+  "id": "antonyms[0].sense"
+  "([2-9])": "antonyms[\1-2].synonym",
+  "q([2-9])": "antonyms[\1-2].qualifier"
+  "qq([2-9])": "antonyms[\1-2].qualifier"
+  "g([2-9])": "antonyms[\1-2].gender"
+  "lang([2-9])": "antonyms[\1-2].lang"
+  "alt([2-9])": "antonyms[\1-2].alt"
+  "t([2-9])": "antonyms[\1-2].gloss"
+  "sc([2-9])": "antonyms[\1-2].script"
+  "tr([2-9])": "antonyms[\1-2].transliteration"
+  "ts([2-9])": "antonyms[\1-2].transcription"
+  "pos([2-9])": "antonyms[\1-2].partOfSpeech"
+  "lit([2-9])": "antonyms[\1-2].literalTranslation"
+  "id([2-9])": "antonyms[\1-2].sense"
+
+- _id: "hypernyms"
+  _match: 
+    - "hypernym"
+    - "hyper"
+    - "hypernyms"
+  "1": "lang"
+  "q": "hypernyms[0].qualifier"
+  "qq": "hypernyms[0].qualifier"
+  "g": "hypernyms[0].gender"
+  "lang": "hypernyms[0].lang"
+  "alt": "hypernyms[0].alt"
+  "t": "hypernyms[0].gloss"
+  "sc": "hypernyms[0].script"
+  "tr": "hypernyms[0].transliteration"
+  "ts": "hypernyms[0].transcription"
+  "pos": "hypernyms[0].partOfSpeech"
+  "lit": "hypernyms[0].literalTranslation"
+  "id": "hypernyms[0].sense"
+  "([2-9])": "hypernyms[\1-2].synonym",
+  "q([2-9])": "hypernyms[\1-2].qualifier"
+  "qq([2-9])": "hypernyms[\1-2].qualifier"
+  "g([2-9])": "hypernyms[\1-2].gender"
+  "lang([2-9])": "hypernyms[\1-2].lang"
+  "alt([2-9])": "hypernyms[\1-2].alt"
+  "t([2-9])": "hypernyms[\1-2].gloss"
+  "sc([2-9])": "hypernyms[\1-2].script"
+  "tr([2-9])": "hypernyms[\1-2].transliteration"
+  "ts([2-9])": "hypernyms[\1-2].transcription"
+  "pos([2-9])": "hypernyms[\1-2].partOfSpeech"
+  "lit([2-9])": "hypernyms[\1-2].literalTranslation"
+  "id([2-9])": "hypernyms[\1-2].sense"
+
+- _id: "hyponyms"
+  _match:
+    - "hyponym"
+    - "hypo"
+    - "hyponyms"
+  "1": "lang"
+  "q": "hyponyms[0].qualifier"
+  "qq": "hyponyms[0].qualifier"
+  "g": "hyponyms[0].gender"
+  "lang": "hyponyms[0].lang"
+  "alt": "hyponyms[0].alt"
+  "t": "hyponyms[0].gloss"
+  "sc": "hyponyms[0].script"
+  "tr": "hyponyms[0].transliteration"
+  "ts": "hyponyms[0].transcription"
+  "pos": "hyponyms[0].partOfSpeech"
+  "lit": "hyponyms[0].literalTranslation"
+  "id": "hyponyms[0].sense"
+  "([2-9])": "hyponyms[\1-2].synonym",
+  "q([2-9])": "hyponyms[\1-2].qualifier"
+  "qq([2-9])": "hyponyms[\1-2].qualifier"
+  "g([2-9])": "hyponyms[\1-2].gender"
+  "lang([2-9])": "hyponyms[\1-2].lang"
+  "alt([2-9])": "hyponyms[\1-2].alt"
+  "t([2-9])": "hyponyms[\1-2].gloss"
+  "sc([2-9])": "hyponyms[\1-2].script"
+  "tr([2-9])": "hyponyms[\1-2].transliteration"
+  "ts([2-9])": "hyponyms[\1-2].transcription"
+  "pos([2-9])": "hyponyms[\1-2].partOfSpeech"
+  "lit([2-9])": "hyponyms[\1-2].literalTranslation"
+  "id([2-9])": "hyponyms[\1-2].sense"
+
+- _id: "meronyms"
+  _match: 
+    - "meronym"
+    - "mero"
+    - "meronyms"
+  "1": "lang"
+  "q": "meronyms[0].qualifier"
+  "qq": "meronyms[0].qualifier"
+  "g": "meronyms[0].gender"
+  "lang": "meronyms[0].lang"
+  "alt": "meronyms[0].alt"
+  "t": "meronyms[0].gloss"
+  "sc": "meronyms[0].script"
+  "tr": "meronyms[0].transliteration"
+  "ts": "meronyms[0].transcription"
+  "pos": "meronyms[0].partOfSpeech"
+  "lit": "meronyms[0].literalTranslation"
+  "id": "meronyms[0].sense"
+  "([2-9])": "meronyms[\1-2].synonym",
+  "q([2-9])": "meronyms[\1-2].qualifier"
+  "qq([2-9])": "meronyms[\1-2].qualifier"
+  "g([2-9])": "meronyms[\1-2].gender"
+  "lang([2-9])": "meronyms[\1-2].lang"
+  "alt([2-9])": "meronyms[\1-2].alt"
+  "t([2-9])": "meronyms[\1-2].gloss"
+  "sc([2-9])": "meronyms[\1-2].script"
+  "tr([2-9])": "meronyms[\1-2].transliteration"
+  "ts([2-9])": "meronyms[\1-2].transcription"
+  "pos([2-9])": "meronyms[\1-2].partOfSpeech"
+  "lit([2-9])": "meronyms[\1-2].literalTranslation"
+  "id([2-9])": "meronyms[\1-2].sense"
+
+- _id: "holonyms"
+  _match:
+    - "holonym"
+    - "holo"
+    - "holonyms"
+  "1": "lang"
+  "q": "holonyms[0].qualifier"
+  "qq": "holonyms[0].qualifier"
+  "g": "holonyms[0].gender"
+  "lang": "holonyms[0].lang"
+  "alt": "holonyms[0].alt"
+  "t": "holonyms[0].gloss"
+  "sc": "holonyms[0].script"
+  "tr": "holonyms[0].transliteration"
+  "ts": "holonyms[0].transcription"
+  "pos": "holonyms[0].partOfSpeech"
+  "lit": "holonyms[0].literalTranslation"
+  "id": "holonyms[0].sense"
+  "([2-9])": "holonyms[\1-2].synonym",
+  "q([2-9])": "holonyms[\1-2].qualifier"
+  "qq([2-9])": "holonyms[\1-2].qualifier"
+  "g([2-9])": "holonyms[\1-2].gender"
+  "lang([2-9])": "holonyms[\1-2].lang"
+  "alt([2-9])": "holonyms[\1-2].alt"
+  "t([2-9])": "holonyms[\1-2].gloss"
+  "sc([2-9])": "holonyms[\1-2].script"
+  "tr([2-9])": "holonyms[\1-2].transliteration"
+  "ts([2-9])": "holonyms[\1-2].transcription"
+  "pos([2-9])": "holonyms[\1-2].partOfSpeech"
+  "lit([2-9])": "holonyms[\1-2].literalTranslation"
+  "id([2-9])": "holonyms[\1-2].sense"
+
+- _id: "troponyms"
+  _match: 
+    - "troponym"
+    - "tropo"
+    - "troponyms"
+
+  "1": "lang"
+  "q": "troponyms[0].qualifier"
+  "qq": "troponyms[0].qualifier"
+  "g": "troponyms[0].gender"
+  "lang": "troponyms[0].lang"
+  "alt": "troponyms[0].alt"
+  "t": "troponyms[0].gloss"
+  "sc": "troponyms[0].script"
+  "tr": "troponyms[0].transliteration"
+  "ts": "troponyms[0].transcription"
+  "pos": "troponyms[0].partOfSpeech"
+  "lit": "troponyms[0].literalTranslation"
+  "id": "troponyms[0].sense"
+  "([2-9])": "troponyms[\1-2].synonym",
+  "q([2-9])": "troponyms[\1-2].qualifier"
+  "qq([2-9])": "troponyms[\1-2].qualifier"
+  "g([2-9])": "troponyms[\1-2].gender"
+  "lang([2-9])": "troponyms[\1-2].lang"
+  "alt([2-9])": "troponyms[\1-2].alt"
+  "t([2-9])": "troponyms[\1-2].gloss"
+  "sc([2-9])": "troponyms[\1-2].script"
+  "tr([2-9])": "troponyms[\1-2].transliteration"
+  "ts([2-9])": "troponyms[\1-2].transcription"
+  "pos([2-9])": "troponyms[\1-2].partOfSpeech"
+  "lit([2-9])": "troponyms[\1-2].literalTranslation"
+  "id([2-9])": "troponyms[\1-2].sense"
+
+- _id: "coordinate_terms"
+  _match:
+    - "coordinate terms"
+    - "cot"
+  "1": "lang"
+  "q": "coordinate_terms[0].qualifier"
+  "qq": "coordinate_terms[0].qualifier"
+  "g": "coordinate_terms[0].gender"
+  "lang": "coordinate_terms[0].lang"
+  "alt": "coordinate_terms[0].alt"
+  "t": "coordinate_terms[0].gloss"
+  "sc": "coordinate_terms[0].script"
+  "tr": "coordinate_terms[0].transliteration"
+  "ts": "coordinate_terms[0].transcription"
+  "pos": "coordinate_terms[0].partOfSpeech"
+  "lit": "coordinate_terms[0].literalTranslation"
+  "id": "coordinate_terms[0].sense"
+  "([2-9])": "coordinate_terms[\1-2].synonym",
+  "q([2-9])": "coordinate_terms[\1-2].qualifier"
+  "qq([2-9])": "coordinate_terms[\1-2].qualifier"
+  "g([2-9])": "coordinate_terms[\1-2].gender"
+  "lang([2-9])": "coordinate_terms[\1-2].lang"
+  "alt([2-9])": "coordinate_terms[\1-2].alt"
+  "t([2-9])": "coordinate_terms[\1-2].gloss"
+  "sc([2-9])": "coordinate_terms[\1-2].script"
+  "tr([2-9])": "coordinate_terms[\1-2].transliteration"
+  "ts([2-9])": "coordinate_terms[\1-2].transcription"
+  "pos([2-9])": "coordinate_terms[\1-2].partOfSpeech"
+  "lit([2-9])": "coordinate_terms[\1-2].literalTranslation"
+  "id([2-9])": "coordinate_terms[\1-2].sense"
+
+- _id: "other"
+  _match: 
+    - "other" # ...?
+  "1": "lang"
+  "q": "other[0].qualifier"
+  "qq": "other[0].qualifier"
+  "g": "other[0].gender"
+  "lang": "other[0].lang"
+  "alt": "other[0].alt"
+  "t": "other[0].gloss"
+  "sc": "other[0].script"
+  "tr": "other[0].transliteration"
+  "ts": "other[0].transcription"
+  "pos": "other[0].partOfSpeech"
+  "lit": "other[0].literalTranslation"
+  "id": "other[0].sense"
+  "([2-9])": "other[\1-2].synonym",
+  "q([2-9])": "other[\1-2].qualifier"
+  "qq([2-9])": "other[\1-2].qualifier"
+  "g([2-9])": "other[\1-2].gender"
+  "lang([2-9])": "other[\1-2].lang"
+  "alt([2-9])": "other[\1-2].alt"
+  "t([2-9])": "other[\1-2].gloss"
+  "sc([2-9])": "other[\1-2].script"
+  "tr([2-9])": "other[\1-2].transliteration"
+  "ts([2-9])": "other[\1-2].transcription"
+  "pos([2-9])": "other[\1-2].partOfSpeech"
+  "lit([2-9])": "other[\1-2].literalTranslation"
+  "id([2-9])": "other[\1-2].sense"
+
+- _id: "anagram"
+  _match: 
+    - "anagrams"
+    - "anagram"
+  "1": "lang"
+  "a": "alphagram"
+  "([2-9])": "anagrams[\1-2]"
+
+- _id: "def"
+  _match: 
+    - "non-gloss definition"
+  "1": "def"
+
+- _id: "translation"
+  _match:
+    - "translation"
+    - "t"
+    - "t-check"
+    - "t+"
+    - "t+check"
+    - "tt"
+    - "tt+"
+    - "tt+check"
+    - "tt-check"
+  _extends:
+    - _base
+  "1": "lang"
+  "2": "gloss"
+
+- _id: "no_equivalent_translation"
+  _match:
+    - "no equivalent translation"
+  _extends: 
+    - _base 
+  "1": "lang"
+  "2": "gloss"
+
+- _id: "not_used"
+  _match: 
+    - "not used"
+  _extends:
+    - _base
+  "1": "lang"
+  "2": "gloss"
+
+- _id: "transcription"
+  _match:
+    - "pronunciation spelling of"
+  

@@ -21,6 +21,9 @@ const Home: NextPage = () => {
           </div>
 
           <div className="flex flex-row gap-5 justify-center p-5">
+            <a href="/docs/ld" className="text-stone-600 hover:text-stone-800 active:text-black">
+              Linked Data
+            </a>
             <a
               href="/docs/rest/v1.html"
               className="text-stone-600 hover:text-stone-800 active:text-black"
@@ -30,6 +33,7 @@ const Home: NextPage = () => {
             <a className="text-stone-400 cursor-not-allowed">
               GraphQL (Coming Soon)
             </a>
+
           </div>
         </section>
       </main>

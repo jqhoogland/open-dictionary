@@ -3,42 +3,9 @@ import { EntryQuery, langCodesToNames } from "./iri";
 import set from "lodash/set";
 import camelCase from "lodash/camelCase";
 import snakeCase from "lodash/snakeCase";
-import { transformTemplate } from "./en/templates";
+import { getTemplates } from "./templates";
 
-const parseTemplate = (template: string): Record<string, string> => {
-  template = template.slice(2, template.length - 2);
-  const parts = template.split("|");
-  const data: Record<string, string> = {};
 
-  parts.forEach((part, i) => {
-    if (part.includes("=")) {
-      const [key, value] = part.split("=", 1) as [string, string];
-      data[key] = value ?? true;
-    } else if (i === 0) {
-      data["@template"] = snakeCase(part);
-    } else {
-      data[i.toString()] = part;
-    }
-  });
-
-  return transformTemplate(data);
-};
-
-const getTemplates = (text: string): Record<string, string>[] => {
-  const templates = text.match(/{{[^}]+}}/g);
-  if (templates === null) {
-    return [];
-  }
-  return templates.map(parseTemplate);
-};
-
-const getWikilinks = (text: string): Record<string, string>[] => {
-  const wikilinks = text.match(/\[\[[^\]]+\]\]/g);
-  if (wikilinks === null) {
-    return [];
-  }
-  return wikilinks.map(parseTemplate);
-};
 
 interface Section extends Record<string, string[] | Section> {}
 

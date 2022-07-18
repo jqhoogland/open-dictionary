@@ -7,6 +7,7 @@
 - Check out the [Python Client](/wiktionary).
 
 Come back soon to check out:
+- [Semantic Triples]()
 - A REST API
 - Or GraphQL API.
 - And Typescript Client.

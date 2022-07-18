@@ -3,7 +3,7 @@ import { z } from "zod";
 import { JSONLDNode, JSONLDSchema, parseWikiText } from "../../parser/page";
 import { createRouter } from "./context";
 import fs from "fs";
-import { flatten } from "../../parser/en/templates";
+import { flatten } from "../../parser/templates";
 
 const examplePage = fs.readFileSync("tests/example.wt", "utf8");
 interface WikiResponse {
