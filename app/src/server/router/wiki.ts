@@ -17,12 +17,12 @@ interface WikiResponse {
 }
 
 const getWikiText = async (input: z.infer<typeof EntryQuerySchema>) =>
-  // examplePage;
-  fetch(
-    `https://${input?.wiki}.wiktionary.org/w/api.php?action=parse&page=${input.word}&format=json&prop=wikitext`
-  )
-    .then((res) => res.json())
-    .then((res: WikiResponse) => res.parse.wikitext["*"]);
+  examplePage;
+// fetch(
+//   `https://${input?.wiki}.wiktionary.org/w/api.php?action=parse&page=${input.word}&format=json&prop=wikitext`
+// )
+//   .then((res) => res.json())
+//   .then((res: WikiResponse) => res.parse.wikitext["*"]);
 
 const wikiRouter = createRouter()
   .query("getWikiText", {

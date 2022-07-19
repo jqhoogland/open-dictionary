@@ -2,6 +2,9 @@ import isEmpty from "lodash/isEmpty";
 import snakeCase from "lodash/snakeCase";
 import { ISO639Schema } from "./iri";
 import { JSONLDNode } from "./page";
+import yaml from "js-yaml";
+import fs from "fs";
+import path from "path";
 
 const _flatten = (obj: any, ctx = ""): JSONLDNode[] => {
   if (Array.isArray(obj)) {
@@ -60,9 +63,42 @@ export const flatten = (obj: JSONLDNode): Record<string, JSONLDNode> => {
   return Object.fromEntries(data);
 };
 
-type Template = Record<string, string>;
+export type TemplateTransformMeta = {
+  _id: string;
+  _matches?: string[];
+  _extends?: string[];
+};
 
-export const parseTemplate = (template: string): Template => {
+export type TemplateTransform = TemplateTransformMeta & {
+  [key: Exclude<string, keyof TemplateTransformMeta>]: string;
+};
+
+export type Template = Record<string, string>;
+
+/** Turn a yaml  */
+export const loadTransforms = async (path: string) => {
+  const transforms = yaml.load(fs.readFileSync(path, "utf-8"));
+  console.log("Transforms: ", transforms);
+  return transforms;
+};
+
+export const getTransform = (
+  templateName: string,
+  transforms: TemplateTransform[]
+): TemplateTransform | undefined =>
+  transforms.find((transform) => transform._match?.includes(templateName));
+
+type Transform<T> = T; //  TODO: Typescript magic
+
+export const applyTransform = (
+  template: Template,
+  transform: TemplateTransform
+): Transform<Template> => {
+  return template;
+};
+
+/** Reads a template in the original wiki template format */
+export const parseRawTemplate = (template: string): Template => {
   template = template.slice(2, template.length - 2);
   const parts = template.split("|");
   const data: Record<string, string> = {};
@@ -72,7 +108,7 @@ export const parseTemplate = (template: string): Template => {
       const [key, value] = part.split("=", 1) as [string, string];
       data[key] = value ?? true;
     } else if (i === 0) {
-      data["@template"] = snakeCase(part);
+      data._id = snakeCase(part);
     } else {
       data[i.toString()] = part;
     }
@@ -81,12 +117,28 @@ export const parseTemplate = (template: string): Template => {
   return data;
 };
 
+export const transformTemplate = async (
+  rawTemplateString: string,
+  transformLoader: () => Promise<TemplateTransform[]>
+): Promise<Transform<Template>> => {
+  const template = parseRawTemplate(rawTemplateString);
+  const transforms = await transformLoader();
+  const transform = getTransform(template._id!, transforms);
+
+  if (!transform) {
+    console.error(`No transform found for ${template._id}.`);
+    return template;
+  }
+
+  return applyTransform(template, transform);
+};
+
 export const getTemplates =
-  (parse: (t: Template) => Template) =>
-  (text: string): Record<string, string>[] => {
+  (parse: (t: string) => Promise<Template>) =>
+  async (text: string): Promise<Template[]> => {
     const templates = text.match(/{{[^}]+}}/g);
     if (templates === null) {
       return [];
     }
-    return templates.map(parseTemplate);
+    return Promise.all(templates.map(parse));
   };

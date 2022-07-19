@@ -1,11 +1,12 @@
+import { transformEnTemplate } from "./en/templates";
+import { getWikilinks } from "./wikilinks";
 import { Expand } from "./../utils/types";
 import { EntryQuery, langCodesToNames } from "./iri";
 import set from "lodash/set";
 import camelCase from "lodash/camelCase";
 import snakeCase from "lodash/snakeCase";
 import { getTemplates } from "./templates";
-
-
+import { transformEnWikiLink } from "./en/wikilinks";
 
 interface Section extends Record<string, string[] | Section> {}
 
@@ -23,6 +24,9 @@ export const getSection = async (entryQuery: EntryQuery, text: string) => {
   let path: string[] = [];
   let section: Section = {};
   let items = [];
+
+  const templateGetter = getTemplates(transformEnTemplate);
+  const wikilinkGetter = getWikilinks(transformEnWikiLink);
 
   for (let i = 0; i < lines.length; i++) {
     line = lines[i] as string;
@@ -63,8 +67,9 @@ export const getSection = async (entryQuery: EntryQuery, text: string) => {
         depth = newDepth;
       }
     }
-    items.push(...getTemplates(line));
-    items.push(...getWikilinks(line));
+
+    items.push(...(await templateGetter(line)));
+    items.push(...(await wikilinkGetter(line)));
   }
 
   lines = lines.splice(start, end - start);
