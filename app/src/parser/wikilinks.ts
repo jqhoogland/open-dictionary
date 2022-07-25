@@ -14,7 +14,7 @@ export const transformWikiLink = (wl: string): WikiLink => {
 };
 
 export const getWikilinks =
-  (parse: (wl: string) => Promise<Template>) =>
+  (parse: (wl: string) => Promise<WikiLink>) =>
   async (text: string): Promise<WikiLink[]> => {
     const wikilinks = text.match(/\[\[[^\]]+\]\]/g);
     if (!wikilinks) {

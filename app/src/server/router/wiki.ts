@@ -4,6 +4,7 @@ import { JSONLDNode, JSONLDSchema, parseWikiText } from "../../parser/page";
 import { createRouter } from "./context";
 import fs from "fs";
 import { flatten } from "../../parser/templates";
+import { useState } from "react";
 
 const examplePage = fs.readFileSync("tests/example.wt", "utf8");
 interface WikiResponse {

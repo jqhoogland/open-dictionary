@@ -5,6 +5,7 @@ import { JSONLDNode } from "./page";
 import yaml from "js-yaml";
 import fs from "fs";
 import path from "path";
+import set from "lodash/set";
 
 const _flatten = (obj: any, ctx = ""): JSONLDNode[] => {
   if (Array.isArray(obj)) {
@@ -74,12 +75,12 @@ export type TemplateTransform = TemplateTransformMeta & {
 };
 
 export type Template = Record<string, string>;
+export type Transformed<T extends Template> = T 
 
-/** Turn a yaml  */
+/** Reads a list of Trransform objects   */
 export const loadTransforms = async (path: string) => {
   const transforms = yaml.load(fs.readFileSync(path, "utf-8"));
-  console.log("Transforms: ", transforms);
-  return transforms;
+  return transforms as TemplateTransform[];
 };
 
 export const getTransform = (
@@ -88,16 +89,55 @@ export const getTransform = (
 ): TemplateTransform | undefined =>
   transforms.find((transform) => transform._match?.includes(templateName));
 
-type Transform<T> = T; //  TODO: Typescript magic
 
 export const applyTransform = (
-  template: Template,
+  inTemplate: Template,
   transform: TemplateTransform
-): Transform<Template> => {
+): Transformed<Template> => {
+  let template: Template = {
+    "@type": transform._id,
+  };
+
+  for (let [kTransform, vTransform] of Object.entries(transform)) {
+    // Check if meta tag (or an unallwoed value type)
+    if ((["_match", "_id", "_extends"].includes(kTransform))) {
+      continue;
+    }if (typeof vTransform !== "string" || !vTransform) {
+           console.error(
+        "Invalid type of value. Only meta tags (_id, _match, _extends) are allowed to contain strings:", kTransform, vTransform);
+    }
+
+    for (let [kTemplate, vTemplate] of Object.entries(inTemplate)) {
+      // With a direct match we can replace as is.
+      if (kTemplate === kTransform) {
+        set(template, vTransform, vTemplate);
+        break;
+      }
+      
+      // With a regex match, we may have to transform the value as well
+      if (kTemplate.match(kTransform)) {
+        // Only supported for matching integerss
+        const kInt = parseInt(kTemplate); 
+        const mV = vTransform.match(/\\1-(\d)/);
+
+        if (mV && mV[1]) {
+          const vIndex = parseInt(mV[1]);
+          vTransform = vTransform.replace(/\\1-(\d)/, (kInt - vIndex).toString());
+        }
+        set(template, vTransform, vTemplate);
+        break;
+      }
+    }
+  }
+
   return template;
 };
 
-/** Reads a template in the original wiki template format */
+/** Reads a template in the original wiki template format 
+ * 
+ * I.e.: positional args are named "1",  "2", etc., and 
+ * kwargs keep theiir original names.
+*/
 export const parseRawTemplate = (template: string): Template => {
   template = template.slice(2, template.length - 2);
   const parts = template.split("|");
@@ -117,10 +157,14 @@ export const parseRawTemplate = (template: string): Template => {
   return data;
 };
 
+/** Given a string containing a wikitemplate `{{template_name|...}}`,
+ * parses that string into an object using `parseRawTemplate`,
+ * then transforms that object using the transformations returned by `transforrmLoader`. 
+ */
 export const transformTemplate = async (
   rawTemplateString: string,
   transformLoader: () => Promise<TemplateTransform[]>
-): Promise<Transform<Template>> => {
+): Promise<Transformed<Template>> => {
   const template = parseRawTemplate(rawTemplateString);
   const transforms = await transformLoader();
   const transform = getTransform(template._id!, transforms);
@@ -133,6 +177,11 @@ export const transformTemplate = async (
   return applyTransform(template, transform);
 };
 
+/** Given a string containing wiki templates 
+ * (of the form `{{template_name|arg1|arg2...}}`),
+ * 
+ * Returns the result of mapping `parse` over these templates.
+*/
 export const getTemplates =
   (parse: (t: string) => Promise<Template>) =>
   async (text: string): Promise<Template[]> => {
